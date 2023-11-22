@@ -1,0 +1,33 @@
+plugins {
+    id 'com.github.node-gradle.node' version '3.5.1'
+}
+
+group = 'xyz.poeschl'
+
+task npmBuild(type: NpmTask) {
+    inputs.dir("src")
+    outputs.dir("dist")
+    args = ['run', 'build']
+}
+npmBuild.dependsOn('npmInstall')
+
+task npmTest(type: NpmTask) {
+    inputs.dir("src")
+    outputs.dir("dist")
+    args = ['run', 'test:unit']
+}
+npmTest.dependsOn('npmBuild')
+
+task npmRunDev(type: NpmTask) {
+    inputs.dir("src")
+    outputs.dir("dist")
+    args = ['run', 'dev']
+}
+npmRunDev.dependsOn('npmBuild')
+
+task npmRunPreview(type: NpmTask) {
+    inputs.dir("src")
+    outputs.dir("dist")
+    args = ['run', 'preview']
+}
+npmRunPreview.dependsOn('npmBuild')

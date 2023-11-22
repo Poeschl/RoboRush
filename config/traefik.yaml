@@ -1,0 +1,25 @@
+http:
+  routers:
+    frontend:
+      entryPoints:
+        - web
+      service: frontend
+      rule: PathPrefix(`/`)
+    backend:
+      entryPoints:
+        - web
+      service: backend
+      rule: PathPrefix(`/rest`)
+
+  services:
+    frontend:
+      loadBalancer:
+        servers:
+          - url: http://{{ env "HOSTNAME" }}:5173/
+        passHostHeader: true
+
+    backend:
+      loadBalancer:
+        servers:
+          - url: http://{{ env "HOSTNAME" }}:8080/rest/
+        passHostHeader: true
