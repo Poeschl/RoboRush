@@ -1,0 +1,33 @@
+http:
+  routers:
+    frontend:
+      entryPoints:
+        - web
+      service: frontend
+      rule: PathPrefix(`/`)
+    backend:
+      entryPoints:
+        - web
+      service: backend
+      rule: PathPrefix(`/rest`)
+
+  services:
+    frontend:
+      loadBalancer:
+        healthCheck:
+          path: /index.html
+          port: 5173
+        servers:
+          - url: http://localhost:5173/ # For linux and windows WSL
+          - url: http://{{ env "HOSTNAME" }}:5173/ # For the windows host Machine
+        passHostHeader: true
+
+    backend:
+      loadBalancer:
+        healthCheck:
+          path: /rest/swagger-ui
+          port: 8080
+        servers:
+          - url: http://localhost:8080/rest/ # For linux and windows WSL
+          - url: http://{{ env "HOSTNAME" }}:8080/rest/ # For the windows host Machine
+        passHostHeader: true

@@ -1,0 +1,32 @@
+# The config for the local pre-commit steps
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024, --enforce-all]
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix, lf]
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.11.0
+    hooks:
+      - id: pretty-format-kotlin
+        args: [--autofix]
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        types_or: [css, scss, javascript, vue, ts, yaml, html, json]
+  - repo: local
+    hooks:
+      - id: yaml-extension-check
+        name: yaml extension check
+        description: Checks if all yaml files have the extension '.yaml'
+        entry: All Yaml files should have the *.yaml extension.
+        language: fail
+        files: .*\.(yml)

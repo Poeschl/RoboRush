@@ -1,0 +1,79 @@
+version: "3"
+services:
+  traefik:
+    image: traefik:v2.10.3
+    restart: unless-stopped
+    command:
+      - --api
+      - --api.dashboard=true
+      - --ping=true
+      - --ping.entrypoint=websecure
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=proxy
+
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls=true
+
+      #- '--log.level=DEBUG'
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme-store:/acme
+    labels:
+      - traefik.enable=true
+      # since Traefik don't allow to change the api path the referer is used as rule (https://github.com/traefik/traefik/issues/5853)
+      - traefik.http.routers.dashboard.rule=(PathPrefix(`/traefik/dashboard`) || HeadersRegexp(`Referer`, `.*\/traefik\/dashboard\/.*`))
+      - traefik.http.routers.dashboard.priority=20
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.middlewares=strip-prefix-traefik
+      - traefik.http.middlewares.strip-prefix-traefik.stripprefix.prefixes=/traefik
+
+      - traefik.http.routers.dashboard-redirect.rule=PathPrefix(`/traefik`)
+      - traefik.http.routers.dashboard-redirect.priority=10
+      - traefik.http.routers.dashboard-redirect.service=noop@internal
+      - traefik.http.routers.dashboard-redirect.entrypoints=websecure
+      - traefik.http.routers.dashboard-redirect.middlewares=dashboard-redirect
+      - traefik.http.middlewares.dashboard-redirect.redirectregex.regex=^(https://.*)/traefik.*
+      - traefik.http.middlewares.dashboard-redirect.redirectregex.replacement=$${1}/traefik/dashboard/
+
+  frontend:
+    image: ghcr.io/poeschl/brettbutler:frontend
+    restart: unless-stopped
+    #    environment:
+    #      PLAUSIBLE_DOMAIN: <your domain>
+    #      PLAUSIBLE_API_HOST: https://plausible.io
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.brettbutler-frontend.rule=PathPrefix(`/`)
+
+  backend:
+    image: ghcr.io/poeschl/brettbutler:backend
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: superSecret
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.brettbutler-backend.rule=PathPrefix(`/rest`)
+
+  database:
+    image: postgres:15.2-alpine
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: superSecret
+
+volumes:
+  acme-store:
+  db-data:
