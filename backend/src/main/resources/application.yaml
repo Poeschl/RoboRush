@@ -16,3 +16,13 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+server:
+  error:
+    include-message: always
+  tomcat:
+    max-http-form-post-size: 10MB
+
+logging:
+  level:
+    xyz.poeschl.pathseeker: debug
