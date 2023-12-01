@@ -2,6 +2,7 @@ package xyz.poeschl.pathseeker.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import xyz.poeschl.pathseeker.controller.RobotSocketController
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.exceptions.MoveOutOfMapException
 import xyz.poeschl.pathseeker.models.Direction
@@ -10,7 +11,7 @@ import xyz.poeschl.pathseeker.models.Robot
 import xyz.poeschl.pathseeker.models.Tile
 
 @Service
-class RobotService(private val mapService: MapService) {
+class RobotService(private val mapService: MapService, private val robotSocketController: RobotSocketController) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotService::class.java)
   }
@@ -52,6 +53,7 @@ class RobotService(private val mapService: MapService) {
     robot.position = newPosition
     LOGGER.debug("Moved robot {} from {}", robot, currentPosition)
 
+    robotSocketController.sendRobotInformation(robots.map { it.value })
     return newPosition
   }
 
