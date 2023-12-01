@@ -1,59 +1,65 @@
 plugins {
-    id 'org.springframework.boot' version '3.1.5'
-    id 'io.spring.dependency-management' version '1.1.4'
-    id 'org.jetbrains.kotlin.jvm' version '1.9.20'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.20'
-    id 'org.jetbrains.kotlin.plugin.noarg' version "1.9.20"
-    id 'org.jetbrains.kotlin.kapt' version "1.9.20"
+  id 'org.springframework.boot' version '3.1.5'
+  id 'io.spring.dependency-management' version '1.1.4'
+  id 'org.jetbrains.kotlin.jvm' version '1.9.20'
+  id 'org.jetbrains.kotlin.plugin.spring' version '1.9.20'
+  id 'org.jetbrains.kotlin.plugin.noarg' version "1.9.20"
+  id 'org.jetbrains.kotlin.kapt' version "1.9.20"
 }
 
 group = 'xyz.poeschl.pathseeker'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 ext {
-    set('testcontainersVersion', "1.19.3")
+  set('testcontainersVersion', "1.19.3")
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.flywaydb:flyway-core'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+  implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+  implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 
-    kapt 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+  kapt 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-    runtimeOnly 'org.postgresql:postgresql'
+  runtimeOnly 'org.postgresql:postgresql'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.testcontainers:junit-jupiter'
+  testImplementation 'org.testcontainers:postgresql'
 }
 
 dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
-    }
+  imports {
+    mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+  }
 }
 
 noArg {
-    annotation("jakarta.persistence.Entity")
+  annotation("jakarta.persistence.Entity")
+}
+
+kotlin {
+  jvmToolchain {
+    languageVersion.set(JavaLanguageVersion.of("17"))
+  }
 }
 
 kapt {
-    arguments {
-        arg('mapstruct.defaultComponentModel', 'spring')
-    }
+  arguments {
+    arg('mapstruct.defaultComponentModel', 'spring')
+  }
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
