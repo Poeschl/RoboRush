@@ -18,10 +18,7 @@ class RobotService(private val mapService: MapService) {
   val robots = mutableMapOf<Int, Robot>()
   var robotIndex = 0
 
-  fun createAndStoreRobot(
-    fuel: Int,
-    position: Position
-  ): Robot {
+  fun createAndStoreRobot(fuel: Int, position: Position): Robot {
     val newIndex = robotIndex++
     val newRobot = Robot(newIndex, fuel, position)
     robots[newIndex] = newRobot
@@ -32,10 +29,7 @@ class RobotService(private val mapService: MapService) {
     return robots[robotIndex]
   }
 
-  fun move(
-    robot: Robot,
-    direction: Direction
-  ): Position {
+  fun move(robot: Robot, direction: Direction): Position {
     val currentPosition = robot.position
     val newPosition =
       when (direction) {
@@ -61,10 +55,7 @@ class RobotService(private val mapService: MapService) {
     return newPosition
   }
 
-  fun scan(
-    robot: Robot,
-    distance: Int
-  ): List<Tile> {
+  fun scan(robot: Robot, distance: Int): List<Tile> {
     val scanResult = mapService.getTilesInDistance(robot.position, distance)
     val fuelCost = scanResult.second
     val tileList = scanResult.first

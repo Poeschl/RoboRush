@@ -19,26 +19,19 @@ class RobotRestController(private val robotService: RobotService) {
   }
 
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getRobot(
-    @RequestParam robotId: Int
-  ): Robot {
+  fun getRobot(@RequestParam robotId: Int): Robot {
     LOGGER.debug("Get robot")
     return robotService.getRobot(robotId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
   }
 
   @GetMapping("/scan", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getScanData(
-    @RequestParam robotId: Int,
-    @RequestParam distance: Int
-  ): List<Tile>? {
+  fun getScanData(@RequestParam robotId: Int, @RequestParam distance: Int): List<Tile>? {
     LOGGER.debug("Called scan")
     return robotService.getRobot(robotId)?.let { robotService.scan(it, distance) }
   }
 
   @PostMapping("/move", produces = [MediaType.APPLICATION_JSON_VALUE], consumes = [MediaType.APPLICATION_JSON_VALUE])
-  fun moveInDirection(
-    @RequestBody robotMove: RobotMove
-  ): Position? {
+  fun moveInDirection(@RequestBody robotMove: RobotMove): Position? {
     LOGGER.debug("Move robot")
     return robotService.getRobot(robotMove.robotIndex)?.let { robotService.move(it, robotMove.direction) }
   }

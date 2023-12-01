@@ -65,10 +65,7 @@ class MapService {
     return currentMap.heightMap[position.x][position.y]
   }
 
-  fun getFuelCost(
-    oldPosition: Position,
-    newPosition: Position
-  ): Int {
+  fun getFuelCost(oldPosition: Position, newPosition: Position): Int {
     return STATIC_FUEL_COST + abs(getTileAtPosition(oldPosition).height - getTileAtPosition(newPosition).height)
   }
 
@@ -77,10 +74,7 @@ class MapService {
    *
    * @return A pair of all tiles and the cost for the taken scan.
    */
-  fun getTilesInDistance(
-    position: Position,
-    distance: Int
-  ): Pair<MutableList<Tile>, Int> {
+  fun getTilesInDistance(position: Position, distance: Int): Pair<MutableList<Tile>, Int> {
     var usedFuel = 0.0
     val list = mutableListOf<Tile>()
     for (x in (position.x - distance)..position.x + distance) {
