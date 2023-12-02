@@ -8,5 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import NavBar from "@/components/NavBar.vue";
+
 console.info(`Swagger UI: ${window.location.origin}/rest/swagger-ui`);
 </script>

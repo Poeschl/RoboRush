@@ -1,13 +1,13 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
-const SampleView = () => import("@/views/SampleView.vue");
+const PlayView = () => import("@/views/PlayView.vue");
 
 export default createRouter({
   history: createWebHashHistory(),
   routes: [
     {
       path: "/",
-      component: SampleView,
+      component: PlayView,
     },
   ],
 });
