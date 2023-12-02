@@ -28,7 +28,7 @@ This software will get no versioning and lives on the bloody main branch.
 
 ### Requirements
 
-Have a [Java 17 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&version=17), [node](https://nodejs.org/en/download/) and
+Have a [Java 17 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&version=17), [node 20](https://nodejs.org/en/download/) and
 [python 3.10](https://www.python.org/downloads/) installation is required to make it all run.
 Make sure you have [podman](https://podman.io/docs/installation) and [podman-compose](https://github.com/containers/podman-compose)
 (or docker and docker-compose) installed on your system, since the dev environment runs on a container-based reverse proxy.
@@ -37,11 +37,25 @@ Make sure you have [podman](https://podman.io/docs/installation) and [podman-com
 
 For development there is a little script in the project root named `start_dev_env.(sh|bat)` (according to your OS).
 Execute this first, before you do anything else.
+
+#### Run via Intellij
+
+Navigate to the `Application.kt` file and click on the green play button beside the main method. The backend is now running.
+
+For the frontend open up the `package.json` file and click the green play button to the left of the `dev` script.
+Make sure you have all dependencies installed via the Intellij UI or install them with `npm install --dev` from terminal.
+
+Now the application can be reached by http://localhost:8888 and http://localhost:8888/rest/swagger-ui.
+
+#### Run via terminal
+
 Then run `./gradlew backend:bootRun` (from project root) (or execute it through your IDE) to start your backend.
 
 For the frontend install all packages with `npm install --dev` and run the VUE app with `npm run dev` (from the `frontend` folder).
 
-Now the application can be reached by http://localhost:8888.
+Now the application can be reached by http://localhost:8888 and http://localhost:8888/rest/swagger-ui..
+
+#### Coding Styles
 
 To comply to the coding style, there are some [pre-commit](https://pre-commit.com/) rules.
 Those should be automatically executed before every git commit.
