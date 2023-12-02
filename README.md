@@ -30,7 +30,8 @@ This software will get no versioning and lives on the bloody main branch.
 
 Have a [Java 17 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&version=17), [node](https://nodejs.org/en/download/) and
 [python 3.10](https://www.python.org/downloads/) installation is required to make it all run.
-Make sure you have podman (or docker) installed on your system, since the dev environment runs on a container-based reverse proxy.
+Make sure you have [podman](https://podman.io/docs/installation) and [podman-compose](https://github.com/containers/podman-compose)
+(or docker and docker-compose) installed on your system, since the dev environment runs on a container-based reverse proxy.
 
 ### Set up
 
