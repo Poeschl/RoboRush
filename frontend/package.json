@@ -13,15 +13,15 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-regular-svg-icons": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-regular-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.5",
-    "axios": "^1.4.0",
+    "axios": "^1.6.2",
     "bulma": "^0.9.4",
     "minireset.css": "^0.0.7",
     "plausible-tracker": "^0.3.8",
-    "vue": "^3.3.4",
+    "vue": "^3.3.9",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
