@@ -3,7 +3,7 @@
     <div class="container">
       <div class="navbar-brand">
         <a href="/" class="navbar-item">
-          <FontAwesomeIcon class="is-size-4 mr-3" icon="fa-solid fa-route" />
+          <img class="mr-3" src="/img/icon_white.png" alt="Logo with the letter P and S" />
           <span class="is-uppercase">PathSeeker</span>
         </a>
         <a role="button" class="navbar-burger" data-target="menuItems" :class="{ 'is-active': mobileNavOpen }" @click="toggleMobileNav">
@@ -15,9 +15,9 @@
 
       <div id="menuItems" class="navbar-menu" :class="{ 'is-active': mobileNavOpen }">
         <div class="navbar-end">
-          <router-link class="navbar-item" to="/"> Home</router-link>
-          <router-link class="navbar-item" to="/howtoplay"> How To Play</router-link>
-          <router-link class="navbar-item" to="/rules"> Rules</router-link>
+          <router-link class="navbar-item" to="/">Home</router-link>
+          <router-link class="navbar-item" to="/howtoplay">How To Play</router-link>
+          <router-link class="navbar-item" to="/rules">Rules</router-link>
           <div class="navbar-item">
             <button class="button new-user">
               <span>Create your account</span>
