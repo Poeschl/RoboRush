@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import type { HeightMap, Position } from "@/models/Map";
+import type { Tile, Position } from "@/models/Map";
 import type { PublicRobot } from "@/models/Robot";
 import { computed, onMounted, ref } from "vue";
 import Color from "@/models/Color";
@@ -18,9 +18,7 @@ const mapColor = new Color(120, 211, 71);
 const mapHeightSteps = 5;
 
 const props = defineProps<{
-  width: number;
-  height: number;
-  mapData: HeightMap;
+  mapData: Tile[];
   robotData: PublicRobot[];
 }>();
 
@@ -36,15 +34,19 @@ onMounted(() => {
   drawRobots(props.robotData);
 });
 
-const updateCanvasSize = (data: HeightMap) => {
+const updateCanvasSize = (data: Tile[]) => {
   let maxX = 0;
   let maxY = 0;
-  data.tiles
+  data
     .map((tile) => tile.position)
     .forEach((position: Position) => {
       maxX = Math.max(maxX, position.x);
       maxY = Math.max(maxY, position.y);
     });
+  // Adjust to the zero-based map
+  maxX += 1;
+  maxY += 1;
+
   console.debug(`Max X: ${maxX} Max Y: ${maxY}`);
 
   mapWidth.value = maxX * (cellSize + 2 * cellBorder);
@@ -58,7 +60,7 @@ const updateCanvasSize = (data: HeightMap) => {
   }
 };
 
-const drawMap = (data: HeightMap) => {
+const drawMap = (data: Tile[]) => {
   if (mapCanvas.value && mapDrawContext.value) {
     const drawContext = mapDrawContext.value;
     console.info("Draw map");
@@ -67,8 +69,8 @@ const drawMap = (data: HeightMap) => {
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in data.tiles) {
-      const tile = data.tiles[index];
+    for (const index in data) {
+      const tile = data[index];
       console.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
@@ -82,6 +84,8 @@ const drawRobots = (robots: PublicRobot[]) => {
   if (robotCanvas.value && robotDrawContext.value) {
     const drawContext = robotDrawContext.value;
     console.info("Draw robots");
+
+    drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
     for (const index in robots) {
       const robot = robots[index];

@@ -8,6 +8,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faRoute } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { createPinia } from "pinia";
 
 const app = createApp(App);
 
@@ -18,6 +19,10 @@ library.add(faRoute, faUser);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);
+
+// Use pinia for local state storing
+const pinia = createPinia();
+app.use(pinia);
 
 runtimeConfigPlugin.getConfig().then((runtimeConfig) => {
   if (runtimeConfig.plausibleDomain !== undefined) {

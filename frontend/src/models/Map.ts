@@ -1,7 +1,3 @@
-export interface HeightMap {
-  tiles: Tile[];
-}
-
 export interface Tile {
   position: Position;
   height: number;

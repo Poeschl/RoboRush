@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import xyz.poeschl.pathseeker.controller.restmodels.RobotMove
 import xyz.poeschl.pathseeker.models.Position
+import xyz.poeschl.pathseeker.models.PublicRobot
 import xyz.poeschl.pathseeker.models.Robot
 import xyz.poeschl.pathseeker.models.Tile
 import xyz.poeschl.pathseeker.service.RobotService
@@ -16,6 +17,12 @@ import xyz.poeschl.pathseeker.service.RobotService
 class RobotRestController(private val robotService: RobotService) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotRestController::class.java)
+  }
+
+  @GetMapping("/all", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getAllRobots(): List<PublicRobot> {
+    LOGGER.debug("Get all robots")
+    return robotService.getAllRobots().map { PublicRobot(it.id, it.position) }
   }
 
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
