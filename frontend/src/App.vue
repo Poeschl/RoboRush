@@ -9,6 +9,15 @@
 
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
+import { useGameStore } from "@/stores/GameStore";
+import WebsocketService from "@/services/WebsocketService";
 
-console.info(`Swagger UI: ${window.location.origin}/rest/swagger-ui`);
+console.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
+
+const gameStore = useGameStore();
+gameStore.updateMap();
+gameStore.updateRobots();
+
+//Start the websocket
+new WebsocketService(gameStore);
 </script>

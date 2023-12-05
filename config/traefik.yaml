@@ -9,7 +9,7 @@ http:
       entryPoints:
         - web
       service: backend
-      rule: PathPrefix(`/rest`)
+      rule: PathPrefix(`/api`)
 
   services:
     frontend:
@@ -25,9 +25,9 @@ http:
     backend:
       loadBalancer:
         healthCheck:
-          path: /rest/swagger-ui
+          path: /api/swagger-ui
           port: 8080
         servers:
-          - url: http://localhost:8080/rest/ # For linux and windows WSL
-          - url: http://{{ env "HOSTNAME" }}:8080/rest/ # For the windows host Machine
+          - url: http://localhost:8080/api/ # For linux and windows WSL
+          - url: http://{{ env "HOSTNAME" }}:8080/api/ # For the windows host Machine
         passHostHeader: true

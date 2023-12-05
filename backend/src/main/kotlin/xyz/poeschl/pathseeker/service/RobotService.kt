@@ -2,31 +2,33 @@ package xyz.poeschl.pathseeker.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.exceptions.MoveOutOfMapException
-import xyz.poeschl.pathseeker.models.Direction
-import xyz.poeschl.pathseeker.models.Position
-import xyz.poeschl.pathseeker.models.Robot
-import xyz.poeschl.pathseeker.models.Tile
+import xyz.poeschl.pathseeker.models.*
 
 @Service
-class RobotService(private val mapService: MapService) {
+class RobotService(private val mapService: MapService, private val websocketController: WebsocketController) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotService::class.java)
   }
 
-  val robots = mutableMapOf<Int, Robot>()
-  var robotIndex = 0
+  private val robots = mutableMapOf<Int, Robot>()
+  private var robotIndex = 0
 
   fun createAndStoreRobot(fuel: Int, position: Position): Robot {
     val newIndex = robotIndex++
-    val newRobot = Robot(newIndex, fuel, position)
+    val newRobot = Robot(newIndex, getRobotColor(), fuel, position)
     robots[newIndex] = newRobot
     return newRobot
   }
 
   fun getRobot(robotIndex: Int): Robot? {
     return robots[robotIndex]
+  }
+
+  fun getAllRobots(): List<Robot> {
+    return robots.values.toList()
   }
 
   fun move(robot: Robot, direction: Direction): Position {
@@ -51,6 +53,7 @@ class RobotService(private val mapService: MapService) {
     robot.fuel -= fuelCost
     robot.position = newPosition
     LOGGER.debug("Moved robot {} from {}", robot, currentPosition)
+    websocketController.sendRobotMoveUpdate(robot)
 
     return newPosition
   }
@@ -66,5 +69,9 @@ class RobotService(private val mapService: MapService) {
 
     robot.fuel -= fuelCost
     return tileList
+  }
+
+  private fun getRobotColor(): Color {
+    return Color.randomColor()
   }
 }

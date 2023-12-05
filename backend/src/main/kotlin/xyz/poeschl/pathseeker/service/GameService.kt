@@ -13,12 +13,12 @@ class GameService(private val mapService: MapService, private val robotService: 
 
   fun startGame() {
     // Playfield init
-    mapService.createNewMap(Size(512, 1024))
+    mapService.createNewMap(Size(16, 8))
     var map: String = mapService.debugMap()
     LOGGER.debug("\nInitial map:\n{}", map)
 
     // Robot 1
-    val robot1 = robotService.createAndStoreRobot(100, Position(265, 500))
+    val robot1 = robotService.createAndStoreRobot(100, Position(5, 7))
     // Robot 2
     val robot2 = robotService.createAndStoreRobot(100, Position(2, 3))
 
