@@ -22,7 +22,7 @@ class RobotRestController(private val robotService: RobotService) {
   @GetMapping("/all", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getAllRobots(): List<PublicRobot> {
     LOGGER.debug("Get all robots")
-    return robotService.getAllRobots().map { PublicRobot(it.id, it.position) }
+    return robotService.getAllRobots().map { PublicRobot(it.id, it.color, it.position) }
   }
 
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])

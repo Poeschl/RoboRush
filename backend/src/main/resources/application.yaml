@@ -11,7 +11,7 @@ spring:
     validate-migration-naming: true
   mvc:
     servlet:
-      path: /rest
+      path: /api
 
 springdoc:
   swagger-ui:

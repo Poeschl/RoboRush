@@ -45,7 +45,7 @@ Navigate to the `Application.kt` file and click on the green play button beside 
 For the frontend open up the `package.json` file and click the green play button to the left of the `dev` script.
 Make sure you have all dependencies installed via the Intellij UI or install them with `npm install --dev` from terminal.
 
-Now the application can be reached by http://localhost:8888 and http://localhost:8888/rest/swagger-ui.
+Now the application can be reached by http://localhost:8888 and http://localhost:8888/api/swagger-ui.
 
 #### Run via terminal
 
@@ -53,7 +53,7 @@ Then run `./gradlew backend:bootRun` (from project root) (or execute it through 
 
 For the frontend install all packages with `npm install --dev` and run the VUE app with `npm run dev` (from the `frontend` folder).
 
-Now the application can be reached by http://localhost:8888 and http://localhost:8888/rest/swagger-ui..
+Now the application can be reached by http://localhost:8888 and http://localhost:8888/api/swagger-ui..
 
 #### Coding Styles
 

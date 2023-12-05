@@ -6,9 +6,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Tile, Position } from "@/models/Map";
+import type { Position, Tile } from "@/models/Map";
 import type { PublicRobot } from "@/models/Robot";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import Color from "@/models/Color";
 
 const cellSize = 16;
@@ -30,8 +30,8 @@ const mapWidth = ref<number>(800);
 const mapHeight = ref<number>(800);
 
 onMounted(() => {
-  drawMap(props.mapData);
-  drawRobots(props.robotData);
+  drawMap();
+  drawRobots();
 });
 
 const updateCanvasSize = (data: Tile[]) => {
@@ -47,7 +47,7 @@ const updateCanvasSize = (data: Tile[]) => {
   maxX += 1;
   maxY += 1;
 
-  console.debug(`Max X: ${maxX} Max Y: ${maxY}`);
+  // console.debug(`Max X: ${maxX} Max Y: ${maxY}`);
 
   mapWidth.value = maxX * (cellSize + 2 * cellBorder);
   mapHeight.value = maxY * (cellSize + 2 * cellBorder);
@@ -60,7 +60,7 @@ const updateCanvasSize = (data: Tile[]) => {
   }
 };
 
-const drawMap = (data: Tile[]) => {
+const drawMap = () => {
   if (mapCanvas.value && mapDrawContext.value) {
     const drawContext = mapDrawContext.value;
     console.info("Draw map");
@@ -69,9 +69,9 @@ const drawMap = (data: Tile[]) => {
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in data) {
-      const tile = data[index];
-      console.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
+    for (const index in props.mapData) {
+      const tile = props.mapData[index];
+      // console.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
       drawTile(drawContext, mapColor.enlighten(tile.height * mapHeightSteps));
@@ -79,17 +79,21 @@ const drawMap = (data: Tile[]) => {
     }
   }
 };
+watch(props.mapData, () => {
+  drawMap();
+  drawRobots();
+});
 
-const drawRobots = (robots: PublicRobot[]) => {
+const drawRobots = () => {
   if (robotCanvas.value && robotDrawContext.value) {
     const drawContext = robotDrawContext.value;
     console.info("Draw robots");
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in robots) {
-      const robot = robots[index];
-      console.debug(`Draw robot ${JSON.stringify(robot)}`);
+    for (const index in props.robotData) {
+      const robot = props.robotData[index];
+      // console.debug(`Draw robot ${JSON.stringify(robot)}`);
       drawContext.save();
       drawContext.translate(robot.position.x * (cellSize + 2 * cellBorder), robot.position.y * (cellSize + 2 * cellBorder));
       drawRobot(drawContext, robot.color);
@@ -97,6 +101,7 @@ const drawRobots = (robots: PublicRobot[]) => {
     }
   }
 };
+watch(props.robotData, drawRobots);
 
 const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.fillStyle = mapBorderColor.toHex();
