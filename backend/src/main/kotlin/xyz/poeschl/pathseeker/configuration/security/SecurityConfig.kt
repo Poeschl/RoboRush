@@ -34,6 +34,11 @@ class SecurityConfig(
         authorize("/swagger-ui/**", permitAll)
         authorize("/v3/api-docs/**", permitAll)
         authorize("/auth/**", permitAll)
+
+        // allow the map api and websockets for all users
+        authorize("/ws", permitAll)
+        authorize("/map/**", permitAll)
+
         authorize(anyRequest, authenticated)
       }
       sessionManagement {
