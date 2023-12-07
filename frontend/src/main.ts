@@ -15,7 +15,7 @@ const app = createApp(App);
 const runtimeConfigPlugin = RuntimeConfigurationPlugin;
 app.use(runtimeConfigPlugin);
 
-library.add(faRoute);
+library.add(faRoute, faUserPlus, faArrowRightToBracket);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);

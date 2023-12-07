@@ -20,16 +20,7 @@
           <router-link class="navbar-item" to="/rules">Rules</router-link>
         </div>
         <div class="navbar-end">
-          <div class="navbar-item">
-            <button class="button">
-              <span class="has-text-weight-semibold">Create a account</span>
-            </button>
-          </div>
-          <div class="navbar-item">
-            <button class="button is-primary">
-              <span>Login</span>
-            </button>
-          </div>
+          <NavbarUserComponent />
         </div>
       </div>
     </div>
@@ -37,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
+import NavbarUserComponent from "@/components/NavbarUserComponent.vue";
 
 const mobileNavOpen = ref<boolean>(false);
 const toggleMobileNav = () => {
@@ -46,9 +37,4 @@ const toggleMobileNav = () => {
 };
 </script>
 
-<style scoped lang="scss">
-.navbar-end .navbar-item {
-  padding-right: 0.25rem;
-  padding-left: 0.25rem;
-}
-</style>
+<style scoped lang="scss"></style>

@@ -7,15 +7,15 @@ There are 3 slots available for templating: `header`, `content` and `footer`.
 <template>
   <div class="modal is-active">
     <div class="modal-background" />
-    <div class="modal-content">
-      <div class="card">
-        <div class="card-header">
-          <slot name="header" />
-        </div>
+    <div class="modal-card">
+      <div class="modal-card-head">
+        <slot name="header" />
+      </div>
 
-        <div class="card-content form">
-          <slot name="content" />
-        </div>
+      <div class="modal-card-body">
+        <slot name="content" />
+      </div>
+      <div class="modal-card-foot is-justify-content-end">
         <slot name="footer" />
       </div>
     </div>
