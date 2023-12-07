@@ -36,7 +36,7 @@
       </form>
     </template>
     <template #footer>
-      <button class="button is-success" @click="$emit('login', loginRequest)" :class="{ 'is-loading': loading }">Save</button>
+      <button class="button is-success" @click="$emit('login', loginRequest)" :class="{ 'is-loading': loading }" :disabled="!valid">Login</button>
       <button class="button" @click="$emit('close')">Cancel</button>
     </template>
   </BaseModal>
@@ -46,9 +46,14 @@
 import BaseModal from "@/components/templates/BaseModal.vue";
 import TextInput from "@/components/form-components/TextInput.vue";
 import type { LoginRequest } from "@/models/User";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const loginRequest = ref<LoginRequest>({ username: "", password: "" });
+
+const valid = computed<boolean>(() => {
+  const request = loginRequest.value;
+  return request.username.length > 3 && request.password.length >= 8;
+});
 
 const props = defineProps<{
   loading: boolean;
