@@ -14,16 +14,20 @@
       </div>
 
       <div id="menuItems" class="navbar-menu" :class="{ 'is-active': mobileNavOpen }">
-        <div class="navbar-end">
+        <div class="navbar-start">
           <router-link class="navbar-item" to="/">Home</router-link>
           <router-link class="navbar-item" to="/howtoplay">How To Play</router-link>
           <router-link class="navbar-item" to="/rules">Rules</router-link>
+        </div>
+        <div class="navbar-end">
           <div class="navbar-item">
-            <button class="button new-user">
-              <span>Create your account</span>
-              <span class="icon">
-                <FontAwesomeIcon class="is-small" icon="fa-regular fa-user" />
-              </span>
+            <button class="button">
+              <span class="has-text-weight-semibold">Create a account</span>
+            </button>
+          </div>
+          <div class="navbar-item">
+            <button class="button is-primary">
+              <span>Login</span>
             </button>
           </div>
         </div>
@@ -43,7 +47,8 @@ const toggleMobileNav = () => {
 </script>
 
 <style scoped lang="scss">
-.button.new-user {
-  border-color: transparent;
+.navbar-end .navbar-item {
+  padding-right: 0.25rem;
+  padding-left: 0.25rem;
 }
 </style>

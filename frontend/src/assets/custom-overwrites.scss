@@ -1,3 +1,7 @@
-.is-absolute {
-  position: absolute !important;
+.navbar .button {
+  border-color: transparent;
+
+  &:hover {
+    border-color: initial;
+  }
 }
