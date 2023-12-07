@@ -20,6 +20,7 @@ class JwtTokenProvider {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(JwtTokenProvider::class.java)
     private val EXPIRE_RANGE = Duration.ofDays(1)
+    private const val ISSUER = "PathSeeker"
   }
 
   private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512)
@@ -32,6 +33,7 @@ class JwtTokenProvider {
       .setSubject(user.username)
       .setIssuedAt(Date.from(now.toInstant()))
       .setExpiration(Date.from(expiryDate.toInstant()))
+      .setIssuer(ISSUER)
       .signWith(key, SignatureAlgorithm.HS512)
       .compact()
   }
@@ -48,7 +50,14 @@ class JwtTokenProvider {
   fun validateToken(token: String?): Boolean {
     // Check if the token is valid and not expired
     try {
-      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+      val jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+
+      val issuer = jws.body.issuer
+      if (!issuer.equals(ISSUER)) {
+        LOGGER.error("Invalid Issuer. Detected issuer: $issuer")
+        return false
+      }
+
       return true
     } catch (ex: MalformedJwtException) {
       LOGGER.error("Invalid JWT token")
