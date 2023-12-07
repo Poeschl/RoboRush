@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import xyz.poeschl.pathseeker.repositories.entities.User
+import xyz.poeschl.pathseeker.repositories.User
 import java.security.Key
 import java.time.Duration
 import java.time.ZonedDateTime

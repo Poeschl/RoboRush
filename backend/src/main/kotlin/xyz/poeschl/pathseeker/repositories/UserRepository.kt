@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.repositories.entities
+package xyz.poeschl.pathseeker.repositories
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
