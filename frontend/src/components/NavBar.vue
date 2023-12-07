@@ -17,7 +17,6 @@
         <div class="navbar-start">
           <router-link class="navbar-item" to="/">Home</router-link>
           <router-link class="navbar-item" to="/howtoplay">How To Play</router-link>
-          <router-link class="navbar-item" to="/rules">Rules</router-link>
         </div>
         <div class="navbar-end">
           <NavbarUserComponent />
