@@ -3,12 +3,9 @@ import type { Ref } from "vue";
 import { computed, ref } from "vue";
 import type { PublicRobot } from "@/models/Robot";
 import MapService from "@/services/MapService";
-import RobotService from "@/services/RobotService";
 import type { Tile } from "@/models/Map";
-import { state } from "vue-tsc/out/shared";
 
 const mapService = new MapService();
-const robotService = new RobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
   // Needed workaround, since ref() don't detect updates on pure arrays.
@@ -32,8 +29,8 @@ export const useGameStore = defineStore("gameStore", () => {
   }
 
   function updateRobots() {
-    robotService
-      .getAllRobotStates()
+    mapService
+      .getRobots()
       .then((response: PublicRobot[]) => {
         // Clears whole array
         internalRobots.value.robots = [];
