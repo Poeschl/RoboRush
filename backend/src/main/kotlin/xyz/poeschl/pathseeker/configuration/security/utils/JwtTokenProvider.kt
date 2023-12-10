@@ -5,12 +5,12 @@ import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SecurityException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import xyz.poeschl.pathseeker.repositories.User
 import java.security.Key
-import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -19,20 +19,21 @@ class JwtTokenProvider {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(JwtTokenProvider::class.java)
-    private val EXPIRE_RANGE = Duration.ofDays(1)
     private const val ISSUER = "PathSeeker"
   }
 
+  @Value("\${AUTH_ISSUER:PathSeeker}")
+  private val jwtIssuer = "PathSeeker"
+
   private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512)
 
+  // Without expire right now!
   fun createToken(authentication: Authentication): String {
     val now = ZonedDateTime.now()
-    val expiryDate = now.plus(EXPIRE_RANGE)
     val user = authentication.principal as User
     return Jwts.builder()
       .setSubject(user.username)
       .setIssuedAt(Date.from(now.toInstant()))
-      .setExpiration(Date.from(expiryDate.toInstant()))
       .setIssuer(ISSUER)
       .signWith(key, SignatureAlgorithm.HS512)
       .compact()

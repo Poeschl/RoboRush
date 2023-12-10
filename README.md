@@ -12,6 +12,11 @@ For an easy setup, a docker-compose file is provided in the `deploy` folder.
 It is just a basic setup with traefik as reverse proxy on `http`.
 Depending on the environment a certificate for TLS is recommended.
 
+Additional environment variables:
+
+* `AUTH_ISSUER`: Set an explicit issuer string for the auth tokens.
+  This can be useful for parallel instances and should be set in production-like envs.
+
 ### Plausible tracking
 
 If configured the application can be monitored with [Plausible](https://plausible.io/).

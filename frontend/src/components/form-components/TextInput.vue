@@ -25,18 +25,16 @@ import { computed, ref } from "vue";
 const props = withDefaults(
   defineProps<{
     label: string;
-    placeholder: string;
+    placeholder?: string;
     value: any;
-    help: string;
-    maxLength: number;
-    isPassword: boolean;
-    autocomplete: string;
-    validate: (value: string) => boolean;
+    help?: string;
+    maxLength?: number;
+    isPassword?: boolean;
+    autocomplete?: string;
+    validate?: (value: string) => boolean;
   }>(),
   {
-    label: "",
     placeholder: "",
-    value: undefined,
     help: "",
     maxLength: undefined,
     isPassword: false,

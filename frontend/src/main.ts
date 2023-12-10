@@ -5,23 +5,24 @@ import router from "./router/main";
 import Plausible from "plausible-tracker";
 import { RuntimeConfigurationPlugin } from "./plugins/RuntimeConfigurationPlugin";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowRightToBracket, faRoute, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket, faArrowRightToBracket, faRoute, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 const app = createApp(App);
 
 const runtimeConfigPlugin = RuntimeConfigurationPlugin;
 app.use(runtimeConfigPlugin);
 
-library.add(faRoute, faUserPlus, faArrowRightToBracket);
+library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);
 
 // Use pinia for local state storing
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
 runtimeConfigPlugin.getConfig().then((runtimeConfig) => {

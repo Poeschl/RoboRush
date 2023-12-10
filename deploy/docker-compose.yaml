@@ -61,6 +61,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: superSecret
+      # Insert an instance specific string
+      #AUTH_ISSUER:
     labels:
       - traefik.enable=true
       - traefik.http.routers.brettbutler-backend.rule=PathPrefix(`/rest`)
