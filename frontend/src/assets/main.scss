@@ -12,6 +12,8 @@ $radius: 4px;
 $input-background-color: #3c4545;
 $input-color: $white-ter;
 
+$progress-bar-background-color: $grey-lighter;
+
 @import "../../node_modules/bulma/bulma";
 @import "darkly-overrides";
 @import "custom-overwrites";

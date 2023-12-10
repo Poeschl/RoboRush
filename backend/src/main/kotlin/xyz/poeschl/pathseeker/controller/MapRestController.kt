@@ -1,6 +1,5 @@
 package xyz.poeschl.pathseeker.controller
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,7 +12,6 @@ import xyz.poeschl.pathseeker.service.RobotService
 
 @RestController
 @RequestMapping("/map")
-@SecurityRequirement(name = "Bearer Authentication")
 class MapRestController(private val mapService: MapService, private val robotService: RobotService) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapRestController::class.java)
