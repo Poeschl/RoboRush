@@ -9,13 +9,14 @@ import { faArrowRightFromBracket, faArrowRightToBracket, faRoute, faUserPlus } f
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { faCopy, faUser } from "@fortawesome/free-regular-svg-icons";
 
 const app = createApp(App);
 
 const runtimeConfigPlugin = RuntimeConfigurationPlugin;
 app.use(runtimeConfigPlugin);
 
-library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket);
+library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket, faUser, faCopy);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);

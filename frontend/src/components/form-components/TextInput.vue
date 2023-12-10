@@ -4,6 +4,7 @@
     <div class="control">
       <input
         class="input"
+        :readonly="readonly"
         :type="props.isPassword ? 'password' : 'text'"
         :maxlength="props.maxLength"
         :placeholder="props.placeholder"
@@ -31,6 +32,7 @@ const props = withDefaults(
     maxLength?: number;
     isPassword?: boolean;
     autocomplete?: string;
+    readonly?: boolean;
     validate?: (value: string) => boolean;
   }>(),
   {
@@ -39,6 +41,7 @@ const props = withDefaults(
     maxLength: undefined,
     isPassword: false,
     autocomplete: undefined,
+    readonly: false,
     validate: () => true,
   },
 );

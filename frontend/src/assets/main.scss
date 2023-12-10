@@ -9,6 +9,9 @@ $link: lighten($primary, 20);
 $bulmaswatch-import-font: false;
 $radius: 4px;
 
+$input-background-color: #3c4545;
+$input-color: $white-ter;
+
 @import "../../node_modules/bulma/bulma";
 @import "darkly-overrides";
 @import "custom-overwrites";

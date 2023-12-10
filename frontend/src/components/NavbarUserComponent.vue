@@ -1,25 +1,25 @@
 <template>
-  <div class="navbar-item" v-if="!userStore.loggedIn">
+  <div class="navbar-item is-button" v-if="!userStore.loggedIn">
     <button class="button" @click="openRegister">
       <span class="has-text-weight-semibold">Create a account</span>
     </button>
   </div>
-  <div class="navbar-item" v-if="!userStore.loggedIn">
+  <div class="navbar-item is-button" v-if="!userStore.loggedIn">
     <button class="button is-primary" @click="openLogin">
       <span>Login</span>
     </button>
   </div>
-  <div class="navbar-item" v-if="userStore.loggedIn">
+  <a class="navbar-item" v-if="userStore.loggedIn" @click="() => (userDetailsShown = true)">
+    <FontAwesomeIcon icon="fa-regular fa-user" class="mr-2" />
     <span class="username">{{ userStore.username }}</span>
-  </div>
-  <div class="navbar-item" v-if="userStore.loggedIn">
-    <button class="button is-text" @click="logout" title="Logout">
-      <FontAwesomeIcon icon="fa-solid fa-arrow-right-from-bracket" />
-    </button>
-  </div>
+  </a>
+  <a class="navbar-item" v-if="userStore.loggedIn" title="Logout" @click="logout">
+    <FontAwesomeIcon icon="fa-solid fa-arrow-right-from-bracket" />
+  </a>
 
   <LoginForm v-if="loginIsShowing" :loading="loginLoading" @close="loginIsShowing = false" @login="loginUser" />
   <RegisterForm v-if="registerIsShowing" :loading="registerLoading" @close="registerIsShowing = false" @register="registerUser" />
+  <UserModal v-if="userDetailsShown" @close="() => (userDetailsShown = false)" />
   <Toast v-if="toast.shown" :type="toast.type" :message="toast.message" @close="() => (toast.shown = false)" />
 </template>
 
@@ -31,6 +31,7 @@ import RegisterForm from "@/components/RegisterForm.vue";
 import { useUserStore } from "@/stores/UserStore";
 import Toast from "@/components/Toast.vue";
 import { ToastType } from "@/models/ToastType";
+import UserModal from "@/components/UserModal.vue";
 
 const userStore = useUserStore();
 
@@ -39,6 +40,7 @@ const loginLoading = ref<boolean>(false);
 const registerIsShowing = ref<boolean>(false);
 const registerLoading = ref<boolean>(false);
 const toast = ref<{ shown: boolean; type: ToastType; message: string }>({ shown: false, type: ToastType.INFO, message: "" });
+const userDetailsShown = ref<boolean>(false);
 
 const openLogin = () => {
   loginLoading.value = false;
@@ -97,12 +99,8 @@ const logout = () => {
 </script>
 
 <style scoped>
-.navbar-item {
+.navbar-item.is-button {
   padding-right: 0.25rem;
   padding-left: 0.25rem;
-}
-
-.username {
-  cursor: default;
 }
 </style>
