@@ -6,9 +6,11 @@ import xyz.poeschl.pathseeker.models.Map
 import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.models.Size
 import xyz.poeschl.pathseeker.models.Tile
+import java.util.stream.IntStream
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.random.Random
+import kotlin.streams.toList
 
 @Service
 class MapService {
@@ -20,10 +22,17 @@ class MapService {
     private const val TILE_SCAN_COST = 0.15
   }
 
-  fun createNewMap(size: Size) {
-    LOGGER.info("Create new map ({}x{})", size.width, size.height)
+  fun createNewRandomMap(size: Size) {
+    LOGGER.info("Create new random map ({}x{})", size.width, size.height)
 
-    currentMap = Map(size, createRandomHeightMap(size))
+    val randomHeights = IntStream.range(0, size.width * size.height)
+      .map { Random.nextInt(0, 8) }.toList()
+    currentMap = Map(size, createHeightMap(size, randomHeights))
+  }
+
+  fun createNewPresetMap(size: Size, heights: List<Int>) {
+    LOGGER.info("Create static map with heights ${heights.joinToString(", ")}")
+    currentMap = Map(size, createHeightMap(size, heights))
   }
 
   fun debugMap(): String {
@@ -39,12 +48,18 @@ class MapService {
     return area
   }
 
-  private fun createRandomHeightMap(size: Size): Array<Array<Tile>> {
+  /***
+   * Creates a new map with the heights given as a list.
+   *
+   * @param size The map size
+   * @param heights The heights of the map as list. It continues horizontally.
+   */
+  private fun createHeightMap(size: Size, heights: List<Int>): Array<Array<Tile>> {
     val rows = mutableListOf<List<Tile>>()
     for (x in 0..<size.width) {
       val column = mutableListOf<Tile>()
       for (y in 0..<size.height) {
-        column.add(Tile(Position(x, y), Random.nextInt(0, 8)))
+        column.add(Tile(Position(x, y), heights[(y * size.width) + x]))
       }
       rows.add(column)
     }
@@ -74,7 +89,7 @@ class MapService {
    *
    * @return A pair of all tiles and the cost for the taken scan.
    */
-  fun getTilesInDistance(position: Position, distance: Int): Pair<MutableList<Tile>, Int> {
+  fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
     var usedFuel = 0.0
     val list = mutableListOf<Tile>()
     for (x in (position.x - distance)..position.x + distance) {
