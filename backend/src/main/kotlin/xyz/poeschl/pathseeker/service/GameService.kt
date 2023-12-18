@@ -13,7 +13,7 @@ class GameService(private val mapService: MapService, private val robotService: 
 
   fun startGame() {
     // Playfield init
-    mapService.createNewMap(Size(16, 8))
+    mapService.createNewRandomMap(Size(16, 8))
     var map: String = mapService.debugMap()
     LOGGER.debug("\nInitial map:\n{}", map)
 
