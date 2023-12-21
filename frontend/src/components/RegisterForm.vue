@@ -46,6 +46,7 @@
               return value.length >= 8 && value == registerRequest.password;
             }
           "
+          @keydown.enter="$emit('register', registerRequest)"
         />
       </form>
     </template>

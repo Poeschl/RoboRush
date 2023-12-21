@@ -32,6 +32,7 @@
               return value.length > 8;
             }
           "
+          @keydown.enter="$emit('login', loginRequest)"
         />
       </form>
     </template>
