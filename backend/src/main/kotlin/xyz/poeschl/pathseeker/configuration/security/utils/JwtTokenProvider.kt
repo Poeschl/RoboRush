@@ -27,6 +27,10 @@ class JwtTokenProvider {
 
   private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512)
 
+  init {
+    LOGGER.debug("Current JWT Key: ${Base64.getEncoder().encodeToString(key.encoded)}")
+  }
+
   // Without expire right now!
   fun createToken(authentication: Authentication): String {
     val now = ZonedDateTime.now()
@@ -35,7 +39,7 @@ class JwtTokenProvider {
       .setSubject(user.username)
       .setIssuedAt(Date.from(now.toInstant()))
       .setIssuer(ISSUER)
-      .signWith(key, SignatureAlgorithm.HS512)
+      .signWith(key)
       .compact()
   }
 
@@ -51,15 +55,17 @@ class JwtTokenProvider {
   fun validateToken(token: String?): Boolean {
     // Check if the token is valid and not expired
     try {
-      val jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-
-      val issuer = jws.body.issuer
-      if (!issuer.equals(ISSUER)) {
-        LOGGER.error("Invalid Issuer. Detected issuer: $issuer")
-        return false
-      }
+      val jws = Jwts.parserBuilder()
+        .setSigningKey(key)
+        .requireIssuer(ISSUER)
+        .build()
+        .parseClaimsJws(token)
 
       return true
+    } catch (ex: IncorrectClaimException) {
+      LOGGER.error("Invalid Issuer", ex)
+    } catch (ex: MissingClaimException) {
+      LOGGER.error("Not all required claims were found", ex)
     } catch (ex: MalformedJwtException) {
       LOGGER.error("Invalid JWT token")
     } catch (ex: ExpiredJwtException) {
@@ -69,7 +75,7 @@ class JwtTokenProvider {
     } catch (ex: IllegalArgumentException) {
       LOGGER.error("JWT claims string is empty")
     } catch (e: SecurityException) {
-      LOGGER.error("there is an error with the signature of you token ")
+      LOGGER.error("There is an error with the signature of you token ")
     }
     return false
   }
