@@ -26,8 +26,8 @@ if (userStore.loggedIn) {
 }
 watch(
   () => userStore.loggedIn,
-  (current, _, onCleanup) => {
-    if (current && !onCleanup) {
+  (current, previous, onCleanup) => {
+    if (current) {
       gameStore.updateUserRobot();
     }
   },

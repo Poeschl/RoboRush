@@ -52,7 +52,7 @@ export const useGameStore = defineStore("gameStore", () => {
     internalRobots.value.robots[index] = updatedRobot;
 
     const userStore = useUserStore();
-    if (userStore.loggedIn && updatedRobot.id == userRobot.value?.id) {
+    if (userStore.loggedIn) {
       updateUserRobot();
     }
   }

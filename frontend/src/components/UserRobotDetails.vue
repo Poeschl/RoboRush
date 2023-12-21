@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div v-if="userStore.loggedIn">
+    <div v-if="userStore.loggedIn && robot != undefined">
       <div class="level">
         <div class="level-left">
           <div class="level-item is-size-5">
@@ -55,7 +55,7 @@ import { useUserStore } from "@/stores/UserStore";
 
 const userStore = useUserStore();
 const gameStore = useGameStore();
-const robot = ref<Robot>(gameStore.userRobot);
+const robot = ref<Robot | undefined>(gameStore.userRobot);
 </script>
 
 <style scoped lang="scss">
