@@ -2,12 +2,17 @@
 
 $primary: #981515;
 
-$link: lighten($primary, 30);
+$link: lighten($primary, 20);
 
 @import "darkly-variables";
 
 $bulmaswatch-import-font: false;
 $radius: 4px;
+
+$input-background-color: #3c4545;
+$input-color: $white-ter;
+
+$progress-bar-background-color: $grey-lighter;
 
 @import "../../node_modules/bulma/bulma";
 @import "darkly-overrides";

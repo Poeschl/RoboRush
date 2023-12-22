@@ -14,18 +14,12 @@
       </div>
 
       <div id="menuItems" class="navbar-menu" :class="{ 'is-active': mobileNavOpen }">
-        <div class="navbar-end">
+        <div class="navbar-start">
           <router-link class="navbar-item" to="/">Home</router-link>
           <router-link class="navbar-item" to="/howtoplay">How To Play</router-link>
-          <router-link class="navbar-item" to="/rules">Rules</router-link>
-          <div class="navbar-item">
-            <button class="button new-user">
-              <span>Create your account</span>
-              <span class="icon">
-                <FontAwesomeIcon class="is-small" icon="fa-regular fa-user" />
-              </span>
-            </button>
-          </div>
+        </div>
+        <div class="navbar-end">
+          <NavbarUserComponent />
         </div>
       </div>
     </div>
@@ -33,8 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
+import NavbarUserComponent from "@/components/NavbarUserComponent.vue";
 
 const mobileNavOpen = ref<boolean>(false);
 const toggleMobileNav = () => {
@@ -42,8 +36,4 @@ const toggleMobileNav = () => {
 };
 </script>
 
-<style scoped lang="scss">
-.button.new-user {
-  border-color: transparent;
-}
-</style>
+<style scoped lang="scss"></style>

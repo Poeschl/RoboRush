@@ -1,7 +1,6 @@
 import { Client } from "@stomp/stompjs";
 import type { PublicRobot } from "@/models/Robot";
 import type { Store } from "pinia";
-import { useGameStore } from "@/stores/GameStore";
 import Color from "@/models/Color";
 
 export default class WebsocketService {
