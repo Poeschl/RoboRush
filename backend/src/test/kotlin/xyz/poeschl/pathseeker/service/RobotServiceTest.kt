@@ -9,7 +9,8 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.Mockito.*
 import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
-import xyz.poeschl.pathseeker.exceptions.MoveOutOfMapException
+import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
+import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
 import xyz.poeschl.pathseeker.models.*
 import java.util.stream.Stream
 
@@ -57,7 +58,7 @@ class RobotServiceTest {
     `when`(mapService.isPositionValid(expectedPosition)).thenReturn(false)
 
     // THEN
-    assertThrows<MoveOutOfMapException> {
+    assertThrows<PositionOutOfMapException> {
       robotService.move(robot, Direction.EAST)
     }
 
@@ -66,6 +67,29 @@ class RobotServiceTest {
     assertThat(robot.position).isEqualTo(oldPosition)
 
     verify(webSocketController, never()).sendRobotMoveUpdate(robot)
+  }
+
+  @Test
+  fun move_positionOccupied() {
+    // WHEN
+    val robot1Position = Position(0, 0)
+    val robot2Position = Position(1, 0)
+
+    `when`(mapService.isPositionValid(robot1Position)).thenReturn(true)
+    `when`(mapService.isPositionValid(robot2Position)).thenReturn(true)
+    val robot1 = robotService.createAndStoreRobot(100, robot1Position)
+    robotService.createAndStoreRobot(100, robot2Position)
+
+    // THEN
+    assertThrows<PositionNotAllowedException> {
+      robotService.move(robot1, Direction.EAST)
+    }
+
+    // VERIFY
+    assertThat(robot1.fuel).isEqualTo(100)
+    assertThat(robot1.position).isEqualTo(robot1Position)
+
+    verify(webSocketController, never()).sendRobotMoveUpdate(robot1)
   }
 
   @Test
