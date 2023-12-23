@@ -16,6 +16,8 @@ Additional environment variables:
 
 * `AUTH_ISSUER`: Set an explicit issuer string for the auth tokens.
   This can be useful for parallel instances and should be set in production-like envs.
+* `SPRING_PROFILES_ACTIVE`: Set this environment variable to `prod` to disable some dev features.
+  It will also hide the OpenApi Docs for all internal interfaces.
 
 ### Plausible tracking
 
