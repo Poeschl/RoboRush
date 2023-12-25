@@ -42,6 +42,7 @@ export default class WebsocketService {
 
     client.onWebSocketClose = () => {
       console.error("Websocket disconnected.");
+      // @ts-ignore Since the type injection with store is black magic
       this.systemStore.backendAvailable = false;
     };
 

@@ -22,12 +22,12 @@ export const useSystemStore = defineStore("systemStore", () => {
   }
 
   function startCyclicAvailabilityCheck() {
-    checkTimerId.value = setInterval(checkBackendAvailability, backendCheckIntervalMs);
+    checkTimerId.value = window.setInterval(checkBackendAvailability, backendCheckIntervalMs);
   }
 
   function stopCyclicAvailabilityCheck() {
     if (checkTimerId.value !== undefined) {
-      clearInterval(checkTimerId.value);
+      window.clearInterval(checkTimerId.value);
     }
   }
 
