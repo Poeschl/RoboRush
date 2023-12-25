@@ -1,5 +1,6 @@
 <template>
   <div class="box">
+    <div class="is-size-3 mb-3">Robots List</div>
     <div class="is-flex is-align-items-center" v-for="robot in gameStore.robots">
       <span class="color-dot mr-2" :style="{ 'background-color': robot.color.toHex() }"></span>
       <span>{{ robot.id }}</span>
