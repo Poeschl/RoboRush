@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import "./assets/main.scss";
 import App from "./App.vue";
-import router from "./router/main";
+import { router } from "./router/main";
 import Plausible from "plausible-tracker";
 import { RuntimeConfigurationPlugin } from "./plugins/RuntimeConfigurationPlugin";
 import { library } from "@fortawesome/fontawesome-svg-core";

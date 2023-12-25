@@ -33,6 +33,7 @@ class SecurityConfig(
       authorizeHttpRequests {
         authorize("/swagger-ui/**", permitAll)
         authorize("/v3/api-docs/**", permitAll)
+        authorize("/ping", permitAll)
         authorize("/auth/**", permitAll)
 
         // allow the map api and websockets for all users

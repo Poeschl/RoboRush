@@ -13,8 +13,12 @@ import { useGameStore } from "@/stores/GameStore";
 import WebsocketService from "@/services/WebsocketService";
 import { watch } from "vue";
 import { useUserStore } from "@/stores/UserStore";
+import { useSystemStore } from "@/stores/SystemStore";
+import { useRouter } from "vue-router";
 
 console.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
+
+const router = useRouter();
 
 const gameStore = useGameStore();
 gameStore.updateMap();
@@ -35,4 +39,14 @@ watch(
 
 //Start the websocket
 new WebsocketService(gameStore);
+
+const systemStore = useSystemStore();
+watch(
+  () => systemStore.backendAvailable,
+  (value, oldValue, onCleanup) => {
+    if (!value) {
+      router.push({ path: "/not-connected" });
+    }
+  },
+);
 </script>
