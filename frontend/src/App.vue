@@ -37,9 +37,6 @@ watch(
   },
 );
 
-//Start the websocket
-new WebsocketService(gameStore);
-
 const systemStore = useSystemStore();
 watch(
   () => systemStore.backendAvailable,
@@ -49,4 +46,7 @@ watch(
     }
   },
 );
+
+//Start the websocket
+new WebsocketService(gameStore, systemStore);
 </script>
