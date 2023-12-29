@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.service
+package xyz.poeschl.pathseeker.gamelogic.internal
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -11,7 +11,7 @@ import xyz.poeschl.pathseeker.models.Tile
 import java.util.stream.Stream
 import kotlin.math.ceil
 
-class MapServiceTest {
+class MapHandlerTest {
 
   companion object {
     @JvmStatic
@@ -27,16 +27,16 @@ class MapServiceTest {
     )
   }
 
-  private val mapService = MapService()
+  private val mapHandler = MapHandler()
 
   @ParameterizedTest
   @MethodSource("positionSource")
   fun isPositionValid(position: Position, isValid: Boolean) {
     // WHEN
-    mapService.createNewRandomMap(Size(2, 2))
+    mapHandler.createNewRandomMap(Size(2, 2))
 
     // THEN
-    val valid = mapService.isPositionValid(position)
+    val valid = mapHandler.isPositionValid(position)
 
     // VERIFY
     assertThat(valid).isEqualTo(isValid)
@@ -48,13 +48,13 @@ class MapServiceTest {
     // Map:
     // 1 2
     // 3 4
-    mapService.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4))
+    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
 
     // THEN
-    val tile1 = mapService.getTileAtPosition(Position(0, 0))
-    val tile2 = mapService.getTileAtPosition(Position(1, 0))
-    val tile3 = mapService.getTileAtPosition(Position(0, 1))
-    val tile4 = mapService.getTileAtPosition(Position(1, 1))
+    val tile1 = mapHandler.getTileAtPosition(Position(0, 0))
+    val tile2 = mapHandler.getTileAtPosition(Position(1, 0))
+    val tile3 = mapHandler.getTileAtPosition(Position(0, 1))
+    val tile4 = mapHandler.getTileAtPosition(Position(1, 1))
 
     // VERIFY
     assertThat(tile1).isEqualTo(Tile(Position(0, 0), 1))
@@ -69,10 +69,10 @@ class MapServiceTest {
     // Map:
     // 1 2
     // 3 4
-    mapService.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4))
+    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
 
     // THEN
-    val fuel = mapService.getFuelCost(Position(0, 0), Position(0, 1))
+    val fuel = mapHandler.getFuelCost(Position(0, 0), Position(0, 1))
 
     // VERIFY
     assertThat(fuel).isEqualTo(3) // (3-1) + 1
@@ -84,10 +84,10 @@ class MapServiceTest {
     // 1 2 3
     // 4 5 6
     // 7 8 9
-    mapService.createNewPresetMap(Size(3, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9))
+    mapHandler.createNewPresetMap(Size(3, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9), Position(0, 0))
 
     // THEN
-    val scans = mapService.getTilesInDistance(Position(1, 1), 1)
+    val scans = mapHandler.getTilesInDistance(Position(1, 1), 1)
 
     // VERIFY
     assertThat(scans.first).contains(
@@ -107,10 +107,10 @@ class MapServiceTest {
     // 1 2 3
     // 4 5 6
     // 7 8 9
-    mapService.createNewRandomMap(Size(7, 7))
+    mapHandler.createNewRandomMap(Size(7, 7))
 
     // THEN
-    val scans = mapService.getTilesInDistance(Position(2, 2), 2)
+    val scans = mapHandler.getTilesInDistance(Position(2, 2), 2)
 
     // VERIFY
     // Calculation is roundUp ((5 * 5) * 0,15)

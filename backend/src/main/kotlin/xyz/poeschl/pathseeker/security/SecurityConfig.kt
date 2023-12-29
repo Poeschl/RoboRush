@@ -39,6 +39,7 @@ class SecurityConfig(
         // allow the map api and websockets for all users
         authorize("/ws", permitAll)
         authorize("/map/**", permitAll)
+        authorize("/robot/all", permitAll)
 
         authorize(anyRequest, authenticated)
       }

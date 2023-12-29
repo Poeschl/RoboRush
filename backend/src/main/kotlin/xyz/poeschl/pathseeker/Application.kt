@@ -4,13 +4,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.boot.runApplication
 import org.springframework.context.event.EventListener
-import xyz.poeschl.pathseeker.service.GameService
+import org.springframework.scheduling.annotation.EnableScheduling
+import xyz.poeschl.pathseeker.gamelogic.GameLoop
 
 @SpringBootApplication
-class Application(private val gameService: GameService) {
+@EnableScheduling
+class Application(private val gameLoop: GameLoop) {
   @EventListener(ApplicationReadyEvent::class)
   fun afterStart() {
-    gameService.startGame()
+    gameLoop.startGame()
   }
 }
 

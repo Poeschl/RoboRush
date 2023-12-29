@@ -6,8 +6,10 @@ import MapService from "@/services/MapService";
 import type { Tile } from "@/models/Map";
 import Color from "@/models/Color";
 import { useUserStore } from "@/stores/UserStore";
+import RobotService from "@/services/RobotService";
 
 const mapService = new MapService();
+const robotService = new RobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
   // Needed workaround, since ref() don't detect updates on pure arrays.
@@ -34,7 +36,7 @@ export const useGameStore = defineStore("gameStore", () => {
   }
 
   function updateRobots() {
-    mapService
+    robotService
       .getRobots()
       .then((response: PublicRobot[]) => {
         // Clears whole array
