@@ -7,7 +7,7 @@ import xyz.poeschl.pathseeker.models.PublicRobot
 
 @Controller
 class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
-  fun sendRobotMoveUpdate(robot: ActiveRobot) {
+  fun sendRobotUpdate(robot: ActiveRobot) {
     val publicRobot = PublicRobot(robot.id, robot.color, robot.position)
     messageTemplate.convertAndSend("/topic/robots", publicRobot)
   }

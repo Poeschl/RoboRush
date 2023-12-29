@@ -2,8 +2,8 @@ package xyz.poeschl.pathseeker.service
 
 import org.springframework.stereotype.Service
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.gamelogic.actions.Move
-import xyz.poeschl.pathseeker.gamelogic.actions.Scan
+import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
+import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.PublicRobot
@@ -20,10 +20,10 @@ class RobotService(private val gameHandler: GameHandler) {
   }
 
   fun scheduleScan(robotId: Long, distance: Int) {
-    return gameHandler.nextActionForRobot(robotId, Scan(distance))
+    return gameHandler.nextActionForRobot(robotId, ScanAction(distance))
   }
 
   fun scheduleMove(robotId: Long, direction: Direction) {
-    return gameHandler.nextActionForRobot(robotId, Move(direction))
+    return gameHandler.nextActionForRobot(robotId, MoveAction(direction))
   }
 }

@@ -2,7 +2,7 @@ package xyz.poeschl.pathseeker.gamelogic
 
 import org.springframework.scheduling.annotation.Scheduled
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import xyz.poeschl.pathseeker.gamelogic.actions.Move
+import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.repositories.RobotRepository
@@ -28,10 +28,10 @@ class DummyBots(
       val activeRobot1 = gameHandler.getActiveRobot(robot1.id!!)!!
       val activeRobot2 = gameHandler.getActiveRobot(robot2.id!!)!!
       if (activeRobot1.nextAction == null) {
-        gameHandler.nextActionForRobot(activeRobot1.id, Move(Direction.entries.random()))
+        gameHandler.nextActionForRobot(activeRobot1.id, MoveAction(Direction.entries.random()))
       }
       if (activeRobot2.nextAction == null) {
-        gameHandler.nextActionForRobot(activeRobot2.id, Move(Direction.entries.random()))
+        gameHandler.nextActionForRobot(activeRobot2.id, MoveAction(Direction.entries.random()))
       }
     }
   }

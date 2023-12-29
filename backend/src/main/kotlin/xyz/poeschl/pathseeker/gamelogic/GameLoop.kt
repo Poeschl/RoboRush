@@ -2,15 +2,11 @@ package xyz.poeschl.pathseeker.gamelogic
 
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
-import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
-import xyz.poeschl.pathseeker.models.Size
 import java.time.Duration
 
 @GameLogic
 class GameLoop(
-  private val mapHandler: MapHandler,
-  private val robotHandler: RobotHandler,
+  private val gameHandler: GameHandler,
   private val gameStateService: GameStatemachine
 ) {
   companion object {
@@ -21,8 +17,7 @@ class GameLoop(
 
   fun startGame() {
     // Init play field and clear participants
-    mapHandler.createNewRandomMap(Size(16, 8))
-    robotHandler.clearActiveRobots()
+    gameHandler.prepareNewGame()
     gameStateService.setGameState(GameState.PREPARE)
 
     // Wait for robots to participate
@@ -39,7 +34,7 @@ class GameLoop(
       } else if (gameStateService.isInState(GameState.ACTION)) {
         // Game is execution all robot actions
         LOGGER.debug("Execute robot actions")
-        robotHandler.executeRobotMoves()
+        gameHandler.executeAllRobotMoves()
         gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
 
         // TODO: The goal check goes here
