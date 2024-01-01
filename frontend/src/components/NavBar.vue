@@ -16,7 +16,7 @@
       <div id="menuItems" class="navbar-menu" :class="{ 'is-active': mobileNavOpen }">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/">Home</router-link>
-          <router-link class="navbar-item" to="/howtoplay">How To Play</router-link>
+          <router-link class="navbar-item" to="/how-to-play">How To Play</router-link>
         </div>
         <div class="navbar-end">
           <NavbarUserComponent />

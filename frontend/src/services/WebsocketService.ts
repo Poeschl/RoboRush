@@ -7,9 +7,11 @@ export default class WebsocketService {
   private websocketBrokerUrl = "ws://localhost:8888/api/ws";
   private robotUpdateTopic = "/topic/robots";
   private gameStore: Store;
+  private systemStore: Store;
 
-  constructor(gameStore: Store) {
+  constructor(gameStore: Store, systemStore: Store) {
     this.gameStore = gameStore;
+    this.systemStore = systemStore;
     this.initWebsocket();
   }
 
@@ -36,6 +38,12 @@ export default class WebsocketService {
         // @ts-ignore
         this.gameStore.updateRobot(publicRobot);
       });
+    };
+
+    client.onWebSocketClose = () => {
+      console.error("Websocket disconnected.");
+      // @ts-ignore Since the type injection with store is black magic
+      this.systemStore.backendAvailable = false;
     };
 
     client.activate();
