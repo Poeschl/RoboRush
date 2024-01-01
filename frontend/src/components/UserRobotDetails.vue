@@ -1,5 +1,6 @@
 <template>
   <div class="box">
+    <div class="is-size-3 mb-3">Robot Details</div>
     <div v-if="userStore.loggedIn && robot != undefined">
       <div class="level">
         <div class="level-left">

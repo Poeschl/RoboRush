@@ -3,12 +3,10 @@
     <FullMapCanvas :robot-data="robots" :map-data="heightMap" />
   </div>
   <div class="columns is-fullwidth is-justify-content-center data-columns">
-    <div class="column has-text-centered">
-      <div class="is-size-3">Robots List</div>
+    <div class="column">
       <RobotsList />
     </div>
-    <div class="column has-text-centered">
-      <div class="is-size-3">Robot Details</div>
+    <div class="column">
       <UserRobotDetails />
     </div>
   </div>
