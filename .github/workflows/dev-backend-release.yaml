@@ -22,7 +22,7 @@ jobs:
         run: ./gradlew --stacktrace backend:jar backend:bootJar
 
       - name: 🗄️ Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend
           path: backend/build/libs/*.jar
@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🗄️ Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: backend
           path: backend/build/libs/
