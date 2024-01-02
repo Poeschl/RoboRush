@@ -1,10 +1,10 @@
 plugins {
-  id 'org.springframework.boot' version '3.2.0'
+  id 'org.springframework.boot' version '3.2.1'
   id 'io.spring.dependency-management' version '1.1.4'
-  id 'org.jetbrains.kotlin.jvm' version '1.9.21'
-  id 'org.jetbrains.kotlin.plugin.spring' version '1.9.21'
-  id 'org.jetbrains.kotlin.plugin.noarg' version "1.9.21"
-  id 'org.jetbrains.kotlin.kapt' version "1.9.21"
+  id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+  id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
+  id 'org.jetbrains.kotlin.plugin.noarg' version "1.9.22"
+  id 'org.jetbrains.kotlin.kapt' version "1.9.22"
 }
 
 group = 'xyz.poeschl.pathseeker'
@@ -26,13 +26,13 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-websocket'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
   implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
   implementation 'org.mapstruct:mapstruct:1.5.5.Final'
   implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-  implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-  implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+  implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+  implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+  implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
   implementation 'org.postgresql:postgresql'
 
 
