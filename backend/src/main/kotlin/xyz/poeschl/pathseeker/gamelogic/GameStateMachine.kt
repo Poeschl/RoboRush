@@ -5,10 +5,10 @@ import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
 
 @GameLogic
-class GameStatemachine {
+class GameStateMachine {
 
   companion object {
-    private val LOGGER = LoggerFactory.getLogger(GameStatemachine::class.java)
+    private val LOGGER = LoggerFactory.getLogger(GameStateMachine::class.java)
   }
 
   private var currentGameState = GameState.ENDED

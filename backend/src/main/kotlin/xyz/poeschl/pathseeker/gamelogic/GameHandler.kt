@@ -30,11 +30,11 @@ class GameHandler(
    * @see PositionNotAllowedException
    * @see PositionOutOfMapException
    */
-  fun isPositionValidForMove(position: Position) {
+  fun checkIfPositionIsValidForMove(position: Position) {
     if (!mapHandler.isPositionValid(position)) {
       throw PositionOutOfMapException("Position $position is not in map bounds.")
     }
-    if (robotHandler.isPositionOccupied(position)) {
+    if (!robotHandler.isPositionFreeAfterActions(position)) {
       throw PositionNotAllowedException("Position $position is already occupied.")
     }
   }
@@ -51,7 +51,7 @@ class GameHandler(
     return mapHandler.getFuelCost(current, next)
   }
 
-  fun getActiveRobots(): List<ActiveRobot> {
+  fun getActiveRobots(): Set<ActiveRobot> {
     return robotHandler.getAllActiveRobots()
   }
 
@@ -60,16 +60,16 @@ class GameHandler(
   }
 
   fun nextActionForRobot(robotId: Long, action: RobotAction<*>) {
-    return robotHandler.setNextMove(robotId, this, action)
+    robotHandler.setNextMove(robotId, this, action)
   }
 
   fun executeAllRobotMoves() {
-    robotHandler.executeRobotMoves(this)
+    robotHandler.executeRobotActions(this)
   }
 
   fun registerRobotForNextGame(robotId: Long) {
     val startPositions = mapHandler.getStartPositions()
-    val startPosition = robotHandler.getFirstNotOccupiedPosition(startPositions)
+    val startPosition = robotHandler.getFirstCurrentlyFreePosition(startPositions)
 
     if (startPosition != null) {
       robotHandler.registerRobotForGame(robotId, startPosition)

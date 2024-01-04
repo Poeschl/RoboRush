@@ -40,6 +40,11 @@ Have a [Java 17 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&versi
 Make sure you have [podman](https://podman.io/docs/installation) and [podman-compose](https://github.com/containers/podman-compose)
 (or docker and docker-compose) installed on your system, since the dev environment runs on a container-based reverse proxy.
 
+For the database test testcontainers is used. So make sure you make the podman socket available.
+([See here for more](https://podman-desktop.io/docs/migrating-from-docker/using-the-docker_host-environment-variable))
+As a second step the used builder `ryuk` needs to be disabled, since it doesn't play well with podman right now.
+For this set the environment variable `TESTCONTAINERS_RYUK_DISABLED` to `true`.
+
 ### Set up
 
 For development there is a little script in the project root named `start_dev_env.(sh|bat)` (according to your OS).

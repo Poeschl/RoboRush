@@ -6,13 +6,16 @@ import org.springframework.boot.runApplication
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.EnableScheduling
 import xyz.poeschl.pathseeker.gamelogic.GameLoop
+import kotlin.concurrent.thread
 
 @SpringBootApplication
 @EnableScheduling
 class Application(private val gameLoop: GameLoop) {
   @EventListener(ApplicationReadyEvent::class)
   fun afterStart() {
-    gameLoop.startGame()
+    thread(start = true, isDaemon = true) {
+      gameLoop.startGame()
+    }
   }
 }
 

@@ -12,7 +12,9 @@ import xyz.poeschl.pathseeker.models.PublicRobot
 class RobotService(private val gameHandler: GameHandler) {
 
   fun getActiveRobots(): List<PublicRobot> {
-    return gameHandler.getActiveRobots().map { PublicRobot(it.id, it.color, it.position) }
+    return gameHandler.getActiveRobots()
+      .map { PublicRobot(it.id, it.color, it.position) }
+      .sortedBy(PublicRobot::id)
   }
 
   fun getActiveRobot(robotId: Long): ActiveRobot? {

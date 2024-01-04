@@ -7,7 +7,7 @@ import java.time.Duration
 @GameLogic
 class GameLoop(
   private val gameHandler: GameHandler,
-  private val gameStateService: GameStatemachine
+  private val gameStateService: GameStateMachine
 ) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)

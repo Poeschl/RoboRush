@@ -5,7 +5,8 @@ import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.GameState
-import xyz.poeschl.pathseeker.gamelogic.GameStatemachine
+import xyz.poeschl.pathseeker.gamelogic.GameStateMachine
+import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.RobotAction
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.repositories.Robot
@@ -14,14 +15,15 @@ import xyz.poeschl.pathseeker.repositories.RobotRepository
 @GameLogic
 class RobotHandler(
   private val robotRepository: RobotRepository,
-  private val gameStateService: GameStatemachine
+  private val gameStateService: GameStateMachine
 ) {
+
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotHandler::class.java)
     private const val DEFAULT_FUEL = 100
   }
 
-  private val activeRobots = mutableListOf<ActiveRobot>()
+  private val activeRobots = mutableSetOf<ActiveRobot>()
 
   fun createRobot(): Robot {
     return robotRepository.save(Robot(null, Color.randomColor()))
@@ -35,10 +37,13 @@ class RobotHandler(
     if (activeRobots.none { it.id == robotId }) {
       val robot = robotRepository.findById(robotId)
       robot.ifPresent {
-        isPositionOccupied(startPosition)
-        val activeRobot = ActiveRobot(it.id!!, it.color, DEFAULT_FUEL, startPosition)
-        activeRobots.add(activeRobot)
-        LOGGER.info("Registered robot {}", robotId)
+        if (isPositionCurrentFree(startPosition)) {
+          val activeRobot = ActiveRobot(it.id!!, it.color, DEFAULT_FUEL, startPosition)
+          activeRobots.add(activeRobot)
+          LOGGER.info("Registered robot {}", robotId)
+        } else {
+          LOGGER.error("Could not register robot {}, its start position is occupied", robotId)
+        }
       }
     }
   }
@@ -51,7 +56,7 @@ class RobotHandler(
     if (!gameStateService.isInState(GameState.WAIT_FOR_ACTION)) {
       throw InvalidGameStateException("Sending the next robot move is only allowed during 'Waiting for action' stage!")
     }
-    activeRobots.first { it.id == robotId }.let { robot ->
+    activeRobots.firstOrNull { it.id == robotId }?.let { robot ->
       // If all checks are successful, the action will be saved
       nextAction.check(robot, gameHandler)
       robot.nextAction = nextAction
@@ -59,7 +64,7 @@ class RobotHandler(
     }
   }
 
-  fun executeRobotMoves(gameHandler: GameHandler) {
+  fun executeRobotActions(gameHandler: GameHandler) {
     if (!gameStateService.isInState(GameState.ACTION)) {
       throw InvalidGameStateException("Actions are only allowed to be executed during 'Action' stage")
     }
@@ -75,19 +80,34 @@ class RobotHandler(
   }
 
   fun getActiveRobot(robotId: Long): ActiveRobot? {
-    return activeRobots.first { it.id == robotId }
+    return activeRobots.firstOrNull { it.id == robotId }
   }
 
-  fun getAllActiveRobots(): List<ActiveRobot> {
-    return activeRobots.toList()
+  fun getAllActiveRobots(): Set<ActiveRobot> {
+    return activeRobots.toSet()
   }
 
-  fun getFirstNotOccupiedPosition(positions: List<Position>): Position? {
+  fun getFirstCurrentlyFreePosition(positions: List<Position>): Position? {
     val occupiedPositions = activeRobots.map { it.position }
-    return positions.first { !occupiedPositions.contains(it) }
+    return positions.firstOrNull { !occupiedPositions.contains(it) }
   }
 
-  fun isPositionOccupied(position: Position): Boolean {
-    return getAllActiveRobots().any { robot -> robot.position == position }
+  fun isPositionCurrentFree(position: Position): Boolean {
+    return activeRobots.none { robot -> robot.position == position }
+  }
+
+  fun isPositionFreeAfterActions(position: Position): Boolean {
+    val movingRobots = activeRobots.filter { it.nextAction is MoveAction }
+    val nonMovingRobots = activeRobots.filter { !movingRobots.contains(it) }
+
+    val positionsAfterNextActions = mutableSetOf<Position>()
+    movingRobots
+      .map { (it.nextAction as MoveAction).getResultPosition(it.position) }
+      .forEach { positionsAfterNextActions.add(it) }
+    nonMovingRobots
+      .map { it.position }
+      .forEach { positionsAfterNextActions.add(it) }
+
+    return positionsAfterNextActions.none { it == position }
   }
 }

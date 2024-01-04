@@ -13,7 +13,7 @@ class DummyBots(
   robotRepository: RobotRepository,
   robotHandler: RobotHandler,
   private val gameHandler: GameHandler,
-  private val gameStateService: GameStatemachine
+  private val gameStateService: GameStateMachine
 ) {
 
   private val robot1 = robotRepository.findById(1L).orElseGet { robotHandler.createRobot() }

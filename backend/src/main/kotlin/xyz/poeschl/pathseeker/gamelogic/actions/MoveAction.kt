@@ -13,18 +13,13 @@ class MoveAction(private val direction: Direction) : RobotAction<Position> {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotHandler::class.java)
   }
+
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
     val currentPosition = robot.position
-    val newPosition =
-      when (direction) {
-        Direction.EAST -> currentPosition.eastPosition()
-        Direction.WEST -> currentPosition.westPosition()
-        Direction.NORTH -> currentPosition.northPosition()
-        Direction.SOUTH -> currentPosition.southPosition()
-      }
+    val newPosition = getResultPosition(currentPosition)
 
     LOGGER.debug("Check {} -> {}", currentPosition, newPosition)
-    gameHandler.isPositionValidForMove(newPosition)
+    gameHandler.checkIfPositionIsValidForMove(newPosition)
 
     val fuelCost = gameHandler.getFuelCostForMove(currentPosition, newPosition)
     if (fuelCost > robot.fuel) {
@@ -34,13 +29,7 @@ class MoveAction(private val direction: Direction) : RobotAction<Position> {
 
   override fun action(robot: ActiveRobot, gameHandler: GameHandler): Position {
     val currentPosition = robot.position
-    val newPosition =
-      when (direction) {
-        Direction.EAST -> currentPosition.eastPosition()
-        Direction.WEST -> currentPosition.westPosition()
-        Direction.NORTH -> currentPosition.northPosition()
-        Direction.SOUTH -> currentPosition.southPosition()
-      }
+    val newPosition = getResultPosition(currentPosition)
     LOGGER.debug("{} -> {}", currentPosition, newPosition)
 
     val fuelCost = gameHandler.getFuelCostForMove(currentPosition, newPosition)
@@ -51,6 +40,13 @@ class MoveAction(private val direction: Direction) : RobotAction<Position> {
     gameHandler.sendRobotUpdate(robot)
 
     return newPosition
+  }
+
+  fun getResultPosition(currentPosition: Position) = when (direction) {
+    Direction.EAST -> currentPosition.eastPosition()
+    Direction.WEST -> currentPosition.westPosition()
+    Direction.NORTH -> currentPosition.northPosition()
+    Direction.SOUTH -> currentPosition.southPosition()
   }
 
   override fun toString(): String {

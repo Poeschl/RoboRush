@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
 import java.util.stream.Stream
 
-class GameStatemachineTest {
+class GameStateMachineTest {
 
   companion object {
     @JvmStatic
@@ -35,7 +35,7 @@ class GameStatemachineTest {
     )
   }
 
-  private val gameStateService = GameStatemachine()
+  private val gameStateService = GameStateMachine()
 
   @ParameterizedTest
   @MethodSource("stateTestArgs")
