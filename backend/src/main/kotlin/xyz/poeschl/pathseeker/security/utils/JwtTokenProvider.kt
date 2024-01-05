@@ -1,7 +1,6 @@
 package xyz.poeschl.pathseeker.security.utils
 
 import io.jsonwebtoken.*
-import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SecurityException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
@@ -10,22 +9,21 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import xyz.poeschl.pathseeker.repositories.User
-import java.security.Key
 import java.time.ZonedDateTime
 import java.util.*
+import javax.crypto.SecretKey
 
 @Component
 class JwtTokenProvider {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(JwtTokenProvider::class.java)
-    private const val ISSUER = "PathSeeker"
   }
 
   @Value("\${AUTH_ISSUER:PathSeeker}")
   private val jwtIssuer = "PathSeeker"
 
-  private val key: Key = Keys.secretKeyFor(SignatureAlgorithm.HS512)
+  private val key: SecretKey = Jwts.SIG.HS512.key().build()
 
   init {
     LOGGER.debug("Current JWT Key: ${Base64.getEncoder().encodeToString(key.encoded)}")
@@ -36,9 +34,9 @@ class JwtTokenProvider {
     val now = ZonedDateTime.now()
     val user = authentication.principal as User
     return Jwts.builder()
-      .setSubject(user.username)
-      .setIssuedAt(Date.from(now.toInstant()))
-      .setIssuer(ISSUER)
+      .subject(user.username)
+      .issuedAt(Date.from(now.toInstant()))
+      .issuer(jwtIssuer)
       .signWith(key)
       .compact()
   }
@@ -55,11 +53,11 @@ class JwtTokenProvider {
   fun validateToken(token: String?): Boolean {
     // Check if the token is valid and not expired
     try {
-      val jws = Jwts.parserBuilder()
-        .setSigningKey(key)
-        .requireIssuer(ISSUER)
+      val jws = Jwts.parser()
+        .verifyWith(key)
+        .requireIssuer(jwtIssuer)
         .build()
-        .parseClaimsJws(token)
+        .parseSignedClaims(token)
 
       return true
     } catch (ex: IncorrectClaimException) {
@@ -82,9 +80,10 @@ class JwtTokenProvider {
 
   fun getUsername(token: String?): String {
     // Extract the username from the JWT token
-    return Jwts.parserBuilder().setSigningKey(key).build()
-      .parseClaimsJws(token)
-      .body
+    return Jwts.parser()
+      .verifyWith(key).build()
+      .parseSignedClaims(token)
+      .payload
       .subject
   }
 }
