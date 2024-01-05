@@ -30,6 +30,7 @@ jobs:
         with:
           name: frontend
           path: frontend/dist/*
+          retention-days: 1
 
   image:
     name: Build Docker image

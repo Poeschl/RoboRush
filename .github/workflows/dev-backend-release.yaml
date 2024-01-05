@@ -26,6 +26,7 @@ jobs:
         with:
           name: backend
           path: backend/build/libs/*.jar
+          retention-days: 1
 
   image:
     name: Build Docker image
