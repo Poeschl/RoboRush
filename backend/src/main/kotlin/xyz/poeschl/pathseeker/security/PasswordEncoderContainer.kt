@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security
+package xyz.poeschl.pathseeker.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

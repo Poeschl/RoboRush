@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security
+package xyz.poeschl.pathseeker.security
 
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration

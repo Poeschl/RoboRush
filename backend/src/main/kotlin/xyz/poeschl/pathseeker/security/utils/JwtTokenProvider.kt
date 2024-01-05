@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security.utils
+package xyz.poeschl.pathseeker.security.utils
 
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
