@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security
+package xyz.poeschl.pathseeker.security
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import xyz.poeschl.pathseeker.configuration.security.utils.JwtTokenProvider
+import xyz.poeschl.pathseeker.security.utils.JwtTokenProvider
 
 @Component
 class JwtTokenFilter(private val jwtTokenProvider: JwtTokenProvider, private val userDetailsService: UserDetailsService) : OncePerRequestFilter() {

@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security
+package xyz.poeschl.pathseeker.security
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.security.SecurityScheme

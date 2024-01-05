@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security.restcontroller
+package xyz.poeschl.pathseeker.security.restcontroller
 
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
@@ -10,8 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
-import xyz.poeschl.pathseeker.configuration.security.UserDetailsService
-import xyz.poeschl.pathseeker.configuration.security.utils.JwtTokenProvider
+import xyz.poeschl.pathseeker.security.UserDetailsService
+import xyz.poeschl.pathseeker.security.utils.JwtTokenProvider
 
 @RestController
 @RequestMapping("/auth")

@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.configuration.security.restcontroller
+package xyz.poeschl.pathseeker.security.restcontroller
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
