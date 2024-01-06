@@ -373,7 +373,7 @@ class RobotHandlerTest {
 
     // VERIFY
     // should be occupied since stayrobot stands there
-    assertThat(isFree).isFalse
+    assertThat(isFree).isFalse()
   }
 
   @Test

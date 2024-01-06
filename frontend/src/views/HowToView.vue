@@ -34,8 +34,8 @@
         <div class="mb-2">
           A robot can be instructed via a REST interface, which require your API access token. For a overview of the available commands and how the
           authentication works in detail, we provide a
-          <a href="/api/swagger-ui?urls.primaryName=robot" target="_blank"> OpenApi Spec for the robot </a>. To see example requests, please enter you api token
-          in the top "Authorize" button dialog and execute some requests with the "Try it out" button.
+          <a href="/api/swagger-ui?urls.primaryName=public" target="_blank"> OpenApi Spec for the robot </a>. To see example requests, please enter you api
+          token in the top "Authorize" button dialog and execute some requests with the "Try it out" button.
         </div>
         <div class="is-size-5">Move Action</div>
         <div class="mb-2">
