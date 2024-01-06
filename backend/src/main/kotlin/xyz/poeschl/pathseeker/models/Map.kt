@@ -2,7 +2,7 @@ package xyz.poeschl.pathseeker.models
 
 import kotlin.math.abs
 
-data class Map(val size: Size, val heightMap: Array<Array<Tile>>) {
+data class Map(val size: Size, val mapData: Array<Array<Tile>>, val possibleStartPositions: List<Position>) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false
@@ -10,17 +10,21 @@ data class Map(val size: Size, val heightMap: Array<Array<Tile>>) {
     other as Map
 
     if (size != other.size) return false
-    if (!heightMap.contentDeepEquals(other.heightMap)) return false
+    if (!mapData.contentDeepEquals(other.mapData)) return false
+    if (possibleStartPositions != other.possibleStartPositions) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = size.hashCode()
-    result = 31 * result + heightMap.contentDeepHashCode()
+    result = 31 * result + mapData.contentDeepHashCode()
+    result = 31 * result + possibleStartPositions.hashCode()
     return result
   }
 }
+
+data class Tile(val position: Position, val height: Int = 0)
 
 data class Position(val x: Int, val y: Int) {
   fun eastPosition(): Position {

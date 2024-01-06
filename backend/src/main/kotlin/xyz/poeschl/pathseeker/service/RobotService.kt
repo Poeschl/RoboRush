@@ -1,98 +1,31 @@
 package xyz.poeschl.pathseeker.service
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import xyz.poeschl.pathseeker.controller.WebsocketController
-import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
-import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
-import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
-import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.gamelogic.GameHandler
+import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
+import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
+import xyz.poeschl.pathseeker.models.ActiveRobot
+import xyz.poeschl.pathseeker.models.Direction
+import xyz.poeschl.pathseeker.models.PublicRobot
 
 @Service
-class RobotService(private val mapService: MapService, private val websocketController: WebsocketController) {
-  companion object {
-    private val LOGGER = LoggerFactory.getLogger(RobotService::class.java)
+class RobotService(private val gameHandler: GameHandler) {
+
+  fun getActiveRobots(): List<PublicRobot> {
+    return gameHandler.getActiveRobots()
+      .map { PublicRobot(it.id, it.color, it.position) }
+      .sortedBy(PublicRobot::id)
   }
 
-  private val robots = mutableMapOf<Int, Robot>()
-  private var robotIndex = 0
-
-  /**
-   * @throws PositionOutOfMapException if given position not within map bounds
-   * @throws PositionNotAllowedException if given position is already occupied by another robot
-   */
-  fun createAndStoreRobot(fuel: Int, position: Position): Robot {
-    checkPosition(position)
-    val newIndex = robotIndex++
-    val newRobot = Robot(newIndex, getRobotColor(), fuel, position)
-    robots[newIndex] = newRobot
-    return newRobot
+  fun getActiveRobot(robotId: Long): ActiveRobot? {
+    return gameHandler.getActiveRobot(robotId)
   }
 
-  fun getRobot(robotIndex: Int): Robot? {
-    return robots[robotIndex]
+  fun scheduleScan(robotId: Long, distance: Int) {
+    return gameHandler.nextActionForRobot(robotId, ScanAction(distance))
   }
 
-  fun getAllRobots(): List<Robot> {
-    return robots.values.toList()
-  }
-
-  /**
-   * @throws PositionOutOfMapException if new position after move not within map bounds
-   * @throws PositionNotAllowedException if new position after move is already occupied by another robot
-   */
-  fun move(robot: Robot, direction: Direction): Position {
-    val currentPosition = robot.position
-    val newPosition =
-      when (direction) {
-        Direction.EAST -> currentPosition.eastPosition()
-        Direction.WEST -> currentPosition.westPosition()
-        Direction.NORTH -> currentPosition.northPosition()
-        Direction.SOUTH -> currentPosition.southPosition()
-      }
-
-    checkPosition(newPosition)
-
-    val fuelCost = mapService.getFuelCost(currentPosition, newPosition)
-    if (fuelCost > robot.fuel) {
-      throw InsufficientFuelException("The available fuel (${robot.fuel}) is insufficient for the journey. Required fuel: $fuelCost ")
-    }
-
-    robot.fuel -= fuelCost
-    robot.position = newPosition
-    LOGGER.debug("Moved robot {} from {}", robot, currentPosition)
-    websocketController.sendRobotMoveUpdate(robot)
-
-    return newPosition
-  }
-
-  fun scan(robot: Robot, distance: Int): List<Tile> {
-    val scanResult = mapService.getTilesInDistance(robot.position, distance)
-    val fuelCost = scanResult.second
-    val tileList = scanResult.first
-
-    if (fuelCost > robot.fuel) {
-      throw InsufficientFuelException("The available fuel (${robot.fuel}) is insufficient for the requested scan. Required fuel: $fuelCost ")
-    }
-
-    robot.fuel -= fuelCost
-    return tileList
-  }
-
-  private fun getRobotColor(): Color {
-    return Color.randomColor()
-  }
-
-  private fun checkPosition(position: Position) {
-    if (!mapService.isPositionValid(position)) {
-      throw PositionOutOfMapException("Position $position is not in map bounds.")
-    }
-    if (isPositionOccupied(position)) {
-      throw PositionNotAllowedException("Position $position is already occupied.")
-    }
-  }
-
-  private fun isPositionOccupied(position: Position): Boolean {
-    return getAllRobots().map { robot -> robot.position }.contains(position)
+  fun scheduleMove(robotId: Long, direction: Direction) {
+    return gameHandler.nextActionForRobot(robotId, MoveAction(direction))
   }
 }

@@ -7,6 +7,10 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: true
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
   flyway:
     validate-migration-naming: true
   mvc:
@@ -26,3 +30,16 @@ server:
 logging:
   level:
     xyz.poeschl.pathseeker: debug
+
+---
+# This is a second config section which gets activated when the "test" spring profile is active
+spring:
+  config.activate.on-profile: test
+
+  datasource:
+    url: jdbc:tc:postgresql:15-alpine:///postgres?user=postgres
+
+logging:
+  level:
+    # For testcontainers issues uncomment this
+    # org.testcontainers: debug

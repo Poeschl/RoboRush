@@ -1,8 +1,17 @@
 package xyz.poeschl.pathseeker.models
 
-data class Robot(val id: Int, val color: Color, var fuel: Int, var position: Position)
+import xyz.poeschl.pathseeker.gamelogic.actions.RobotAction
 
-data class PublicRobot(val id: Int, val color: Color, var position: Position)
+data class ActiveRobot(
+  val id: Long,
+  val color: Color,
+  var fuel: Int,
+  var position: Position,
+  var nextAction: RobotAction<*>? = null,
+  var lastResult: Any? = null
+)
+
+data class PublicRobot(val id: Long, val color: Color, var position: Position)
 
 enum class Direction {
   NORTH,
