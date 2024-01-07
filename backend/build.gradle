@@ -38,10 +38,12 @@ dependencies {
 
   kapt 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude module: 'mockito-core'
+  }
   testImplementation 'org.testcontainers:junit-jupiter'
   testImplementation 'org.testcontainers:postgresql'
+  testImplementation 'io.mockk:mockk:1.13.8'
 }
 
 dependencyManagement {

@@ -1,12 +1,14 @@
 package xyz.poeschl.pathseeker.security.repository
 
 import jakarta.persistence.*
+import net.karneim.pojobuilder.GeneratePojoBuilder
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.repository.CrudRepository
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Repository
+import xyz.poeschl.pathseeker.configuration.Builder
 import java.time.ZonedDateTime
 
 @Repository
@@ -17,7 +19,9 @@ interface UserRepository : CrudRepository<User, Long> {
 
 @Entity
 @Table(name = "users")
-data class User(
+data class User
+@GeneratePojoBuilder(withBuilderInterface = Builder::class)
+constructor(
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(insertable = false) private val id: Long?,
   // username and password are private due to a getter clash with the interface methods
   @Column(name = "username", unique = true) private var username: String,

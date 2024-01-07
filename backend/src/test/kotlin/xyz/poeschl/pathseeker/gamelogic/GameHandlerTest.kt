@@ -1,9 +1,11 @@
 package xyz.poeschl.pathseeker.gamelogic
 
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.*
 import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
 import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
@@ -14,9 +16,9 @@ import xyz.poeschl.pathseeker.models.*
 
 class GameHandlerTest {
 
-  private val mapHandler = mock<MapHandler>()
-  private val robotHandler = mock<RobotHandler>()
-  private val websocketController = mock<WebsocketController>()
+  private val mapHandler = mockk<MapHandler>(relaxUnitFun = true)
+  private val robotHandler = mockk<RobotHandler>(relaxUnitFun = true)
+  private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
 
   private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController)
 
@@ -24,7 +26,7 @@ class GameHandlerTest {
   fun getHeightMap() {
     // WHEN
     val tiles = listOf(Tile(Position(0, 1), 1))
-    `when`(mapHandler.getHeightMap()).thenReturn(tiles)
+    every { mapHandler.getHeightMap() } returns tiles
 
     // THEN
     val result = gameHandler.getHeightMap()
@@ -37,8 +39,8 @@ class GameHandlerTest {
   fun isPositionValidForMove() {
     // WHEN
     val position = Position(3, 4)
-    `when`(mapHandler.isPositionValid(position)).thenReturn(true)
-    `when`(robotHandler.isPositionFreeAfterActions(position)).thenReturn(true)
+    every { mapHandler.isPositionValid(position) } returns true
+    every { robotHandler.isPositionFreeAfterActions(position) } returns true
 
     // THEN
     gameHandler.checkIfPositionIsValidForMove(position)
@@ -51,8 +53,8 @@ class GameHandlerTest {
   fun isPositionValidForMove_invalidPosition() {
     // WHEN
     val position = Position(3, 4)
-    `when`(mapHandler.isPositionValid(position)).thenReturn(false)
-    `when`(robotHandler.isPositionFreeAfterActions(position)).thenReturn(true)
+    every { mapHandler.isPositionValid(position) } returns false
+    every { robotHandler.isPositionFreeAfterActions(position) } returns true
 
     // THEN
     assertThrows<PositionOutOfMapException> {
@@ -66,8 +68,8 @@ class GameHandlerTest {
   fun isPositionValidForMove_positionOccupied() {
     // WHEN
     val position = Position(3, 4)
-    `when`(mapHandler.isPositionValid(position)).thenReturn(true)
-    `when`(robotHandler.isPositionFreeAfterActions(position)).thenReturn(false)
+    every { mapHandler.isPositionValid(position) } returns true
+    every { robotHandler.isPositionFreeAfterActions(position) } returns false
 
     // THEN
     assertThrows<PositionNotAllowedException> {
@@ -83,7 +85,7 @@ class GameHandlerTest {
     val tiles = listOf(Tile(Position(0, 1), 1))
     val position = Position(1, 2)
     val distance = 3
-    `when`(mapHandler.getTilesInDistance(position, distance)).thenReturn(Pair(tiles, 23))
+    every { mapHandler.getTilesInDistance(position, distance) } returns Pair(tiles, 23)
 
     // THEN
     val result = gameHandler.getTilesInDistance(position, distance)
@@ -102,7 +104,7 @@ class GameHandlerTest {
     gameHandler.sendRobotUpdate(robot)
 
     // VERIFY
-    verify(websocketController).sendRobotUpdate(robot)
+    verify { websocketController.sendRobotUpdate(robot) }
   }
 
   @Test
@@ -111,7 +113,7 @@ class GameHandlerTest {
     val fuel = 42
     val currentPos = Position(0, 0)
     val targetPos = Position(1, 0)
-    `when`(mapHandler.getFuelCost(currentPos, targetPos)).thenReturn(fuel)
+    every { mapHandler.getFuelCost(currentPos, targetPos) } returns fuel
 
     // THEN
     val result = gameHandler.getFuelCostForMove(currentPos, targetPos)
@@ -124,7 +126,7 @@ class GameHandlerTest {
   fun getActiveRobots() {
     // WHEN
     val robots = setOf(ActiveRobot(1, Color.randomColor(), 100, Position(0, 0)))
-    `when`(robotHandler.getAllActiveRobots()).thenReturn(robots)
+    every { robotHandler.getAllActiveRobots() } returns robots
 
     // THEN
     val result = gameHandler.getActiveRobots()
@@ -137,7 +139,7 @@ class GameHandlerTest {
   fun getActiveRobot() {
     // WHEN
     val robot = ActiveRobot(1, Color.randomColor(), 100, Position(0, 0))
-    `when`(robotHandler.getActiveRobot(1)).thenReturn(robot)
+    every { robotHandler.getActiveRobot(1) } returns robot
 
     // THEN
     val result = gameHandler.getActiveRobot(1)
@@ -156,7 +158,7 @@ class GameHandlerTest {
     gameHandler.nextActionForRobot(robotId, action)
 
     // VERIFY
-    verify(robotHandler).setNextMove(robotId, gameHandler, action)
+    verify { robotHandler.setNextMove(robotId, gameHandler, action) }
   }
 
   @Test
@@ -167,7 +169,7 @@ class GameHandlerTest {
     gameHandler.executeAllRobotMoves()
 
     // VERIFY
-    verify(robotHandler).executeRobotActions(gameHandler)
+    verify { robotHandler.executeRobotActions(gameHandler) }
   }
 
   @Test
@@ -175,14 +177,14 @@ class GameHandlerTest {
     // WHEN
     val possibleStart = listOf(Position(0, 0))
     val startPosition = Position(0, 2)
-    `when`(mapHandler.getStartPositions()).thenReturn(possibleStart)
-    `when`(robotHandler.getFirstCurrentlyFreePosition(possibleStart)).thenReturn(startPosition)
+    every { mapHandler.getStartPositions() } returns possibleStart
+    every { robotHandler.getFirstCurrentlyFreePosition(possibleStart) } returns startPosition
 
     // THEN
     gameHandler.registerRobotForNextGame(1)
 
     // VERIFY
-    verify(robotHandler).registerRobotForGame(1, startPosition)
+    verify { robotHandler.registerRobotForGame(1, startPosition) }
   }
 
   @Test
@@ -190,8 +192,8 @@ class GameHandlerTest {
     // WHEN
     val possibleStart = listOf(Position(0, 0))
     val startPosition = Position(0, 2)
-    `when`(mapHandler.getStartPositions()).thenReturn(possibleStart)
-    `when`(robotHandler.getFirstCurrentlyFreePosition(possibleStart)).thenReturn(null)
+    every { mapHandler.getStartPositions() } returns possibleStart
+    every { robotHandler.getFirstCurrentlyFreePosition(possibleStart) } returns null
 
     // THEN
     assertThrows<PositionNotAllowedException> {
@@ -199,7 +201,7 @@ class GameHandlerTest {
     }
 
     // VERIFY
-    verify(robotHandler, never()).registerRobotForGame(1, startPosition)
+    verify(exactly = 0) { robotHandler.registerRobotForGame(1, startPosition) }
   }
 
   @Test
@@ -210,7 +212,7 @@ class GameHandlerTest {
     gameHandler.prepareNewGame()
 
     // VERIFY
-    verify(mapHandler).createNewRandomMap(Size(16, 8))
-    verify(robotHandler).clearActiveRobots()
+    verify { mapHandler.createNewRandomMap(Size(16, 8)) }
+    verify { robotHandler.clearActiveRobots() }
   }
 }

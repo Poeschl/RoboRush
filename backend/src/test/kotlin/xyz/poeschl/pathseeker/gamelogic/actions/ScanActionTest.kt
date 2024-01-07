@@ -1,10 +1,10 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.ActiveRobot
@@ -14,7 +14,7 @@ import xyz.poeschl.pathseeker.models.Tile
 
 class ScanActionTest {
 
-  private val gameHandler = mock<GameHandler>()
+  private val gameHandler = mockk<GameHandler>()
 
   @Test
   fun scanCheck() {
@@ -23,7 +23,7 @@ class ScanActionTest {
     val scannedTiles = listOf(Tile(Position(1, 0), 1), Tile(Position(0, 1), 1))
     val cost = 10
 
-    `when`(gameHandler.getTilesInDistance(Position(1, 1), 2)).thenReturn(Pair(scannedTiles, cost))
+    every { gameHandler.getTilesInDistance(Position(1, 1), 2) } returns Pair(scannedTiles, cost)
     val action = ScanAction(2)
 
     // THEN
@@ -39,7 +39,7 @@ class ScanActionTest {
     val scannedTiles = listOf(Tile(Position(1, 0), 1), Tile(Position(0, 1), 1))
     val cost = 101
 
-    `when`(gameHandler.getTilesInDistance(Position(1, 1), 2)).thenReturn(Pair(scannedTiles, cost))
+    every { gameHandler.getTilesInDistance(Position(1, 1), 2) } returns Pair(scannedTiles, cost)
     val action = ScanAction(2)
 
     // THEN
@@ -57,7 +57,7 @@ class ScanActionTest {
     val scannedTiles = listOf(Tile(Position(1, 0), 1), Tile(Position(0, 1), 1))
     val cost = 10
 
-    `when`(gameHandler.getTilesInDistance(Position(1, 1), 2)).thenReturn(Pair(scannedTiles, cost))
+    every { gameHandler.getTilesInDistance(Position(1, 1), 2) } returns Pair(scannedTiles, cost)
     val action = ScanAction(2)
 
     // THEN

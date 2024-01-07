@@ -1,10 +1,12 @@
 package xyz.poeschl.pathseeker.security.service
 
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -15,9 +17,9 @@ import java.time.ZonedDateTime
 
 class UserDetailsServiceTest {
 
-  private val userRepository = mock<UserRepository>()
-  private val robotService = mock<RobotService>()
-  private val passwordEncoder = mock<PasswordEncoder>()
+  private val userRepository = mockk<UserRepository>()
+  private val robotService = mockk<RobotService>()
+  private val passwordEncoder = mockk<PasswordEncoder>()
 
   private val userDetailsService = UserDetailsService(userRepository, robotService, passwordEncoder)
 
@@ -27,7 +29,7 @@ class UserDetailsServiceTest {
     val user = User("test", "")
     val userName = user.username
 
-    `when`(userRepository.findByUsername(userName)).thenReturn(user)
+    every { userRepository.findByUsername(userName) } returns user
 
     // THEN
     val result = userDetailsService.loadUserByUsername(userName)
@@ -42,7 +44,7 @@ class UserDetailsServiceTest {
     val user = User("test", "")
     val userName = user.username
 
-    `when`(userRepository.findByUsername(userName)).thenReturn(null)
+    every { userRepository.findByUsername(userName) } returns null
 
     // THEN
     assertThrows<UsernameNotFoundException> {
@@ -61,25 +63,25 @@ class UserDetailsServiceTest {
     val user = User(null, userName, encodedPassword)
     val savedUser = User(1L, "${userName}Saved", encodedPassword)
 
-    `when`(passwordEncoder.encode(password)).thenReturn(encodedPassword)
-    `when`(userRepository.save(user)).thenReturn(savedUser)
+    every { passwordEncoder.encode(password) } returns encodedPassword
+    every { userRepository.save(user) } returns savedUser
 
     // THEN
     userDetailsService.registerNewUser(userName, password)
 
     // VERIFY
-    val userCaptor = ArgumentCaptor.forClass(User::class.java)
-    verify(userRepository).save(userCaptor.capture())
+    val userSlot = slot<User>()
+    verify { userRepository.save(capture(userSlot)) }
 
-    assertThat(userCaptor.value.username).isEqualTo(userName)
-    assertThat(userCaptor.value.password).isEqualTo(encodedPassword)
-    assertThat(userCaptor.value.registeredAt).isAfterOrEqualTo(ZonedDateTime.now().minusSeconds(5))
-    assertThat(userCaptor.value.authorities).containsExactly(SimpleGrantedAuthority("user"))
-    assertThat(userCaptor.value.isEnabled).isTrue()
-    assertThat(userCaptor.value.isAccountNonLocked).isTrue()
-    assertThat(userCaptor.value.isAccountNonExpired).isTrue()
-    assertThat(userCaptor.value.isCredentialsNonExpired).isTrue()
+    assertThat(userSlot.captured.username).isEqualTo(userName)
+    assertThat(userSlot.captured.password).isEqualTo(encodedPassword)
+    assertThat(userSlot.captured.registeredAt).isAfterOrEqualTo(ZonedDateTime.now().minusSeconds(5))
+    assertThat(userSlot.captured.authorities).containsExactly(SimpleGrantedAuthority("user"))
+    assertThat(userSlot.captured.isEnabled).isTrue()
+    assertThat(userSlot.captured.isAccountNonLocked).isTrue()
+    assertThat(userSlot.captured.isAccountNonExpired).isTrue()
+    assertThat(userSlot.captured.isCredentialsNonExpired).isTrue()
 
-    verify(robotService).createRobot(savedUser)
+    verify { robotService.createRobot(savedUser) }
   }
 }

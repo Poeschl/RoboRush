@@ -1,22 +1,27 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.mockito.Mockito.*
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
 import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.ActiveRobot
+import xyz.poeschl.pathseeker.models.Color
+import xyz.poeschl.pathseeker.models.Direction
+import xyz.poeschl.pathseeker.models.Position
 import java.util.stream.Stream
 
 class MoveActionTest {
 
-  private val gameHandler = mock<GameHandler>()
+  private val gameHandler = mockk<GameHandler>(relaxUnitFun = true)
 
   companion object {
     @JvmStatic
@@ -33,7 +38,7 @@ class MoveActionTest {
   fun moveCheck(oldPosition: Position, direction: Direction, expectedPosition: Position) {
     // WHEN
     val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
-    `when`(gameHandler.getFuelCostForMove(oldPosition, expectedPosition)).thenReturn(10)
+    every { gameHandler.getFuelCostForMove(oldPosition, expectedPosition) } returns 10
     val action = MoveAction(direction)
 
     // THEN no exception is thrown
@@ -48,7 +53,7 @@ class MoveActionTest {
     val oldPosition = Position(0, 0)
     val expectedPosition = Position(1, 0)
     val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
-    `when`(gameHandler.checkIfPositionIsValidForMove(expectedPosition)).thenThrow(PositionOutOfMapException(""))
+    every { gameHandler.checkIfPositionIsValidForMove(expectedPosition) } throws PositionOutOfMapException("")
     val action = MoveAction(Direction.EAST)
 
     // THEN
@@ -65,7 +70,7 @@ class MoveActionTest {
     val oldPosition = Position(0, 0)
     val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
 
-    `when`(gameHandler.checkIfPositionIsValidForMove(Position(1, 0))).thenThrow(PositionNotAllowedException(""))
+    every { gameHandler.checkIfPositionIsValidForMove(Position(1, 0)) } throws PositionNotAllowedException("")
     val action = MoveAction(Direction.EAST)
 
     // THEN
@@ -82,7 +87,7 @@ class MoveActionTest {
     val oldPosition = Position(0, 0)
     val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
 
-    `when`(gameHandler.getFuelCostForMove(oldPosition, Position(1, 0))).thenReturn(101)
+    every { gameHandler.getFuelCostForMove(oldPosition, Position(1, 0)) } returns 101
     val action = MoveAction(Direction.EAST)
 
     // THEN
@@ -98,7 +103,7 @@ class MoveActionTest {
   fun moveAction(oldPosition: Position, direction: Direction, expectedPosition: Position) {
     // WHEN
     val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
-    `when`(gameHandler.getFuelCostForMove(oldPosition, expectedPosition)).thenReturn(10)
+    every { gameHandler.getFuelCostForMove(oldPosition, expectedPosition) } returns 10
     val action = MoveAction(direction)
 
     // THEN
@@ -109,6 +114,6 @@ class MoveActionTest {
     assertThat(robot.fuel).isEqualTo(90)
     assertThat(robot.position).isEqualTo(expectedPosition)
 
-    verify(gameHandler).sendRobotUpdate(robot)
+    verify { gameHandler.sendRobotUpdate(robot) }
   }
 }

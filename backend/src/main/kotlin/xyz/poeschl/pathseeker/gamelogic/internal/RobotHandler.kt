@@ -8,7 +8,8 @@ import xyz.poeschl.pathseeker.gamelogic.GameState
 import xyz.poeschl.pathseeker.gamelogic.GameStateMachine
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.RobotAction
-import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.ActiveRobot
+import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.repositories.RobotRepository
 
 @GameLogic
@@ -67,10 +68,7 @@ class RobotHandler(
       // Execute action for every robot with action
       val result = robot.nextAction?.action(robot, gameHandler)
       robot.nextAction = null
-
-      if (result != null) {
-        robot.lastResult = result
-      }
+      robot.lastResult = result
     }
   }
 

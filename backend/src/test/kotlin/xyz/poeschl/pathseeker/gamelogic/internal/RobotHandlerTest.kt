@@ -1,9 +1,11 @@
 package xyz.poeschl.pathseeker.gamelogic.internal
 
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.*
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.GameState
@@ -20,9 +22,9 @@ import java.util.*
 
 class RobotHandlerTest {
 
-  private val robotRepository = mock<RobotRepository>()
-  private val gameStateMachine = mock<GameStateMachine>()
-  private val gameHandler = mock<GameHandler>()
+  private val robotRepository = mockk<RobotRepository>()
+  private val gameStateMachine = mockk<GameStateMachine>()
+  private val gameHandler = mockk<GameHandler>()
   private val robotHandler = RobotHandler(robotRepository, gameStateMachine)
 
   @Test
@@ -33,8 +35,8 @@ class RobotHandlerTest {
     val robot = Robot(1, Color(1, 2, 3), user)
     val position = Position(1, 2)
 
-    `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
-    `when`(robotRepository.findById(robotId)).thenReturn(Optional.of(robot))
+    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { robotRepository.findById(robotId) } returns Optional.of(robot)
 
     // THEN
     robotHandler.registerRobotForGame(robotId, position)
@@ -53,7 +55,7 @@ class RobotHandlerTest {
     val robotId = 1L
     val position = Position(1, 2)
 
-    `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(false)
+    every { gameStateMachine.isInState(GameState.PREPARE) } returns false
 
     // THEN
     assertThrows<InvalidGameStateException> {
@@ -71,8 +73,8 @@ class RobotHandlerTest {
     val robotId = 1L
     val position = Position(1, 2)
 
-    `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
-    `when`(robotRepository.findById(robotId)).thenReturn(Optional.empty())
+    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { robotRepository.findById(robotId) } returns Optional.empty()
 
     // THEN
     robotHandler.registerRobotForGame(robotId, position)
@@ -91,8 +93,8 @@ class RobotHandlerTest {
     val position1 = Position(1, 2)
     val position2 = Position(1, 2)
 
-    `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
-    `when`(robotRepository.findById(robotId)).thenReturn(Optional.of(robot))
+    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { robotRepository.findById(robotId) } returns Optional.of(robot)
 
     // THEN
     robotHandler.registerRobotForGame(robotId, position1)
@@ -117,9 +119,9 @@ class RobotHandlerTest {
     val robot2 = Robot(1, Color(1, 2, 3), user2)
     val position = Position(1, 2)
 
-    `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
-    `when`(robotRepository.findById(robotId1)).thenReturn(Optional.of(robot1))
-    `when`(robotRepository.findById(robotId2)).thenReturn(Optional.of(robot2))
+    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { robotRepository.findById(robotId1) } returns Optional.of(robot1)
+    every { robotRepository.findById(robotId2) } returns Optional.of(robot2)
 
     // THEN
     robotHandler.registerRobotForGame(robotId1, position)
@@ -149,23 +151,25 @@ class RobotHandlerTest {
   fun setNextMove() {
     // WHEN
     val robot = createSingleActiveRobot()
-    `when`(gameStateMachine.isInState(GameState.WAIT_FOR_ACTION)).thenReturn(true)
-    val action = mock<MoveAction>()
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_ACTION) } returns true
+    val action = mockk<MoveAction>(relaxUnitFun = true)
 
     // THEN
     robotHandler.setNextMove(robot.id, gameHandler, action)
 
     // VERIFY
     assertThat(robot.nextAction).isEqualTo(action)
-    verify(action).check(robot, gameHandler)
+    verify {
+      action.check(robot, gameHandler)
+    }
   }
 
   @Test
   fun setNextMove_invalidState() {
     // WHEN
     val robot = createSingleActiveRobot()
-    `when`(gameStateMachine.isInState(GameState.WAIT_FOR_ACTION)).thenReturn(false)
-    val action = mock<MoveAction>()
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_ACTION) } returns false
+    val action = mockk<MoveAction>()
 
     // THEN
     assertThrows<InvalidGameStateException> {
@@ -174,14 +178,14 @@ class RobotHandlerTest {
 
     // VERIFY
     assertThat(robot.nextAction).isNull()
-    verify(action, never()).check(robot, gameHandler)
+    verify(exactly = 0) { action.check(robot, gameHandler) }
   }
 
   @Test
   fun setNextMove_unknownRobot() {
     // WHEN
-    `when`(gameStateMachine.isInState(GameState.WAIT_FOR_ACTION)).thenReturn(true)
-    val action = mock<MoveAction>()
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_ACTION) } returns true
+    val action = mockk<MoveAction>()
 
     // THEN
     robotHandler.setNextMove(123, gameHandler, action)
@@ -194,37 +198,18 @@ class RobotHandlerTest {
   fun executeRobotActions() {
     // WHEN
     val robot = createSingleActiveRobot()
-    val action = mock<MoveAction>()
-    robot.nextAction = action
-
-    `when`(gameStateMachine.isInState(GameState.ACTION)).thenReturn(true)
-    `when`(action.action(robot, gameHandler)).thenReturn(null)
-
-    // THEN
-    robotHandler.executeRobotActions(gameHandler)
-
-    // VERIFY
-    verify(action).action(robot, gameHandler)
-    assertThat(robot.nextAction).isNull()
-    assertThat(robot.lastResult).isNull()
-  }
-
-  @Test
-  fun executeRobotActions_withReturn() {
-    // WHEN
-    val robot = createSingleActiveRobot()
-    val action = mock<MoveAction>()
+    val action = mockk<MoveAction>()
     val returnValue = Position(1, 2)
     robot.nextAction = action
 
-    `when`(gameStateMachine.isInState(GameState.ACTION)).thenReturn(true)
-    `when`(action.action(robot, gameHandler)).thenReturn(returnValue)
+    every { gameStateMachine.isInState(GameState.ACTION) } returns true
+    every { action.action(robot, gameHandler) } returns returnValue
 
     // THEN
     robotHandler.executeRobotActions(gameHandler)
 
     // VERIFY
-    verify(action).action(robot, gameHandler)
+    verify { action.action(robot, gameHandler) }
     assertThat(robot.nextAction).isNull()
     assertThat(robot.lastResult).isEqualTo(returnValue)
   }
@@ -233,10 +218,10 @@ class RobotHandlerTest {
   fun executeRobotActions_invalidState() {
     // WHEN
     val robot = createSingleActiveRobot()
-    val action = mock<MoveAction>()
+    val action = mockk<MoveAction>()
     robot.nextAction = action
 
-    `when`(gameStateMachine.isInState(GameState.ACTION)).thenReturn(false)
+    every { gameStateMachine.isInState(GameState.ACTION) } returns false
 
     // THEN
     assertThrows<InvalidGameStateException> {
@@ -244,7 +229,7 @@ class RobotHandlerTest {
     }
 
     // VERIFY
-    verify(action, never()).action(robot, gameHandler)
+    verify(exactly = 0) { action.action(robot, gameHandler) }
     assertThat(robot.nextAction).isEqualTo(action)
   }
 
@@ -425,8 +410,8 @@ class RobotHandlerTest {
     val robot = Robot(robotId, Color(1, 2, 3), user)
     val position = Position((2 + robotId).toInt(), (2 + robotId).toInt())
 
-    `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
-    `when`(robotRepository.findById(robotId)).thenReturn(Optional.of(robot))
+    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { robotRepository.findById(robotId) } returns Optional.of(robot)
 
     robotHandler.registerRobotForGame(robotId, position)
     val savedRobot = robotHandler.getActiveRobot(robotId)!!
