@@ -13,10 +13,10 @@ import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
 import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.models.ActiveRobot
-import xyz.poeschl.pathseeker.models.Color
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.Position
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import java.util.stream.Stream
 
 class MoveActionTest {
@@ -37,7 +37,7 @@ class MoveActionTest {
   @MethodSource("movementSource")
   fun moveCheck(oldPosition: Position, direction: Direction, expectedPosition: Position) {
     // WHEN
-    val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
+    val robot = a(`$ActiveRobot`().withPosition(oldPosition))
     every { gameHandler.getFuelCostForMove(oldPosition, expectedPosition) } returns 10
     val action = MoveAction(direction)
 
@@ -52,7 +52,7 @@ class MoveActionTest {
     // WHEN
     val oldPosition = Position(0, 0)
     val expectedPosition = Position(1, 0)
-    val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
+    val robot = a(`$ActiveRobot`().withPosition(oldPosition))
     every { gameHandler.checkIfPositionIsValidForMove(expectedPosition) } throws PositionOutOfMapException("")
     val action = MoveAction(Direction.EAST)
 
@@ -68,7 +68,7 @@ class MoveActionTest {
   fun moveCheck_positionOccupied() {
     // WHEN
     val oldPosition = Position(0, 0)
-    val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
+    val robot = a(`$ActiveRobot`().withPosition(oldPosition))
 
     every { gameHandler.checkIfPositionIsValidForMove(Position(1, 0)) } throws PositionNotAllowedException("")
     val action = MoveAction(Direction.EAST)
@@ -85,7 +85,7 @@ class MoveActionTest {
   fun moveCheck_withoutFuel() {
     // WHEN
     val oldPosition = Position(0, 0)
-    val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
+    val robot = a(`$ActiveRobot`().withPosition(oldPosition).withFuel(100))
 
     every { gameHandler.getFuelCostForMove(oldPosition, Position(1, 0)) } returns 101
     val action = MoveAction(Direction.EAST)
@@ -102,7 +102,7 @@ class MoveActionTest {
   @MethodSource("movementSource")
   fun moveAction(oldPosition: Position, direction: Direction, expectedPosition: Position) {
     // WHEN
-    val robot = ActiveRobot(1, Color(1, 2, 3), 100, oldPosition)
+    val robot = a(`$ActiveRobot`().withPosition(oldPosition).withFuel(100))
     every { gameHandler.getFuelCostForMove(oldPosition, expectedPosition) } returns 10
     val action = MoveAction(direction)
 

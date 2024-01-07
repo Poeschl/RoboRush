@@ -11,7 +11,11 @@ import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.repositories.Robot
 import xyz.poeschl.pathseeker.repositories.RobotRepository
-import xyz.poeschl.pathseeker.security.repository.User
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
+import xyz.poeschl.pathseeker.test.utils.builder.SecurityBuilder.Companion.`$User`
 
 class RobotServiceTest {
 
@@ -23,7 +27,7 @@ class RobotServiceTest {
   @Test
   fun createRobot() {
     // WHEN
-    val user = User("test", "")
+    val user = a(`$User`())
 
     every { robotRepository.save(any()) } answers { firstArg() }
 
@@ -42,8 +46,8 @@ class RobotServiceTest {
   @Test
   fun getRobotByUser() {
     // WHEN
-    val user = User(1L, "dummy", "")
-    val robot = Robot(1L, Color(1, 2, 3), user)
+    val user = a(`$User`())
+    val robot = a(`$Robot`().withId(1L).withUser(user))
     every { robotRepository.findRobotByUser(user) } returns robot
 
     // THEN
@@ -56,9 +60,9 @@ class RobotServiceTest {
   @Test
   fun getActiveRobotByUser() {
     // WHEN
-    val user = User("dummy", "")
-    val robot = Robot(1L, Color(1, 2, 3), user)
-    val activeRobot = ActiveRobot(1L, Color(1, 2, 3), 100, Position(0, 0))
+    val user = a(`$User`())
+    val robot = a(`$Robot`().withId(1L).withUser(user))
+    val activeRobot = a(`$ActiveRobot`().withId(1))
     every { robotRepository.findRobotByUser(user) } returns robot
     every { gameHandler.getActiveRobot(robot.id!!) } returns activeRobot
 
@@ -72,7 +76,7 @@ class RobotServiceTest {
   @Test
   fun getActiveRobotByUser_robotUnknown() {
     // WHEN
-    val user = User("dummy", "")
+    val user = a(`$User`())
     every { robotRepository.findRobotByUser(user) } returns null
 
     // THEN
@@ -85,8 +89,8 @@ class RobotServiceTest {
   @Test
   fun getActiveRobotByUser_robotNotActive() {
     // WHEN
-    val user = User("dummy", "")
-    val robot = Robot(1L, Color(1, 2, 3), user)
+    val user = a(`$User`())
+    val robot = a(`$Robot`().withId(1L).withUser(user))
     every { robotRepository.findRobotByUser(user) } returns robot
     every { gameHandler.getActiveRobot(robot.id!!) } returns null
 
@@ -100,8 +104,9 @@ class RobotServiceTest {
   @Test
   fun executeWithActiveRobotIdOfUser() {
     // WHEN
-    val user = User("dummy", "1234")
-    val activeRobot = ActiveRobot(1L, Color(1, 2, 3), 100, Position(0, 0))
+    val user = a(`$User`())
+    val activeRobot = a(`$ActiveRobot`().withId(1))
+
     var actionExecuted = false
 
     val robotServiceSpy = spyk(robotService)
@@ -117,7 +122,7 @@ class RobotServiceTest {
   @Test
   fun executeWithActiveRobotIdOfUser_noActiveRobot() {
     // WHEN
-    val user = User("dummy", "1234")
+    val user = a(`$User`())
 
     val robotServiceSpy = spyk(robotService)
     every { robotServiceSpy.getActiveRobotByUser(user) } returns null
@@ -133,8 +138,8 @@ class RobotServiceTest {
   @Test
   fun getActiveRobots() {
     // WHEN
-    val activeRobot1 = ActiveRobot(1L, Color(1, 2, 3), 100, Position(0, 0))
-    val activeRobot2 = ActiveRobot(2L, Color(1, 2, 3), 100, Position(0, 0))
+    val activeRobot1 = a(`$ActiveRobot`().withId(1))
+    val activeRobot2 = a(`$ActiveRobot`().withId(2))
 
     every { gameHandler.getActiveRobots() } returns setOf(activeRobot2, activeRobot1)
 
@@ -181,7 +186,7 @@ class RobotServiceTest {
   fun scheduleMove() {
     // WHEN
     val robotId = 1L
-    val direction = Direction.NORTH
+    val direction = a(`$Direction`())
 
     // THEN
     robotService.scheduleMove(robotId, direction)

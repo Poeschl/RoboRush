@@ -8,6 +8,7 @@ import java.time.ZonedDateTime
 class NativeTypes {
   companion object {
     fun `$Int`(): Builder<Int> = Builder { kotlin.random.Random.nextInt() }
+    fun `$Int`(from: Int, until: Int): Builder<Int> = Builder { kotlin.random.Random.nextInt(from, until) }
 
     fun `$Long`(): Builder<Long> = Builder { kotlin.random.Random.nextLong() }
 

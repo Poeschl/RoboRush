@@ -5,8 +5,8 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.models.Position
-import xyz.poeschl.pathseeker.models.Tile
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 
 class MapServiceTest {
 
@@ -17,7 +17,7 @@ class MapServiceTest {
   @Test
   fun getHeightMap() {
     // WHEN
-    val tiles = listOf(Tile(Position(0, 0)))
+    val tiles = listWithOne(`$Tile`())
     every { gameHandler.getHeightMap() } returns tiles
 
     // THEN

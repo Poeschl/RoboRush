@@ -30,8 +30,8 @@ class Builders {
      * @param builder A builder (prefixed with '$'
      * @return A set with one element and the built instance in it.
      */
-    fun <T> setWithOne(builder: Builder<T>): List<T> {
-      return listOf(builder.build())
+    fun <T> setWithOne(builder: Builder<T>): Set<T> {
+      return setOf(builder.build())
     }
 
     /**

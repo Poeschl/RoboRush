@@ -13,6 +13,12 @@ import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.setWithOne
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 
 class GameHandlerTest {
 
@@ -25,7 +31,7 @@ class GameHandlerTest {
   @Test
   fun getHeightMap() {
     // WHEN
-    val tiles = listOf(Tile(Position(0, 1), 1))
+    val tiles = listWithOne(`$Tile`())
     every { mapHandler.getHeightMap() } returns tiles
 
     // THEN
@@ -98,7 +104,7 @@ class GameHandlerTest {
   @Test
   fun sendRobotUpdate() {
     // WHEN
-    val robot = ActiveRobot(1, Color.randomColor(), 100, Position(0, 0))
+    val robot = a(`$ActiveRobot`())
 
     // THEN
     gameHandler.sendRobotUpdate(robot)
@@ -125,7 +131,7 @@ class GameHandlerTest {
   @Test
   fun getActiveRobots() {
     // WHEN
-    val robots = setOf(ActiveRobot(1, Color.randomColor(), 100, Position(0, 0)))
+    val robots = setWithOne(`$ActiveRobot`())
     every { robotHandler.getAllActiveRobots() } returns robots
 
     // THEN
@@ -138,7 +144,7 @@ class GameHandlerTest {
   @Test
   fun getActiveRobot() {
     // WHEN
-    val robot = ActiveRobot(1, Color.randomColor(), 100, Position(0, 0))
+    val robot = a(`$ActiveRobot`())
     every { robotHandler.getActiveRobot(1) } returns robot
 
     // THEN
@@ -152,7 +158,7 @@ class GameHandlerTest {
   fun nextActionForRobot() {
     // WHEN
     val robotId = 1L
-    val action = MoveAction(Direction.NORTH)
+    val action = MoveAction(a(`$Direction`()))
 
     // THEN
     gameHandler.nextActionForRobot(robotId, action)
