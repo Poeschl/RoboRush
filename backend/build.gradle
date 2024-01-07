@@ -34,14 +34,17 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
   implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
   implementation 'org.postgresql:postgresql'
+  implementation 'net.karneim:pojobuilder:4.3.0:annotations'
 
-
+  kapt 'net.karneim:pojobuilder:4.3.0'
   kapt 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude module: 'mockito-core'
+  }
   testImplementation 'org.testcontainers:junit-jupiter'
   testImplementation 'org.testcontainers:postgresql'
+  testImplementation 'io.mockk:mockk:1.13.8'
 }
 
 dependencyManagement {

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.security.repository.UserRepository
+import xyz.poeschl.pathseeker.service.RobotService
 
 @Configuration
 class UserDetailsService(

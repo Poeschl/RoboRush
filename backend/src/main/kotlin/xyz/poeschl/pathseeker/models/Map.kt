@@ -1,7 +1,10 @@
 package xyz.poeschl.pathseeker.models
 
+import net.karneim.pojobuilder.GeneratePojoBuilder
+import xyz.poeschl.pathseeker.configuration.Builder
 import kotlin.math.abs
 
+@GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Map(val size: Size, val mapData: Array<Array<Tile>>, val possibleStartPositions: List<Position>) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -24,8 +27,10 @@ data class Map(val size: Size, val mapData: Array<Array<Tile>>, val possibleStar
   }
 }
 
+@GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Tile(val position: Position, val height: Int = 0)
 
+@GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Position(val x: Int, val y: Int) {
   fun eastPosition(): Position {
     return Position(x + 1, y)
@@ -48,4 +53,5 @@ data class Position(val x: Int, val y: Int) {
   }
 }
 
+@GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Size(val width: Int, val height: Int)
