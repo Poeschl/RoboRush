@@ -11,8 +11,8 @@ class GameLoop(
 ) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
-    private val PREPARATION_TIMEOUT = Duration.ofSeconds(2)
-    private val WAIT_FOR_ACTION_TIMEOUT = Duration.ofSeconds(2)
+    private val PREPARATION_TIMEOUT = Duration.ofMinutes(3)
+    private val WAIT_FOR_ACTION_TIMEOUT = Duration.ofSeconds(30)
   }
 
   fun startGame() {

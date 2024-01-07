@@ -19,4 +19,7 @@ interface RobotAction<T> {
    * @return Any result of the executed action.
    */
   fun action(robot: ActiveRobot, gameHandler: GameHandler): T
+
+  override fun equals(other: Any?): Boolean
+  override fun hashCode(): Int
 }

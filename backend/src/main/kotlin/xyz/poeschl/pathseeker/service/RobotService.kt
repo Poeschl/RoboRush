@@ -1,15 +1,44 @@
 package xyz.poeschl.pathseeker.service
 
 import org.springframework.stereotype.Service
+import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.models.ActiveRobot
+import xyz.poeschl.pathseeker.models.Color
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.PublicRobot
+import xyz.poeschl.pathseeker.repositories.Robot
+import xyz.poeschl.pathseeker.repositories.RobotRepository
+import xyz.poeschl.pathseeker.security.repository.User
 
 @Service
-class RobotService(private val gameHandler: GameHandler) {
+class RobotService(private val robotRepository: RobotRepository, private val gameHandler: GameHandler) {
+
+  fun createRobot(user: User): Robot {
+    return robotRepository.save(Robot(null, Color.randomColor(), user))
+  }
+
+  fun getRobotByUser(user: User): Robot? {
+    return robotRepository.findRobotByUser(user)
+  }
+
+  fun getActiveRobotByUser(user: User): ActiveRobot? {
+    robotRepository.findRobotByUser(user)?.let {
+      return gameHandler.getActiveRobot(it.id!!)
+    }
+    return null
+  }
+
+  fun executeWithActiveRobotIdOfUser(user: User, action: (robotId: Long) -> Unit) {
+    val activeRobot = getActiveRobotByUser(user)
+    if (activeRobot != null) {
+      action(activeRobot.id)
+    } else {
+      throw RobotNotActiveException("No active Robot found")
+    }
+  }
 
   fun getActiveRobots(): List<PublicRobot> {
     return gameHandler.getActiveRobots()
@@ -17,8 +46,8 @@ class RobotService(private val gameHandler: GameHandler) {
       .sortedBy(PublicRobot::id)
   }
 
-  fun getActiveRobot(robotId: Long): ActiveRobot? {
-    return gameHandler.getActiveRobot(robotId)
+  fun registerRobotForGame(robotId: Long) {
+    gameHandler.registerRobotForNextGame(robotId)
   }
 
   fun scheduleScan(robotId: Long, distance: Int) {

@@ -15,6 +15,7 @@ import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.repositories.Robot
 import xyz.poeschl.pathseeker.repositories.RobotRepository
+import xyz.poeschl.pathseeker.security.repository.User
 import java.util.*
 
 class RobotHandlerTest {
@@ -28,7 +29,8 @@ class RobotHandlerTest {
   fun registerRobot() {
     // WHEN
     val robotId = 1L
-    val robot = Robot(1, Color(1, 2, 3))
+    val user = User("test", "")
+    val robot = Robot(1, Color(1, 2, 3), user)
     val position = Position(1, 2)
 
     `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
@@ -84,7 +86,8 @@ class RobotHandlerTest {
   fun registerRobot_duplicateRegistration() {
     // WHEN
     val robotId = 1L
-    val robot = Robot(1, Color(1, 2, 3))
+    val user = User("test", "")
+    val robot = Robot(1, Color(1, 2, 3), user)
     val position1 = Position(1, 2)
     val position2 = Position(1, 2)
 
@@ -106,10 +109,12 @@ class RobotHandlerTest {
   @Test
   fun registerRobot_occupiedStartPosition() {
     // WHEN
+    val user1 = User("test1", "")
+    val user2 = User("test2", "")
     val robotId1 = 1L
     val robotId2 = 1L
-    val robot1 = Robot(1, Color(1, 2, 3))
-    val robot2 = Robot(1, Color(1, 2, 3))
+    val robot1 = Robot(1, Color(1, 2, 3), user1)
+    val robot2 = Robot(1, Color(1, 2, 3), user2)
     val position = Position(1, 2)
 
     `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)
@@ -416,7 +421,8 @@ class RobotHandlerTest {
    * @return The generated and registered robot.
    */
   private fun createSingleActiveRobot(robotId: Long = 1): ActiveRobot {
-    val robot = Robot(robotId, Color(1, 2, 3))
+    val user = User("test", "")
+    val robot = Robot(robotId, Color(1, 2, 3), user)
     val position = Position((2 + robotId).toInt(), (2 + robotId).toInt())
 
     `when`(gameStateMachine.isInState(GameState.PREPARE)).thenReturn(true)

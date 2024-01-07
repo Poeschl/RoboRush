@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.repositories
+package xyz.poeschl.pathseeker.security.repository
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -26,6 +26,7 @@ data class User(
 ) : UserDetails {
 
   constructor(username: String, password: String) : this(null, username, password)
+
   override fun getUsername() = username
 
   override fun getPassword() = password
@@ -39,4 +40,23 @@ data class User(
   override fun isCredentialsNonExpired() = true
 
   override fun isEnabled() = true
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as User
+
+    if (id != other.id) return false
+    if (username != other.username) return false
+    if (password != other.password) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = id?.hashCode() ?: 0
+    result = 31 * result + username.hashCode()
+    result = 31 * result + password.hashCode()
+    return result
+  }
 }

@@ -8,3 +8,5 @@ class PositionOutOfMapException(message: String) : ResponseStatusException(HttpS
 class InsufficientFuelException(message: String) : ResponseStatusException(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, message)
 
 class PositionNotAllowedException(message: String) : ResponseStatusException(HttpStatus.CONFLICT, message)
+
+class RobotNotActiveException(message: String) : ResponseStatusException(HttpStatus.NOT_FOUND, message)
