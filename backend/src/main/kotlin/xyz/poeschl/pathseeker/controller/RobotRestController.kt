@@ -1,13 +1,17 @@
 package xyz.poeschl.pathseeker.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.extensions.Extension
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import xyz.poeschl.pathseeker.configuration.OpenApiConfig.Companion.VISIBILITY_KEY
+import xyz.poeschl.pathseeker.configuration.OpenApiConfig.Companion.VISIBILITY_PUBLIC
 import xyz.poeschl.pathseeker.controller.restmodels.Move
 import xyz.poeschl.pathseeker.controller.restmodels.Scan
 import xyz.poeschl.pathseeker.models.ActiveRobot
@@ -28,7 +32,10 @@ class RobotRestController(private val robotService: RobotService) {
     return robotService.getActiveRobots()
   }
 
-  @Tag(name = "public")
+  @Operation(
+    summary = "Retrieves data about your robot.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getRobot(auth: Authentication): ActiveRobot {
@@ -36,7 +43,10 @@ class RobotRestController(private val robotService: RobotService) {
     return robotService.getActiveRobotByUser(auth.principal as User) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
   }
 
-  @Tag(name = "public")
+  @Operation(
+    summary = "Call this to register your robot for the next game. Can only be called during the game preparation phase.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping("/attend")
   fun registerRobotForGame(auth: Authentication) {
@@ -48,17 +58,23 @@ class RobotRestController(private val robotService: RobotService) {
     }
   }
 
-  @Tag(name = "public")
+  @Operation(
+    summary = "Tell your robot to scan the area around it in the next round. Can only be called during the 'waiting for input' phase.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping("/action/scan", consumes = [MediaType.APPLICATION_JSON_VALUE])
-  fun getScanData(auth: Authentication, @RequestParam scan: Scan) {
+  fun scan(auth: Authentication, @RequestParam scan: Scan) {
     LOGGER.debug("Called scan")
     robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
       robotService.scheduleScan(it, scan.distance)
     }
   }
 
-  @Tag(name = "public")
+  @Operation(
+    summary = "Tell your robot to move in a direction in the next round. Can only be called during the 'waiting for input' phase.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping("/action/move", consumes = [MediaType.APPLICATION_JSON_VALUE])
   fun moveInDirection(auth: Authentication, @RequestBody move: Move) {
