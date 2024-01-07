@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.security.repository.UserRepository
 import xyz.poeschl.pathseeker.service.RobotService
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.SecurityBuilder.Companion.`$User`
 import java.time.ZonedDateTime
 
 class UserDetailsServiceTest {
@@ -26,7 +28,7 @@ class UserDetailsServiceTest {
   @Test
   fun loadUserByUsername() {
     // WHEN
-    val user = User("test", "")
+    val user = a(`$User`())
     val userName = user.username
 
     every { userRepository.findByUsername(userName) } returns user
@@ -41,7 +43,7 @@ class UserDetailsServiceTest {
   @Test
   fun loadUserByUsername_notFound() {
     // WHEN
-    val user = User("test", "")
+    val user = a(`$User`())
     val userName = user.username
 
     every { userRepository.findByUsername(userName) } returns null
@@ -60,11 +62,12 @@ class UserDetailsServiceTest {
     val userName = "Bobby"
     val password = "1234"
     val encodedPassword = "42"
-    val user = User(null, userName, encodedPassword)
-    val savedUser = User(1L, "${userName}Saved", encodedPassword)
+    val user = a(`$User`().withUsername(userName).withPassword(encodedPassword).withId(null))
+    val savedUser = a(`$User`().withUsername(userName).withPassword(encodedPassword).withId(1))
 
     every { passwordEncoder.encode(password) } returns encodedPassword
     every { userRepository.save(user) } returns savedUser
+    every { robotService.createRobot(savedUser) } returns mockk()
 
     // THEN
     userDetailsService.registerNewUser(userName, password)
