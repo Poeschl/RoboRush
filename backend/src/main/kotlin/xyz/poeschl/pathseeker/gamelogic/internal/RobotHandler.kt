@@ -9,7 +9,6 @@ import xyz.poeschl.pathseeker.gamelogic.GameStateMachine
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.RobotAction
 import xyz.poeschl.pathseeker.models.*
-import xyz.poeschl.pathseeker.repositories.Robot
 import xyz.poeschl.pathseeker.repositories.RobotRepository
 
 @GameLogic
@@ -24,10 +23,6 @@ class RobotHandler(
   }
 
   private val activeRobots = mutableSetOf<ActiveRobot>()
-
-  fun createRobot(): Robot {
-    return robotRepository.save(Robot(null, Color.randomColor()))
-  }
 
   fun registerRobotForGame(robotId: Long, startPosition: Position) {
     if (!gameStateService.isInState(GameState.PREPARE)) {

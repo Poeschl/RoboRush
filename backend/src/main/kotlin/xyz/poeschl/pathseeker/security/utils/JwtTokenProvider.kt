@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-import xyz.poeschl.pathseeker.repositories.User
+import xyz.poeschl.pathseeker.security.repository.User
 import java.time.ZonedDateTime
 import java.util.*
 import javax.crypto.SecretKey

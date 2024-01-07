@@ -28,4 +28,17 @@ class ScanAction(private val scanDistance: Int) : RobotAction<List<Tile>> {
   override fun toString(): String {
     return "Scan(scanDistance=$scanDistance)"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as ScanAction
+
+    return scanDistance == other.scanDistance
+  }
+
+  override fun hashCode(): Int {
+    return scanDistance
+  }
 }

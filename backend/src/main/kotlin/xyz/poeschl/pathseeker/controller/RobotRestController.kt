@@ -5,11 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import xyz.poeschl.pathseeker.controller.restmodels.RobotMove
+import xyz.poeschl.pathseeker.controller.restmodels.Move
+import xyz.poeschl.pathseeker.controller.restmodels.Scan
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.PublicRobot
+import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.service.RobotService
 
 @RestController
@@ -28,24 +31,40 @@ class RobotRestController(private val robotService: RobotService) {
   @Tag(name = "public")
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getRobot(@RequestParam robotId: Long): ActiveRobot {
+  fun getRobot(auth: Authentication): ActiveRobot {
     LOGGER.debug("Get robot")
-    return robotService.getActiveRobot(robotId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    return robotService.getActiveRobotByUser(auth.principal as User) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
   }
 
   @Tag(name = "public")
   @SecurityRequirement(name = "Bearer Authentication")
-  @GetMapping("/scan", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getScanData(@RequestParam robotId: Long, @RequestParam distance: Int) {
+  @PostMapping("/attend")
+  fun registerRobotForGame(auth: Authentication) {
+    val robot = robotService.getRobotByUser(auth.principal as User)
+    if (robot != null) {
+      robotService.registerRobotForGame(robot.id!!)
+    } else {
+      throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+  }
+
+  @Tag(name = "public")
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/scan", consumes = [MediaType.APPLICATION_JSON_VALUE])
+  fun getScanData(auth: Authentication, @RequestParam scan: Scan) {
     LOGGER.debug("Called scan")
-    robotService.getActiveRobot(robotId)?.let { robotService.scheduleScan(it.id, distance) }
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleScan(it, scan.distance)
+    }
   }
 
   @Tag(name = "public")
   @SecurityRequirement(name = "Bearer Authentication")
-  @PostMapping("/move", produces = [MediaType.APPLICATION_JSON_VALUE], consumes = [MediaType.APPLICATION_JSON_VALUE])
-  fun moveInDirection(@RequestBody robotMove: RobotMove) {
+  @PostMapping("/action/move", consumes = [MediaType.APPLICATION_JSON_VALUE])
+  fun moveInDirection(auth: Authentication, @RequestBody move: Move) {
     LOGGER.debug("Move robot")
-    robotService.getActiveRobot(robotMove.robotId)?.let { robotService.scheduleMove(it.id, robotMove.direction) }
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleMove(it, move.direction)
+    }
   }
 }
