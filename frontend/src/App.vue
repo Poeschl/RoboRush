@@ -48,5 +48,5 @@ watch(
 );
 
 //Start the websocket
-new WebsocketService(gameStore, systemStore);
+new WebsocketService(gameStore, systemStore, userStore);
 </script>

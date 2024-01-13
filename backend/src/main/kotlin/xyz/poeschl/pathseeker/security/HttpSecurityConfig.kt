@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import xyz.poeschl.pathseeker.security.filter.JwtTokenFilter
 
 @Configuration
 @EnableWebSecurity

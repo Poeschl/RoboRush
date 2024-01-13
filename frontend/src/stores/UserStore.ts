@@ -8,7 +8,7 @@ const authService = new AuthService();
 export const useUserStore = defineStore(
   "userStore",
   () => {
-    const user = ref<User>();
+    const user = ref<User | undefined>(undefined);
 
     const loggedIn = computed<boolean>(() => user.value != undefined);
     const username = computed<string | undefined>(() => user.value?.username);
