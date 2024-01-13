@@ -30,6 +30,8 @@ server:
 logging:
   level:
     xyz.poeschl.pathseeker: debug
+    # org.springframework.messaging.simp.broker: DEBUG # Set this to debug to see Websocket messages
+    # org.springframework.security.messaging.web.socket: DEBUG # More websocket security output
 
 ---
 # This is a second config section which gets activated when the "test" spring profile is active

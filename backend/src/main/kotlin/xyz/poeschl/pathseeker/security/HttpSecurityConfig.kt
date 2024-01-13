@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
   bearerFormat = "JWT",
   scheme = "bearer"
 )
-class SecurityConfig(
+class HttpSecurityConfig(
   private val jwtTokenFilter: JwtTokenFilter,
   private val authenticationConfiguration: AuthenticationConfiguration
 ) {
