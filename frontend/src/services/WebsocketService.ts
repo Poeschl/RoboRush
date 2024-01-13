@@ -40,10 +40,12 @@ export default class WebsocketService {
       });
     };
 
-    client.onWebSocketClose = () => {
+    client.onWebSocketClose = (closeEvent: CloseEvent) => {
       console.error("Websocket disconnected.");
       // @ts-ignore Since the type injection with store is black magic
-      this.systemStore.backendAvailable = false;
+      if (!closeEvent.wasClean) {
+        this.systemStore.backendAvailable = false;
+      }
     };
 
     client.activate();
