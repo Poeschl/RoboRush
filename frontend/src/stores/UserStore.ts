@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import AuthService from "@/services/AuthService";
 import type { LoginRequest, RegisterRequest, User } from "@/models/User";
+import axios from "axios";
 
 const authService = new AuthService();
 

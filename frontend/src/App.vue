@@ -20,24 +20,29 @@ console.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
 
 const router = useRouter();
 
+const userStore = useUserStore();
+const systemStore = useSystemStore();
 const gameStore = useGameStore();
+
+//Start the websocket
+const websocketService = new WebsocketService(systemStore, userStore);
+
 gameStore.updateMap();
 gameStore.updateRobots();
+gameStore.setWebsocketService(websocketService);
 
-const userStore = useUserStore();
 if (userStore.loggedIn) {
-  gameStore.updateUserRobot();
+  gameStore.retrieveUserRobotState();
 }
 watch(
   () => userStore.loggedIn,
   (current, previous, onCleanup) => {
     if (current) {
-      gameStore.updateUserRobot();
+      gameStore.retrieveUserRobotState();
     }
   },
 );
 
-const systemStore = useSystemStore();
 watch(
   () => systemStore.backendAvailable,
   (value, oldValue, onCleanup) => {
@@ -46,7 +51,4 @@ watch(
     }
   },
 );
-
-//Start the websocket
-new WebsocketService(gameStore, systemStore, userStore);
 </script>

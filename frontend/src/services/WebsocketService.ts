@@ -1,36 +1,42 @@
-import type { StompSubscription } from "@stomp/stompjs";
 import { Client, StompHeaders, Versions } from "@stomp/stompjs";
-import type { PublicRobot } from "@/models/Robot";
+import type { ActiveRobot, Move, PublicRobot, Scan } from "@/models/Robot";
 import type { Store } from "pinia";
 import Color from "@/models/Color";
 import { watch } from "vue";
 import type { User } from "@/models/User";
+import { correctTypesFromJson } from "@/models/Robot";
+
+export enum WebSocketTopic {
+  PUBLIC_ROBOT_TOPIC = 0,
+  PRIVATE_ROBOT_TOPIC,
+}
 
 export default class WebsocketService {
   private websocketPath = "/api/ws";
   private publicRobotUpdateTopic = "/topic/robot";
   private userRobotUpdateQueue = "/queue/robot";
-  private gameStore: Store;
   private systemStore: Store;
-  private userStore: Store;
   private websocketClient: Client | undefined;
+  private topicListener = new Map<WebSocketTopic, Function>();
 
-  constructor(gameStore: Store, systemStore: Store, userStore: Store) {
-    this.gameStore = gameStore;
+  constructor(systemStore: Store, userStore: Store) {
     this.systemStore = systemStore;
-    this.userStore = userStore;
-    this.initWebsocket();
+    this.initWebsocket(userStore);
   }
 
-  initWebsocket() {
-    this.startSharedClient(this.userStore.user);
+  initWebsocket(userStore: Store) {
+    this.startSharedClient(userStore.user);
     watch(
-      () => this.userStore.loggedIn,
+      () => userStore.loggedIn,
       (current, previous, onCleanup) => {
         this.destroySharedClient();
-        this.startSharedClient(this.userStore.user);
+        this.startSharedClient(userStore.user);
       },
     );
+  }
+
+  registerForTopicCallback(topic: WebSocketTopic, callback: Function) {
+    this.topicListener.set(topic, callback);
   }
 
   private startSharedClient(user: User | undefined) {
@@ -97,14 +103,18 @@ export default class WebsocketService {
     client.subscribe(this.publicRobotUpdateTopic, (message) => {
       const publicRobot: PublicRobot = JSON.parse(message.body);
       publicRobot.color = new Color(publicRobot.color.r, publicRobot.color.g, publicRobot.color.b);
-      // @ts-ignore
-      this.gameStore.updateRobot(publicRobot);
+      this.topicListener.get(WebSocketTopic.PUBLIC_ROBOT_TOPIC)?.call(null, publicRobot);
     });
   }
 
   private connectToUserQueue(client: Client, username: string) {
     client.subscribe(`/user/${username}${this.userRobotUpdateQueue}`, (message) => {
-      console.info(message.body);
+      if (message.body.length > 0) {
+        const userRobot: ActiveRobot = JSON.parse(message.body);
+        this.topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, correctTypesFromJson(userRobot));
+      } else {
+        this.topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, undefined);
+      }
     });
   }
 }

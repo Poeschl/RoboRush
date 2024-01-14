@@ -1,17 +1,18 @@
 import { defineStore } from "pinia";
 import type { Ref } from "vue";
-import { computed, ref, watch } from "vue";
-import type { PublicRobot, Robot } from "@/models/Robot";
+import { computed, ref } from "vue";
+import type { ActiveRobot, PublicRobot } from "@/models/Robot";
 import MapService from "@/services/MapService";
 import type { Tile } from "@/models/Map";
-import Color from "@/models/Color";
-import { useUserStore } from "@/stores/UserStore";
 import RobotService from "@/services/RobotService";
+import WebsocketService, { WebSocketTopic } from "@/services/WebsocketService";
 
 const mapService = new MapService();
 const robotService = new RobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
+  let websocketService: WebsocketService | undefined;
+
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalHeightMap: Ref<{ tiles: Tile[] }> = ref({ tiles: [] });
   const heightMap = computed<Tile[]>(() => internalHeightMap.value.tiles);
@@ -20,7 +21,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const internalRobots: Ref<{ robots: PublicRobot[] }> = ref({ robots: [] });
   const robots = computed<PublicRobot[]>(() => internalRobots.value.robots);
 
-  const userRobot = ref<Robot>();
+  const userRobot = ref<ActiveRobot | undefined>();
 
   function updateMap() {
     mapService
@@ -48,22 +49,30 @@ export const useGameStore = defineStore("gameStore", () => {
       });
   }
 
+  function retrieveUserRobotState() {
+    robotService
+      .getUserRobot()
+      .then((activeRobot) => updateUserRobot(activeRobot))
+      .catch((reason) => {
+        console.error(`Could not retrieve user robot data: ${reason}`);
+      });
+  }
+
+  function setWebsocketService(serviceInput: WebsocketService) {
+    websocketService = serviceInput;
+    websocketService.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
+    websocketService.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
+  }
+
   function updateRobot(updatedRobot: PublicRobot) {
     const index = internalRobots.value.robots.findIndex((robot: PublicRobot) => robot.id == updatedRobot.id);
     console.debug(`Update robot with index ${index}`);
     internalRobots.value.robots[index] = updatedRobot;
-
-    const userStore = useUserStore();
-    if (userStore.loggedIn) {
-      updateUserRobot();
-    }
   }
 
-  function updateUserRobot() {
-    const userStore = useUserStore();
-    //TODO: Make proper calls, as soon as the robots api detects the correct robot for the user
-    userRobot.value = { id: 0, position: { x: 2, y: 3 }, fuel: 100, color: new Color(123, 123, 123) };
+  function updateUserRobot(activeRobot: ActiveRobot | undefined) {
+    userRobot.value = activeRobot;
   }
 
-  return { heightMap, robots, userRobot, updateMap, updateRobots, updateRobot, updateUserRobot };
+  return { heightMap, robots, userRobot, updateMap, updateRobots, setWebsocketService, retrieveUserRobotState };
 });

@@ -183,14 +183,17 @@ class GameHandlerTest {
     // WHEN
     val possibleStart = listOf(Position(0, 0))
     val startPosition = Position(0, 2)
+    val registeredRobot = a(`$ActiveRobot`())
     every { mapHandler.getStartPositions() } returns possibleStart
     every { robotHandler.getFirstCurrentlyFreePosition(possibleStart) } returns startPosition
+    every { robotHandler.registerRobotForGame(1, startPosition) } returns registeredRobot
 
     // THEN
     gameHandler.registerRobotForNextGame(1)
 
     // VERIFY
     verify { robotHandler.registerRobotForGame(1, startPosition) }
+    verify { websocketController.sendRobotUpdate(registeredRobot) }
   }
 
   @Test

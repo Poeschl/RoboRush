@@ -27,6 +27,7 @@ class GameLogicBuilder {
 
     fun `$ActiveRobot`() = ActiveRobotBuilder()
       .withId(a(`$Id`()))
+      .withUser(a(`$User`()))
       .withColor(a(`$Color`()))
       .withFuel(Int.MAX_VALUE)
       .withPosition(a(`$Position`()))

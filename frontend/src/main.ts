@@ -5,7 +5,16 @@ import { router } from "./router/main";
 import Plausible from "plausible-tracker";
 import { RuntimeConfigurationPlugin } from "./plugins/RuntimeConfigurationPlugin";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowRightFromBracket, faArrowRightToBracket, faGasPump, faLocationDot, faRobot, faRoute, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightFromBracket,
+  faArrowRightToBracket,
+  faClipboard,
+  faGasPump,
+  faLocationDot,
+  faRobot,
+  faRoute,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
@@ -16,7 +25,7 @@ const app = createApp(App);
 const runtimeConfigPlugin = RuntimeConfigurationPlugin;
 app.use(runtimeConfigPlugin);
 
-library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket, faUser, faCopy, faRobot, faGasPump, faLocationDot);
+library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket, faUser, faCopy, faRobot, faGasPump, faLocationDot, faClipboard);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);

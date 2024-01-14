@@ -25,16 +25,18 @@ class RobotHandler(
 
   private val activeRobots = mutableSetOf<ActiveRobot>()
 
-  fun registerRobotForGame(robotId: Long, startPosition: Position) {
+  fun registerRobotForGame(robotId: Long, startPosition: Position): ActiveRobot? {
     if (!gameStateService.isInState(GameState.PREPARE)) {
       throw InvalidGameStateException("Robot registration is only possible during 'Preparation' stage!")
     }
 
+    var activeRobot: ActiveRobot? = null
     if (activeRobots.none { it.id == robotId }) {
       val robot = robotRepository.findById(robotId)
-      robot.ifPresent {
+      if (robot.isPresent) {
+        val realRobot = robot.get()
         if (isPositionCurrentFree(startPosition)) {
-          val activeRobot = ActiveRobot(it.id!!, it.color, DEFAULT_FUEL, startPosition)
+          activeRobot = ActiveRobot(realRobot.id!!, realRobot.user, realRobot.color, DEFAULT_FUEL, startPosition)
           activeRobots.add(activeRobot)
           LOGGER.info("Registered robot {}", robotId)
         } else {
@@ -42,13 +44,14 @@ class RobotHandler(
         }
       }
     }
+    return activeRobot
   }
 
   fun clearActiveRobots() {
     activeRobots.clear()
   }
 
-  fun setNextMove(robotId: Long, gameHandler: GameHandler, nextAction: RobotAction<*>) {
+  fun setNextMove(robotId: Long, gameHandler: GameHandler, nextAction: RobotAction<*>): ActiveRobot? {
     if (!gameStateService.isInState(GameState.WAIT_FOR_ACTION)) {
       throw InvalidGameStateException("Sending the next robot move is only allowed during 'Waiting for action' stage!")
     }
@@ -57,7 +60,9 @@ class RobotHandler(
       nextAction.check(robot, gameHandler)
       robot.nextAction = nextAction
       LOGGER.info("Robot {} will do {} next", robot.id, nextAction)
+      return robot
     }
+    return null
   }
 
   fun executeRobotActions(gameHandler: GameHandler) {
