@@ -3,6 +3,7 @@ package xyz.poeschl.pathseeker.gamelogic
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import xyz.poeschl.pathseeker.configuration.GameLogic
+import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
 import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
@@ -44,15 +45,16 @@ class DummyBots(
   }
 
   private fun planNextPossibleRandomMove(robot: ActiveRobot) {
-    if (robot.nextAction == null) {
+    if (robot.nextAction == null && robot.fuel > 0) {
       var moveValid = false
       while (!moveValid) {
         try {
           gameHandler.nextActionForRobot(robot.id, MoveAction(Direction.entries.random()))
+          moveValid = true
         } catch (_: PositionNotAllowedException) {
         } catch (_: PositionOutOfMapException) {
+        } catch (_: InsufficientFuelException) {
         }
-        moveValid = true
       }
     }
   }
