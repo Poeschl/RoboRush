@@ -6,12 +6,14 @@ import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.token.Sha512DigestUtils
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import xyz.poeschl.pathseeker.security.repository.User
 import java.time.ZonedDateTime
 import java.util.*
 import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 @Component
 class JwtTokenProvider {
@@ -23,10 +25,14 @@ class JwtTokenProvider {
   @Value("\${AUTH_ISSUER:PathSeeker}")
   private val jwtIssuer = "PathSeeker"
 
-  private val key: SecretKey = Jwts.SIG.HS512.key().build()
+  @Value("\${AUTH_KEY:PathSeeker}")
+  private val jwtSecretSource = "PathSeeker"
+
+  private lateinit var key: SecretKey
 
   init {
-    LOGGER.debug("Current JWT Key: ${Base64.getEncoder().encodeToString(key.encoded)}")
+    val decodedKey = Sha512DigestUtils.sha(jwtSecretSource)
+    key = SecretKeySpec(decodedKey, 0, decodedKey.size, "HMACSHA512")
   }
 
   // Without expire right now!

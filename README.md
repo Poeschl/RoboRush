@@ -16,6 +16,8 @@ Additional environment variables:
 
 * `AUTH_ISSUER`: Set an explicit issuer string for the auth tokens.
   This can be useful for parallel instances and should be set in production-like envs.
+* `AUTH_KEY`: Set the input for the JWT signing key.
+  This should be a random string with the length of 64. If changed every user needs to re-login to make auth work correctly again.
 * `SPRING_PROFILES_ACTIVE`: Set this environment variable to `prod` to disable some dev features.
   It will also hide the OpenApi Docs for all internal interfaces.
 
