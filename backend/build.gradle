@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '3.2.1'
+  id 'org.springframework.boot' version '3.2.2'
   id 'io.spring.dependency-management' version '1.1.4'
   id 'org.jetbrains.kotlin.jvm' version '1.9.22'
   id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
@@ -30,9 +30,9 @@ dependencies {
   implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
   implementation 'org.mapstruct:mapstruct:1.5.5.Final'
   implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-  implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
-  implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+  implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+  implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
+  implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
   implementation 'org.postgresql:postgresql'
   implementation 'net.karneim:pojobuilder:4.3.0:annotations'
 
@@ -44,7 +44,7 @@ dependencies {
   }
   testImplementation 'org.testcontainers:junit-jupiter'
   testImplementation 'org.testcontainers:postgresql'
-  testImplementation 'io.mockk:mockk:1.13.8'
+  testImplementation 'io.mockk:mockk:1.13.9'
 }
 
 dependencyManagement {
