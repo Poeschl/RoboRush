@@ -52,7 +52,8 @@ class DummyBots(
   private fun planNextPossibleRandomMove(robot: ActiveRobot) {
     if (robot.nextAction == null && robot.fuel > 0) {
       var moveValid = false
-      while (!moveValid) {
+      var triesLeft = 10
+      while (!moveValid && triesLeft > 0) {
         try {
           gameHandler.nextActionForRobot(robot.id, MoveAction(Direction.entries.random()))
           moveValid = true
@@ -60,6 +61,7 @@ class DummyBots(
         } catch (_: PositionOutOfMapException) {
         } catch (_: InsufficientFuelException) {
         }
+        triesLeft--
       }
     }
   }

@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <div class="level" v-if="robot.nextAction">
+        <div class="level">
           <div class="level-left">
             <div class="level-item is-size-5">
               <FontAwesomeIcon icon="fa-solid fa-clipboard" class="mr-2" />
@@ -54,7 +54,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <div title="The action of your robot in the next round">
+              <div title="The action of your robot in the next round" v-if="robot.nextAction">
                 <span v-if="robot.nextAction.type == 'move'">Move {{ (robot.nextAction as Move).direction }}</span>
                 <span v-if="robot.nextAction.type == 'scan'">Scan with distance {{ (robot.nextAction as Scan).distance }}</span>
               </div>
@@ -62,7 +62,7 @@
           </div>
         </div>
 
-        <div class="level" v-if="robot.lastResult">
+        <div class="level">
           <div class="level-left">
             <div class="level-item is-size-5">
               <FontAwesomeIcon icon="fa-solid fa-clipboard" class="mr-2" />
@@ -71,7 +71,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <div title="Result from the last executed action">{{ robot.lastResult }}</div>
+              <div title="Result from the last executed action" v-if="robot.lastResult">{{ robot.lastResult }}</div>
             </div>
           </div>
         </div>
