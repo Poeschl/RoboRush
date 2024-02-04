@@ -45,6 +45,7 @@ class GameHandler(
 
   fun sendRobotUpdate(activeRobot: ActiveRobot) {
     websocketController.sendRobotUpdate(activeRobot)
+    websocketController.sendUserRobotData(activeRobot)
   }
 
   fun getFuelCostForMove(current: Position, next: Position): Int {

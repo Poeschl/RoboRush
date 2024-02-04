@@ -1,5 +1,6 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
@@ -15,6 +16,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Ti
 class ScanActionTest {
 
   private val gameHandler = mockk<GameHandler>()
+  private val objectMapper = jacksonObjectMapper()
 
   @Test
   fun scanCheck() {
@@ -66,5 +68,17 @@ class ScanActionTest {
     // VERIFY
     assertThat(tiles).containsAll(scannedTiles)
     assertThat(robot.fuel).isEqualTo(90)
+  }
+
+  @Test
+  fun checkJsonForScan() {
+    // WHEN
+    val move = ScanAction(100)
+
+    // THEN
+    val json = objectMapper.writeValueAsString(move)
+
+    // VERIFY
+    assertThat(json).isEqualTo("""{"type":"scan","scanDistance":100}""")
   }
 }

@@ -8,11 +8,15 @@ export interface PublicRobot {
   color: Color;
 }
 
-export interface Move {
+export interface Action {
+  type: string;
+}
+
+export interface Move extends Action {
   direction: string;
 }
 
-export interface Scan {
+export interface Scan extends Action {
   distance: string;
 }
 
@@ -21,7 +25,7 @@ export interface ActiveRobot {
   color: Color;
   fuel: number;
   position: Position;
-  nextAction: Move | Scan | undefined;
+  nextAction: Action | undefined;
   lastResult: string | undefined;
 }
 
@@ -29,9 +33,9 @@ export function correctTypesFromJson(activeBot: ActiveRobot): ActiveRobot {
   const correctRobot = activeBot;
   correctRobot.color = new Color(correctRobot.color.r, correctRobot.color.g, correctRobot.color.b);
 
-  if (correctRobot.nextAction != null && "distance" in correctRobot.nextAction) {
+  if (correctRobot.nextAction != null && correctRobot.nextAction.type == "scan") {
     correctRobot.nextAction = correctRobot.nextAction as Scan;
-  } else if (correctRobot.nextAction != null && "direction" in correctRobot.nextAction) {
+  } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "move") {
     correctRobot.nextAction = correctRobot.nextAction as Move;
   } else {
     correctRobot.nextAction = undefined;

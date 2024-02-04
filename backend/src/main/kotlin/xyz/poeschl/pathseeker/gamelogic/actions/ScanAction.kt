@@ -1,11 +1,12 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Tile
 
-class ScanAction(private val scanDistance: Int) : RobotAction<List<Tile>> {
+class ScanAction @JsonCreator constructor(val scanDistance: Int) : RobotAction<List<Tile>> {
 
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
     val scanResult = gameHandler.getTilesInDistance(robot.position, scanDistance)

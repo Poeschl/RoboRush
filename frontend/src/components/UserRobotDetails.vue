@@ -45,6 +45,23 @@
           </div>
         </div>
 
+        <div class="level" v-if="robot.nextAction">
+          <div class="level-left">
+            <div class="level-item is-size-5">
+              <FontAwesomeIcon icon="fa-solid fa-clipboard" class="mr-2" />
+              Next action
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <div title="The action of your robot in the next round">
+                <span v-if="robot.nextAction.type == 'move'">Move {{ (robot.nextAction as Move).direction }}</span>
+                <span v-if="robot.nextAction.type == 'scan'">Scan with distance {{ (robot.nextAction as Scan).distance }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="level" v-if="robot.lastResult">
           <div class="level-left">
             <div class="level-item is-size-5">
@@ -58,20 +75,6 @@
             </div>
           </div>
         </div>
-
-        <div class="level" v-if="robot.nextAction">
-          <div class="level-left">
-            <div class="level-item is-size-5">
-              <FontAwesomeIcon icon="fa-solid fa-clipboard" class="mr-2" />
-              Next action
-            </div>
-          </div>
-          <div class="level-right">
-            <div class="level-item">
-              <div title="The action of your robot in the next round">{{ robot.nextAction }}</div>
-            </div>
-          </div>
-        </div>
       </div>
       <div v-else class="has-text-centered">Your robot does not participate in the current game.</div>
     </div>
@@ -82,7 +85,7 @@
 <script setup lang="ts">
 import { useGameStore } from "@/stores/GameStore";
 import { computed, ref } from "vue";
-import type { ActiveRobot } from "@/models/Robot";
+import type { ActiveRobot, Move, Scan } from "@/models/Robot";
 import { useUserStore } from "@/stores/UserStore";
 
 const userStore = useUserStore();
