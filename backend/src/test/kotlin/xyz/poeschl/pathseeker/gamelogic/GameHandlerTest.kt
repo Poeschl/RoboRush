@@ -159,12 +159,30 @@ class GameHandlerTest {
     // WHEN
     val robotId = 1L
     val action = MoveAction(a(`$Direction`()))
+    val activeRobot = a(`$ActiveRobot`())
+    every { robotHandler.setNextMove(robotId, gameHandler, action) } returns activeRobot
 
     // THEN
     gameHandler.nextActionForRobot(robotId, action)
 
     // VERIFY
     verify { robotHandler.setNextMove(robotId, gameHandler, action) }
+    verify { websocketController.sendUserRobotData(activeRobot) }
+  }
+
+  @Test
+  fun nextActionForRobot_invalidNextMove() {
+    // WHEN
+    val robotId = 1L
+    val action = MoveAction(a(`$Direction`()))
+    every { robotHandler.setNextMove(robotId, gameHandler, action) } returns null
+
+    // THEN
+    gameHandler.nextActionForRobot(robotId, action)
+
+    // VERIFY
+    verify { robotHandler.setNextMove(robotId, gameHandler, action) }
+    verify(exactly = 0) { websocketController.sendUserRobotData(any()) }
   }
 
   @Test
