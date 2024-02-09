@@ -64,6 +64,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: superSecret
       # Insert an instance specific string
       #AUTH_ISSUER:
+      # Insert a random string with a recommended length of 64 chars. If changed, all users need to re-login.
+      #AUTH_KEY:
     labels:
       - traefik.enable=true
       - traefik.http.routers.brettbutler-backend.rule=PathPrefix(`/rest`)

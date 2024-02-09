@@ -17,6 +17,7 @@ http:
         healthCheck:
           path: /index.html
           port: 5173
+          interval: 1s
         servers:
           - url: http://localhost:5173/ # For linux and windows WSL
           - url: http://{{ env "HOSTNAME" }}:5173/ # For the windows host Machine
@@ -27,6 +28,7 @@ http:
         healthCheck:
           path: /api/ping
           port: 8080
+          interval: 1s
         servers:
           - url: http://localhost:8080/api/ # For linux and windows WSL
           - url: http://{{ env "HOSTNAME" }}:8080/api/ # For the windows host Machine

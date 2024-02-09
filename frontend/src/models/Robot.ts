@@ -1,15 +1,49 @@
 import type { Position } from "@/models/Map";
-import type Color from "@/models/Color";
-
-export interface Robot {
-  id: number;
-  position: Position;
-  fuel: number;
-  color: Color;
-}
+import Color from "@/models/Color";
+import { createRenderer } from "vue";
 
 export interface PublicRobot {
   id: number;
   position: Position;
   color: Color;
+}
+
+export interface Action {
+  type: string;
+}
+
+export interface Move extends Action {
+  direction: string;
+}
+
+export interface Scan extends Action {
+  distance: string;
+}
+
+export interface ActiveRobot {
+  id: number;
+  color: Color;
+  fuel: number;
+  position: Position;
+  nextAction: Action | undefined;
+  lastResult: string | undefined;
+}
+
+export function correctTypesFromJson(activeBot: ActiveRobot): ActiveRobot {
+  const correctRobot = activeBot;
+  correctRobot.color = new Color(correctRobot.color.r, correctRobot.color.g, correctRobot.color.b);
+
+  if (correctRobot.nextAction != null && correctRobot.nextAction.type == "scan") {
+    correctRobot.nextAction = correctRobot.nextAction as Scan;
+  } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "move") {
+    correctRobot.nextAction = correctRobot.nextAction as Move;
+  } else {
+    correctRobot.nextAction = undefined;
+  }
+
+  if (correctRobot.lastResult == null) {
+    correctRobot.lastResult = undefined;
+  }
+
+  return correctRobot;
 }

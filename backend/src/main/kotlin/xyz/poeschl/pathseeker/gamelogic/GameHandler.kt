@@ -45,6 +45,7 @@ class GameHandler(
 
   fun sendRobotUpdate(activeRobot: ActiveRobot) {
     websocketController.sendRobotUpdate(activeRobot)
+    websocketController.sendUserRobotData(activeRobot)
   }
 
   fun getFuelCostForMove(current: Position, next: Position): Int {
@@ -60,7 +61,8 @@ class GameHandler(
   }
 
   fun nextActionForRobot(robotId: Long, action: RobotAction<*>) {
-    robotHandler.setNextMove(robotId, this, action)
+    val activeRobot = robotHandler.setNextMove(robotId, this, action)
+    activeRobot?.let { websocketController.sendUserRobotData(activeRobot) }
   }
 
   fun executeAllRobotMoves() {
@@ -72,7 +74,11 @@ class GameHandler(
     val startPosition = robotHandler.getFirstCurrentlyFreePosition(startPositions)
 
     if (startPosition != null) {
-      robotHandler.registerRobotForGame(robotId, startPosition)
+      val activeRobot = robotHandler.registerRobotForGame(robotId, startPosition)
+      activeRobot?.let {
+        websocketController.sendRobotUpdate(activeRobot)
+        websocketController.sendUserRobotData(activeRobot)
+      }
     } else {
       throw PositionNotAllowedException("Could not place robot at a empty start position.")
     }

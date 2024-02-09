@@ -9,7 +9,6 @@ import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.models.*
-import xyz.poeschl.pathseeker.repositories.Robot
 import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
@@ -23,25 +22,6 @@ class RobotServiceTest {
   private val gameHandler = mockk<GameHandler>(relaxUnitFun = true)
 
   private val robotService = RobotService(robotRepository, gameHandler)
-
-  @Test
-  fun createRobot() {
-    // WHEN
-    val user = a(`$User`())
-
-    every { robotRepository.save(any()) } answers { firstArg() }
-
-    // THEN
-    val result = robotService.createRobot(user)
-
-    // VERIFY
-    val robotSlot = slot<Robot>()
-    verify {
-      robotRepository.save(capture(robotSlot))
-    }
-    assertThat(result).isEqualTo(robotSlot.captured)
-    assertThat(result.user).isEqualTo(user)
-  }
 
   @Test
   fun getRobotByUser() {

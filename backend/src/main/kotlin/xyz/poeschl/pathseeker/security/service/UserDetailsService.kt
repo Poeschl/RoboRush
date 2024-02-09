@@ -6,15 +6,19 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
+import xyz.poeschl.pathseeker.models.Color
+import xyz.poeschl.pathseeker.repositories.Robot
+import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.security.repository.UserRepository
-import xyz.poeschl.pathseeker.service.RobotService
+import xyz.poeschl.pathseeker.security.utils.JwtTokenProvider
 
 @Configuration
 class UserDetailsService(
   private val userRepository: UserRepository,
-  private val robotService: RobotService,
-  private val passwordEncoder: PasswordEncoder
+  private val robotRepository: RobotRepository,
+  private val passwordEncoder: PasswordEncoder,
+  private val jwtTokenProvider: JwtTokenProvider
 ) : UserDetailsService {
 
   companion object {
@@ -28,6 +32,14 @@ class UserDetailsService(
   fun registerNewUser(username: String, password: String) {
     val encodedPassword = passwordEncoder.encode(password)
     val user = userRepository.save(User(username, encodedPassword))
-    robotService.createRobot(user)
+    robotRepository.save(Robot(null, Color.randomColor(), user))
+  }
+
+  fun loadUserByToken(token: String): UserDetails? {
+    return if (token.isNotBlank() && jwtTokenProvider.validateToken(token)) {
+      loadUserByUsername(jwtTokenProvider.getUsername(token))
+    } else {
+      null
+    }
   }
 }

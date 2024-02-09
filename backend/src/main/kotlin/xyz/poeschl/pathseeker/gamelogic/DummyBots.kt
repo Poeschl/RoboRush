@@ -2,32 +2,38 @@ package xyz.poeschl.pathseeker.gamelogic
 
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
+import xyz.poeschl.pathseeker.configuration.GameLogic
+import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
+import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
+import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
+import xyz.poeschl.pathseeker.models.ActiveRobot
+import xyz.poeschl.pathseeker.models.Color
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.repositories.Robot
+import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.security.repository.UserRepository
-import xyz.poeschl.pathseeker.service.RobotService
 import java.util.concurrent.TimeUnit
 
-// @GameLogic
-@Profile("!prod")
+@GameLogic
+@Profile("!prod") // The dummy bots are only available when the profile is not "prod" (like inside the docker image)
 class DummyBots(
-  robotService: RobotService,
+  robotRepository: RobotRepository,
   userRepository: UserRepository,
   private val gameHandler: GameHandler,
   private val gameStateService: GameStateMachine
 ) {
 
-  private val robot1: Robot
-  private val robot2: Robot
-
-  init {
-    val dummyUser1 = userRepository.findByUsername("dummy1") ?: userRepository.save(User(null, "dummy1", ""))
-    val dummyUser2 = userRepository.findByUsername("dummy2") ?: userRepository.save(User(null, "dummy2", ""))
-    robot1 = robotService.getRobotByUser(dummyUser1) ?: robotService.createRobot(dummyUser1)
-    robot2 = robotService.getRobotByUser(dummyUser2) ?: robotService.createRobot(dummyUser2)
+  companion object {
+    // Pass: 12345678
+    private const val DUMMY_PASSWORD = "\$2a\$10\$G/P5WCSp0c4YSq9wFrdxBOUEZU4aPSmfvs/Ev4jxIT/r02v2/FRii"
   }
+
+  private val dummyUser1: User = userRepository.findByUsername("dummy1") ?: userRepository.save(User(null, "dummy1", DUMMY_PASSWORD))
+  private val dummyUser2: User = userRepository.findByUsername("dummy2") ?: userRepository.save(User(null, "dummy2", DUMMY_PASSWORD))
+  private val robot1 = robotRepository.findRobotByUser(dummyUser1) ?: robotRepository.save(Robot(null, Color.randomColor(), dummyUser1))
+  private val robot2 = robotRepository.findRobotByUser(dummyUser2) ?: robotRepository.save(Robot(null, Color.randomColor(), dummyUser2))
 
   @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
   fun dummyRobots() {
@@ -37,11 +43,25 @@ class DummyBots(
     } else if (gameStateService.isInState(GameState.WAIT_FOR_ACTION)) {
       val activeRobot1 = gameHandler.getActiveRobot(robot1.id!!)!!
       val activeRobot2 = gameHandler.getActiveRobot(robot2.id!!)!!
-      if (activeRobot1.nextAction == null) {
-        gameHandler.nextActionForRobot(activeRobot1.id, MoveAction(Direction.entries.random()))
-      }
-      if (activeRobot2.nextAction == null) {
-        gameHandler.nextActionForRobot(activeRobot2.id, MoveAction(Direction.entries.random()))
+
+      planNextPossibleRandomMove(activeRobot1)
+      planNextPossibleRandomMove(activeRobot2)
+    }
+  }
+
+  private fun planNextPossibleRandomMove(robot: ActiveRobot) {
+    if (robot.nextAction == null && robot.fuel > 0) {
+      var moveValid = false
+      var triesLeft = 10
+      while (!moveValid && triesLeft > 0) {
+        try {
+          gameHandler.nextActionForRobot(robot.id, MoveAction(Direction.entries.random()))
+          moveValid = true
+        } catch (_: PositionNotAllowedException) {
+        } catch (_: PositionOutOfMapException) {
+        } catch (_: InsufficientFuelException) {
+        }
+        triesLeft--
       }
     }
   }

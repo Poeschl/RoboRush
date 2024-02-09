@@ -6,7 +6,6 @@ import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.models.ActiveRobot
-import xyz.poeschl.pathseeker.models.Color
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.PublicRobot
 import xyz.poeschl.pathseeker.repositories.Robot
@@ -15,10 +14,6 @@ import xyz.poeschl.pathseeker.security.repository.User
 
 @Service
 class RobotService(private val robotRepository: RobotRepository, private val gameHandler: GameHandler) {
-
-  fun createRobot(user: User): Robot {
-    return robotRepository.save(Robot(null, Color.randomColor(), user))
-  }
 
   fun getRobotByUser(user: User): Robot? {
     return robotRepository.findRobotByUser(user)

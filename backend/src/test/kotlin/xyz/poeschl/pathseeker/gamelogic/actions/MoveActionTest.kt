@@ -1,5 +1,6 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -22,6 +23,7 @@ import java.util.stream.Stream
 class MoveActionTest {
 
   private val gameHandler = mockk<GameHandler>(relaxUnitFun = true)
+  private val objectMapper = jacksonObjectMapper()
 
   companion object {
     @JvmStatic
@@ -115,5 +117,17 @@ class MoveActionTest {
     assertThat(robot.position).isEqualTo(expectedPosition)
 
     verify { gameHandler.sendRobotUpdate(robot) }
+  }
+
+  @Test
+  fun checkJsonForMove() {
+    // WHEN
+    val move = MoveAction(Direction.EAST)
+
+    // THEN
+    val json = objectMapper.writeValueAsString(move)
+
+    // VERIFY
+    assertThat(json).isEqualTo("""{"type":"move","direction":"EAST"}""")
   }
 }

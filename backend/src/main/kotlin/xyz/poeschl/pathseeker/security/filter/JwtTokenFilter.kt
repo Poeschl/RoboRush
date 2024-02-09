@@ -1,4 +1,4 @@
-package xyz.poeschl.pathseeker.security
+package xyz.poeschl.pathseeker.security.filter
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

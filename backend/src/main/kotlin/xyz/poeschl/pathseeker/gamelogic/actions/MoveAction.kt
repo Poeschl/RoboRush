@@ -1,5 +1,6 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
@@ -8,7 +9,7 @@ import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.Position
 
-class MoveAction(private val direction: Direction) : RobotAction<Position> {
+class MoveAction @JsonCreator constructor(val direction: Direction) : RobotAction<Position> {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotHandler::class.java)

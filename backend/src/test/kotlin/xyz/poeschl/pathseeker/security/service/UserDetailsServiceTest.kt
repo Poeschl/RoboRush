@@ -1,29 +1,30 @@
 package xyz.poeschl.pathseeker.security.service
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
+import xyz.poeschl.pathseeker.repositories.Robot
+import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.security.repository.UserRepository
-import xyz.poeschl.pathseeker.service.RobotService
+import xyz.poeschl.pathseeker.security.utils.JwtTokenProvider
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$String`
 import xyz.poeschl.pathseeker.test.utils.builder.SecurityBuilder.Companion.`$User`
 import java.time.ZonedDateTime
 
 class UserDetailsServiceTest {
 
   private val userRepository = mockk<UserRepository>()
-  private val robotService = mockk<RobotService>()
+  private val robotRepository = mockk<RobotRepository>()
   private val passwordEncoder = mockk<PasswordEncoder>()
+  private val jwtTokenProvider = mockk<JwtTokenProvider>()
 
-  private val userDetailsService = UserDetailsService(userRepository, robotService, passwordEncoder)
+  private val userDetailsService = UserDetailsService(userRepository, robotRepository, passwordEncoder, jwtTokenProvider)
 
   @Test
   fun loadUserByUsername() {
@@ -67,7 +68,7 @@ class UserDetailsServiceTest {
 
     every { passwordEncoder.encode(password) } returns encodedPassword
     every { userRepository.save(user) } returns savedUser
-    every { robotService.createRobot(savedUser) } returns mockk()
+    every { robotRepository.save(any()) } returns mockk()
 
     // THEN
     userDetailsService.registerNewUser(userName, password)
@@ -85,6 +86,55 @@ class UserDetailsServiceTest {
     assertThat(userSlot.captured.isAccountNonExpired).isTrue()
     assertThat(userSlot.captured.isCredentialsNonExpired).isTrue()
 
-    verify { robotService.createRobot(savedUser) }
+    val robotSlot = slot<Robot>()
+    verify { robotRepository.save(capture(robotSlot)) }
+
+    assertThat(robotSlot.captured.user).isEqualTo(savedUser)
+    assertThat(robotSlot.captured.id).isNull()
+  }
+
+  @Test
+  fun loadUserByToken() {
+    // WHEN
+    val token = a(`$String`("token"))
+    val username = a(`$String`("user"))
+    val user = a(`$User`())
+
+    val spyService = spyk(userDetailsService)
+
+    every { jwtTokenProvider.validateToken(token) } returns true
+    every { jwtTokenProvider.getUsername(token) } returns username
+    every { spyService.loadUserByUsername(username) } returns user
+
+    // THEN
+    val result = spyService.loadUserByToken(token)
+
+    // VERIFY
+    assertThat(result).isEqualTo(user)
+  }
+
+  @Test
+  fun loadUserByToken_emptyToken() {
+    // WHEN
+
+    // THEN
+    val result = userDetailsService.loadUserByToken("")
+
+    // VERIFY
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun loadUserByToken_invalidToken() {
+    // WHEN
+    val token = a(`$String`("token"))
+
+    every { jwtTokenProvider.validateToken(token) } returns false
+
+    // THEN
+    val result = userDetailsService.loadUserByToken(token)
+
+    // VERIFY
+    assertThat(result).isNull()
   }
 }
