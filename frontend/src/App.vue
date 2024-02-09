@@ -10,8 +10,7 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
 import { useGameStore } from "@/stores/GameStore";
-import WebsocketService from "@/services/WebsocketService";
-import { watch } from "vue";
+import { computed, type ComputedRef, watch } from "vue";
 import { useUserStore } from "@/stores/UserStore";
 import { useSystemStore } from "@/stores/SystemStore";
 import { useRouter } from "vue-router";
@@ -25,11 +24,9 @@ const systemStore = useSystemStore();
 const gameStore = useGameStore();
 
 //Start the websocket
-const websocketService = new WebsocketService(systemStore, userStore);
-
 gameStore.updateMap();
 gameStore.updateRobots();
-gameStore.setWebsocketService(websocketService);
+gameStore.initWebsocket(computed(() => userStore.user));
 
 if (userStore.loggedIn) {
   gameStore.retrieveUserRobotState();

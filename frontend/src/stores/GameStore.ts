@@ -1,17 +1,18 @@
 import { defineStore } from "pinia";
-import type { Ref } from "vue";
+import type { ComputedRef, Ref, UnwrapRef } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot } from "@/models/Robot";
 import MapService from "@/services/MapService";
 import type { Tile } from "@/models/Map";
 import RobotService from "@/services/RobotService";
-import WebsocketService, { WebSocketTopic } from "@/services/WebsocketService";
+import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
+import type { LoginRequest, RegisterRequest, User } from "@/models/User";
 
 const mapService = new MapService();
 const robotService = new RobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
-  let websocketService: WebsocketService | undefined;
+  let websocketService = useWebSocket();
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalHeightMap: Ref<{ tiles: Tile[] }> = ref({ tiles: [] });
@@ -58,8 +59,8 @@ export const useGameStore = defineStore("gameStore", () => {
       });
   }
 
-  function setWebsocketService(serviceInput: WebsocketService) {
-    websocketService = serviceInput;
+  function initWebsocket(user: ComputedRef<User | undefined>) {
+    websocketService.initWebsocket(user);
     websocketService.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
     websocketService.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
   }
@@ -74,5 +75,5 @@ export const useGameStore = defineStore("gameStore", () => {
     userRobot.value = activeRobot;
   }
 
-  return { heightMap, robots, userRobot, updateMap, updateRobots, setWebsocketService, retrieveUserRobotState };
+  return { heightMap, robots, userRobot, updateMap, updateRobots, initWebsocket, retrieveUserRobotState };
 });

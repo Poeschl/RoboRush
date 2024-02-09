@@ -1,74 +1,68 @@
 import { Client, StompHeaders, Versions } from "@stomp/stompjs";
-import type { ActiveRobot, Move, PublicRobot, Scan } from "@/models/Robot";
-import type { Store } from "pinia";
+import type { ActiveRobot, PublicRobot } from "@/models/Robot";
+import { correctTypesFromJson } from "@/models/Robot";
 import Color from "@/models/Color";
+import type { ComputedRef } from "vue";
 import { watch } from "vue";
 import type { User } from "@/models/User";
-import { correctTypesFromJson } from "@/models/Robot";
 
 export enum WebSocketTopic {
   PUBLIC_ROBOT_TOPIC = 0,
   PRIVATE_ROBOT_TOPIC,
 }
 
-export default class WebsocketService {
-  private websocketPath = "/api/ws";
-  private publicRobotUpdateTopic = "/topic/robot";
-  private userRobotUpdateQueue = "/queue/robot";
-  private systemStore: Store;
-  private websocketClient: Client | undefined;
-  private topicListener = new Map<WebSocketTopic, Function>();
+export function useWebSocket() {
+  const websocketPath = "/api/ws";
+  const publicRobotUpdateTopic = "/topic/robot";
+  const userRobotUpdateQueue = "/queue/robot";
+  const topicListener = new Map<WebSocketTopic, Function>();
+  let websocketClient: Client | undefined = undefined;
 
-  constructor(systemStore: Store, userStore: Store) {
-    this.systemStore = systemStore;
-    this.initWebsocket(userStore);
-  }
-
-  initWebsocket(userStore: Store) {
-    this.startSharedClient(userStore.user);
+  const initWebsocket = (user: ComputedRef<User | undefined>) => {
+    startSharedClient(user.value);
     watch(
-      () => userStore.loggedIn,
+      () => user.value == undefined,
       (current, previous, onCleanup) => {
-        this.destroySharedClient();
-        this.startSharedClient(userStore.user);
+        destroySharedClient();
+        startSharedClient(user.value);
       },
     );
-  }
+  };
 
-  registerForTopicCallback(topic: WebSocketTopic, callback: Function) {
-    this.topicListener.set(topic, callback);
-  }
+  const registerForTopicCallback = (topic: WebSocketTopic, callback: Function) => {
+    topicListener.set(topic, callback);
+  };
 
-  private startSharedClient(user: User | undefined) {
-    const client = this.createClient(user);
+  const startSharedClient = (user: User | undefined) => {
+    const client = createClient(user);
 
     client.onConnect = () => {
       console.info("Websocket connected");
 
-      this.connectToPublicTopics(client);
+      connectToPublicTopics(client);
 
       if (user != undefined) {
-        this.connectToUserQueue(client, user.username);
+        connectToUserQueue(client, user.username);
       }
     };
 
     client.activate();
-    this.websocketClient = client;
-  }
+    websocketClient = client;
+  };
 
-  private destroySharedClient() {
-    if (this.websocketClient != undefined) {
-      this.websocketClient.deactivate();
+  const destroySharedClient = () => {
+    if (websocketClient != undefined) {
+      websocketClient.deactivate();
     }
-  }
+  };
 
   /**
    * Authentication will be automatically done by the first request which is a plain http request and secured by Spring Security.
    * @private
    */
-  private createClient(user: User | undefined): Client {
+  const createClient = (user: User | undefined): Client => {
     const protocol = location.protocol == "https:" ? "wss" : "ws";
-    const websocketUrl = `${protocol}://${location.host}${this.websocketPath}`;
+    const websocketUrl = `${protocol}://${location.host}${websocketPath}`;
 
     let connectHeaders: StompHeaders | undefined = undefined;
     if (user != undefined) {
@@ -91,30 +85,28 @@ export default class WebsocketService {
 
       onWebSocketClose: (closeEvent: CloseEvent) => {
         console.error("Websocket disconnected.");
-        // @ts-ignore Since the type injection with store is black magic
-        if (!closeEvent.wasClean) {
-          this.systemStore.backendAvailable = false;
-        }
       },
     });
-  }
+  };
 
-  private connectToPublicTopics(client: Client) {
-    client.subscribe(this.publicRobotUpdateTopic, (message) => {
+  const connectToPublicTopics = (client: Client) => {
+    client.subscribe(publicRobotUpdateTopic, (message) => {
       const publicRobot: PublicRobot = JSON.parse(message.body);
       publicRobot.color = new Color(publicRobot.color.r, publicRobot.color.g, publicRobot.color.b);
-      this.topicListener.get(WebSocketTopic.PUBLIC_ROBOT_TOPIC)?.call(null, publicRobot);
+      topicListener.get(WebSocketTopic.PUBLIC_ROBOT_TOPIC)?.call(null, publicRobot);
     });
-  }
+  };
 
-  private connectToUserQueue(client: Client, username: string) {
-    client.subscribe(`/user/${username}${this.userRobotUpdateQueue}`, (message) => {
+  const connectToUserQueue = (client: Client, username: string) => {
+    client.subscribe(`/user/${username}${userRobotUpdateQueue}`, (message) => {
       if (message.body.length > 0) {
         const userRobot: ActiveRobot = JSON.parse(message.body);
-        this.topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, correctTypesFromJson(userRobot));
+        topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, correctTypesFromJson(userRobot));
       } else {
-        this.topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, undefined);
+        topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, undefined);
       }
     });
-  }
+  };
+
+  return { initWebsocket, registerForTopicCallback };
 }
