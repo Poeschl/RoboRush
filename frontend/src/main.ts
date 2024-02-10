@@ -12,6 +12,7 @@ import {
   faGasPump,
   faLocationDot,
   faRobot,
+  faRotate,
   faRoute,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
@@ -25,7 +26,7 @@ const app = createApp(App);
 const runtimeConfigPlugin = RuntimeConfigurationPlugin;
 app.use(runtimeConfigPlugin);
 
-library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket, faUser, faCopy, faRobot, faGasPump, faLocationDot, faClipboard);
+library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket, faUser, faCopy, faRobot, faGasPump, faLocationDot, faClipboard, faRotate);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);

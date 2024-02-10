@@ -1,18 +1,24 @@
 import { defineStore } from "pinia";
-import type { ComputedRef, Ref, UnwrapRef } from "vue";
+import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot } from "@/models/Robot";
 import MapService from "@/services/MapService";
 import type { Tile } from "@/models/Map";
 import RobotService from "@/services/RobotService";
 import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
-import type { LoginRequest, RegisterRequest, User } from "@/models/User";
+import type { User } from "@/models/User";
+import { useGameInfo } from "@/services/GameService";
+import type { Game } from "@/models/Game";
+import { GameState } from "@/models/Game";
 
 const mapService = new MapService();
 const robotService = new RobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
-  let websocketService = useWebSocket();
+  const websocketService = useWebSocket();
+  const gameService = useGameInfo();
+
+  const currentGame = ref<Game>({ currentState: GameState.ENDED });
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalHeightMap: Ref<{ tiles: Tile[] }> = ref({ tiles: [] });
@@ -63,6 +69,7 @@ export const useGameStore = defineStore("gameStore", () => {
     websocketService.initWebsocket(user);
     websocketService.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
     websocketService.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
+    websocketService.registerForTopicCallback(WebSocketTopic.GAME_STATE_TOPIC, updateGameStateTo);
   }
 
   function updateRobot(updatedRobot: PublicRobot) {
@@ -75,5 +82,13 @@ export const useGameStore = defineStore("gameStore", () => {
     userRobot.value = activeRobot;
   }
 
-  return { heightMap, robots, userRobot, updateMap, updateRobots, initWebsocket, retrieveUserRobotState };
+  function updateGameInfo() {
+    gameService.getCurrentGame().then((gameInfo) => (currentGame.value = gameInfo));
+  }
+
+  function updateGameStateTo(gameState: GameState) {
+    currentGame.value.currentState = gameState;
+  }
+
+  return { heightMap, robots, userRobot, updateMap, updateRobots, updateGameInfo, initWebsocket, retrieveUserRobotState, currentGame };
 });

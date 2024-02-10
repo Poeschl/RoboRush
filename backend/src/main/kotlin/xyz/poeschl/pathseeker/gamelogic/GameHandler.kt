@@ -7,16 +7,14 @@ import xyz.poeschl.pathseeker.exceptions.PositionOutOfMapException
 import xyz.poeschl.pathseeker.gamelogic.actions.RobotAction
 import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
-import xyz.poeschl.pathseeker.models.ActiveRobot
-import xyz.poeschl.pathseeker.models.Position
-import xyz.poeschl.pathseeker.models.Size
-import xyz.poeschl.pathseeker.models.Tile
+import xyz.poeschl.pathseeker.models.*
 
 @GameLogic
 class GameHandler(
   private val mapHandler: MapHandler,
   private val robotHandler: RobotHandler,
-  private val websocketController: WebsocketController
+  private val websocketController: WebsocketController,
+  private val gameStateMachine: GameStateMachine
 ) {
 
   fun getHeightMap(): List<Tile> {
@@ -87,5 +85,9 @@ class GameHandler(
   fun prepareNewGame() {
     mapHandler.createNewRandomMap(Size(16, 8))
     robotHandler.clearActiveRobots()
+  }
+
+  fun getPublicGameInfo(): Game {
+    return Game(gameStateMachine.getCurrentState())
   }
 }

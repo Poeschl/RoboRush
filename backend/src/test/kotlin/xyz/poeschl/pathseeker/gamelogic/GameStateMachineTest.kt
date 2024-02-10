@@ -1,12 +1,17 @@
 package xyz.poeschl.pathseeker.gamelogic
 
+import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
+import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
 import java.util.stream.Stream
 
 class GameStateMachineTest {
@@ -35,7 +40,9 @@ class GameStateMachineTest {
     )
   }
 
-  private val gameStateService = GameStateMachine()
+  private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
+
+  private val gameStateService = GameStateMachine(websocketController)
 
   @ParameterizedTest
   @MethodSource("stateTestArgs")
@@ -46,6 +53,8 @@ class GameStateMachineTest {
     if (successFull) {
       // THEN be successful
       gameStateService.setGameState(testState)
+
+      verify { websocketController.sendGameStateUpdate(testState) }
     } else {
       // VERIFY
       assertThrows<InvalidGameStateException> {
@@ -91,5 +100,18 @@ class GameStateMachineTest {
 
     // VERIFY
     assertThat(result).isFalse()
+  }
+
+  @Test
+  fun getCurrentState() {
+    // WHEN
+    val state = a(`$GameState`())
+    gameStateService.setGameState(state)
+
+    // THEN
+    val result = gameStateService.getCurrentState()
+
+    // VERIFY
+    assertThat(result).isEqualTo(state)
   }
 }

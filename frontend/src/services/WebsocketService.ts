@@ -5,15 +5,18 @@ import Color from "@/models/Color";
 import type { ComputedRef } from "vue";
 import { watch } from "vue";
 import type { User } from "@/models/User";
+import type { GameState } from "@/models/Game";
 
 export enum WebSocketTopic {
   PUBLIC_ROBOT_TOPIC = 0,
   PRIVATE_ROBOT_TOPIC,
+  GAME_STATE_TOPIC,
 }
 
 export function useWebSocket() {
   const websocketPath = "/api/ws";
   const publicRobotUpdateTopic = "/topic/robot";
+  const publicGameStateUpdateTopic = "/topic/game/state";
   const userRobotUpdateQueue = "/queue/robot";
   const topicListener = new Map<WebSocketTopic, Function>();
   let websocketClient: Client | undefined = undefined;
@@ -94,6 +97,11 @@ export function useWebSocket() {
       const publicRobot: PublicRobot = JSON.parse(message.body);
       publicRobot.color = new Color(publicRobot.color.r, publicRobot.color.g, publicRobot.color.b);
       topicListener.get(WebSocketTopic.PUBLIC_ROBOT_TOPIC)?.call(null, publicRobot);
+    });
+
+    client.subscribe(publicGameStateUpdateTopic, (message) => {
+      const gameState: GameState = JSON.parse(message.body);
+      topicListener.get(WebSocketTopic.GAME_STATE_TOPIC)?.call(null, gameState);
     });
   };
 
