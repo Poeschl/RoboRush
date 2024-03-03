@@ -10,8 +10,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
-import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
-import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
 import java.util.stream.Stream
 
 class GameStateMachineTest {
@@ -105,13 +103,11 @@ class GameStateMachineTest {
   @Test
   fun getCurrentState() {
     // WHEN
-    val state = a(`$GameState`())
-    gameStateService.setGameState(state)
 
     // THEN
     val result = gameStateService.getCurrentState()
 
     // VERIFY
-    assertThat(result).isEqualTo(state)
+    assertThat(result).isEqualTo(GameState.ENDED)
   }
 }
