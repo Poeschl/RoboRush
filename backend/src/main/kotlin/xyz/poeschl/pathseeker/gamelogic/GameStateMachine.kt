@@ -2,10 +2,11 @@ package xyz.poeschl.pathseeker.gamelogic
 
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
+import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
 
 @GameLogic
-class GameStateMachine {
+class GameStateMachine(private val websocketController: WebsocketController) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameStateMachine::class.java)
@@ -15,8 +16,9 @@ class GameStateMachine {
 
   fun setGameState(state: GameState) {
     if (state.validPredecessor.contains(currentGameState)) {
-      LOGGER.debug("Game state change: {} -> {}", currentGameState, state)
       currentGameState = state
+      websocketController.sendGameStateUpdate(currentGameState)
+      LOGGER.debug("Game state change: {} -> {}", currentGameState, state)
     } else {
       throw InvalidGameStateException(
         "Gamestate $state can't be initiated from current state $currentGameState. Allowed predecessor " +
@@ -27,6 +29,10 @@ class GameStateMachine {
 
   fun isInState(state: GameState): Boolean {
     return currentGameState == state
+  }
+
+  fun getCurrentState(): GameState {
+    return currentGameState
   }
 }
 

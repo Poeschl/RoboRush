@@ -18,6 +18,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 
 class GameHandlerTest {
@@ -25,8 +26,9 @@ class GameHandlerTest {
   private val mapHandler = mockk<MapHandler>(relaxUnitFun = true)
   private val robotHandler = mockk<RobotHandler>(relaxUnitFun = true)
   private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
+  private val gameStateMachine = mockk<GameStateMachine>(relaxUnitFun = true)
 
-  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController)
+  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine)
 
   @Test
   fun getHeightMap() {
@@ -241,5 +243,18 @@ class GameHandlerTest {
     // VERIFY
     verify { mapHandler.createNewRandomMap(Size(16, 8)) }
     verify { robotHandler.clearActiveRobots() }
+  }
+
+  @Test
+  fun getPublicGameInfo() {
+    // WHEN
+    val state = a(`$GameState`())
+    every { gameStateMachine.getCurrentState() } returns state
+
+    // THEN
+    val game = gameHandler.getPublicGameInfo()
+
+    // VERIFY
+    assertThat(game.currentState).isEqualTo(state)
   }
 }

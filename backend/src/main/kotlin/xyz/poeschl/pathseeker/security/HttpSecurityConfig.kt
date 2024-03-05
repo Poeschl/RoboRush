@@ -41,6 +41,7 @@ class HttpSecurityConfig(
         authorize("/ws", permitAll)
         authorize("/map/**", permitAll)
         authorize("/robot/all", permitAll)
+        authorize("/game", permitAll)
 
         authorize(anyRequest, authenticated)
       }

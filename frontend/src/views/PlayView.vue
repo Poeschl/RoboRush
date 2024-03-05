@@ -9,6 +9,9 @@
     <div class="column">
       <UserRobotDetails />
     </div>
+    <div class="column">
+      <GameDetails />
+    </div>
   </div>
 </template>
 
@@ -20,6 +23,7 @@ import type { PublicRobot } from "@/models/Robot";
 import { useGameStore } from "@/stores/GameStore";
 import RobotsList from "@/components/PublicRobotsList.vue";
 import UserRobotDetails from "@/components/UserRobotDetails.vue";
+import GameDetails from "@/components/GameDetails.vue";
 
 const gameStore = useGameStore();
 

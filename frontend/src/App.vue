@@ -24,6 +24,7 @@ const systemStore = useSystemStore();
 const gameStore = useGameStore();
 
 //Start the websocket
+gameStore.updateGameInfo();
 gameStore.updateMap();
 gameStore.updateRobots();
 gameStore.initWebsocket(computed(() => userStore.user));

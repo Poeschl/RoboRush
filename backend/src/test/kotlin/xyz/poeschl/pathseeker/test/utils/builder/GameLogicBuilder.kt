@@ -2,6 +2,7 @@ package xyz.poeschl.pathseeker.test.utils.builder
 
 import org.junit.jupiter.api.Disabled
 import xyz.poeschl.pathseeker.configuration.Builder
+import xyz.poeschl.pathseeker.gamelogic.GameState
 import xyz.poeschl.pathseeker.models.ActiveRobotBuilder
 import xyz.poeschl.pathseeker.models.ColorBuilder
 import xyz.poeschl.pathseeker.models.Direction
@@ -60,5 +61,7 @@ class GameLogicBuilder {
       .withY(a(`$Int`(0, Int.MAX_VALUE)))
 
     fun `$Direction`() = Builder { Direction.entries.random() }
+
+    fun `$GameState`() = Builder { GameState.entries.random() }
   }
 }
