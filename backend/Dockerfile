@@ -1,5 +1,4 @@
-# Use jdk 18 to analyze dependencies bacause jdeps from JDK 17 has a bug
-FROM  docker.io/eclipse-temurin:18-jdk-alpine as detect-deps
+FROM  docker.io/eclipse-temurin:21-jdk-alpine as detect-deps
 
 COPY build/libs/backend-*.jar /app/app.jar
 
@@ -18,7 +17,7 @@ RUN mkdir /app/unpacked && \
     ./app.jar > /deps.info && \
     cat /deps.info
 
-FROM  docker.io/eclipse-temurin:17-jdk-alpine as slim-jre
+FROM  docker.io/eclipse-temurin:21-jdk-alpine as slim-jre
 
 RUN apk add --no-cache binutils
 COPY --from=detect-deps /deps.info /deps.info

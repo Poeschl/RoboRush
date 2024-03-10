@@ -9,7 +9,7 @@ plugins {
 
 group = 'xyz.poeschl.pathseeker'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
 
 repositories {
   mavenCentral()
@@ -60,7 +60,7 @@ noArg {
 
 kotlin {
   jvmToolchain {
-    languageVersion.set(JavaLanguageVersion.of("17"))
+    languageVersion.set(JavaLanguageVersion.of("21"))
   }
 }
 
