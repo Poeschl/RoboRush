@@ -39,7 +39,7 @@ spring:
   config.activate.on-profile: test
 
   datasource:
-    url: jdbc:tc:postgresql:15-alpine:///postgres?user=postgres
+    url: jdbc:tc:postgresql:16-alpine:///postgres?user=postgres
 
 logging:
   level:
