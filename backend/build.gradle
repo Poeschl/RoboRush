@@ -70,6 +70,12 @@ kapt {
   }
 }
 
-tasks.named('test') {
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+tasks.withType(Test).configureEach {
   useJUnitPlatform()
+
+  testLogging {
+    events TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED
+  }
 }
