@@ -63,6 +63,8 @@ class GameHandler(
     activeRobot?.let { websocketController.sendUserRobotData(activeRobot) }
   }
 
+  fun robotMovesReceived(): Boolean = robotHandler.countPendingRobotActions() > 0
+
   fun executeAllRobotMoves() {
     robotHandler.executeRobotActions(this)
   }

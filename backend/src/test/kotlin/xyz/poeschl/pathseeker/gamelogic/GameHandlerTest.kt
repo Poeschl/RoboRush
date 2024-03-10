@@ -20,6 +20,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Ac
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
+import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
 
 class GameHandlerTest {
 
@@ -256,5 +257,30 @@ class GameHandlerTest {
 
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
+  }
+
+  @Test
+  fun robotMovesReceived() {
+    // WHEN
+    val count = a(`$Int`()) + 1
+    every { robotHandler.countPendingRobotActions() } returns count
+
+    // THEN
+    val pending = gameHandler.robotMovesReceived()
+
+    // VERIFY
+    assertThat(pending).isTrue()
+  }
+
+  @Test
+  fun robotMovesReceived_none() {
+    // WHEN
+    every { robotHandler.countPendingRobotActions() } returns 0
+
+    // THEN
+    val pending = gameHandler.robotMovesReceived()
+
+    // VERIFY
+    assertThat(pending).isFalse()
   }
 }

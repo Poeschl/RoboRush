@@ -16,6 +16,7 @@ import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
 import xyz.poeschl.pathseeker.test.utils.builder.SecurityBuilder.Companion.`$User`
 import java.util.*
@@ -396,6 +397,22 @@ class RobotHandlerTest {
     // VERIFY
     // should be occupied since movingRobot will move there in the next turn
     assertThat(isFree).isFalse()
+  }
+
+  @Test
+  fun countPendingRobotActions() {
+    // WHEN
+    val robot1 = createSingleActiveRobot(1)
+    val robot2 = createSingleActiveRobot(2)
+    val robot3 = createSingleActiveRobot(3)
+    robot1.nextAction = MoveAction(a(`$Direction`()))
+    robot2.nextAction = MoveAction(a(`$Direction`()))
+
+    // THEN
+    val pending = robotHandler.countPendingRobotActions()
+
+    // VERIFY
+    assertThat(pending).isEqualTo(2)
   }
 
   /***
