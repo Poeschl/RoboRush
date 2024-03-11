@@ -7,12 +7,17 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowRightFromBracket,
   faArrowRightToBracket,
+  faCaretDown,
+  faCaretLeft,
+  faCaretRight,
+  faCaretUp,
   faClipboard,
   faGasPump,
   faLocationDot,
   faRobot,
   faRotate,
   faRoute,
+  faSatelliteDish,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -24,7 +29,24 @@ import { Env } from "@/Env";
 
 const app = createApp(App);
 
-library.add(faRoute, faUserPlus, faArrowRightToBracket, faArrowRightFromBracket, faUser, faCopy, faRobot, faGasPump, faLocationDot, faClipboard, faRotate);
+library.add(
+  faRoute,
+  faUserPlus,
+  faArrowRightToBracket,
+  faArrowRightFromBracket,
+  faUser,
+  faCopy,
+  faRobot,
+  faGasPump,
+  faLocationDot,
+  faClipboard,
+  faRotate,
+  faCaretUp,
+  faCaretRight,
+  faCaretDown,
+  faCaretLeft,
+  faSatelliteDish,
+);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
 app.use(router);
