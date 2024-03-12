@@ -38,6 +38,7 @@ class GameStateMachine(private val websocketController: WebsocketController) {
 
 enum class GameState {
   PREPARE,
+  WAIT_FOR_PLAYERS,
   WAIT_FOR_ACTION,
   ACTION,
   ENDED;
@@ -45,7 +46,8 @@ enum class GameState {
   val validPredecessor: List<GameState>
     get() = when (this) {
       PREPARE -> listOf(ENDED)
-      WAIT_FOR_ACTION -> listOf(PREPARE, ACTION)
+      WAIT_FOR_PLAYERS -> listOf(PREPARE)
+      WAIT_FOR_ACTION -> listOf(WAIT_FOR_PLAYERS, ACTION)
       ACTION -> listOf(WAIT_FOR_ACTION)
       ENDED -> listOf(ACTION)
     }

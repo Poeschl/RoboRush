@@ -77,6 +77,10 @@ class RobotHandler(
     }
   }
 
+  fun countPendingRobotActions(): Int {
+    return activeRobots.map { it.nextAction }.count { it != null }
+  }
+
   fun getActiveRobot(robotId: Long): ActiveRobot? {
     return activeRobots.firstOrNull { it.id == robotId }
   }
