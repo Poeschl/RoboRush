@@ -1,11 +1,13 @@
 import axios from "axios";
 
-export default class SystemService {
-  private baseUrl = "/api";
+export default function useSystemService() {
+  const baseUrl = "/api";
 
-  getPing(): Promise<number> {
+  const getPing = (): Promise<number> => {
     return axios
-      .get(`${this.baseUrl}/ping`, { timeout: 5000 }) // set 5 seconds timeout for ping
+      .get(`${baseUrl}/ping`, { timeout: 5000 }) // set 5 seconds timeout for ping
       .then((response) => response.status);
-  }
+  };
+
+  return { getPing };
 }

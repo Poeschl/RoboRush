@@ -1,8 +1,7 @@
 import axios from "axios";
 import type { Game } from "@/models/Game";
-import { GameState } from "@/models/Game";
 
-export function useGameInfo() {
+export function useGameService() {
   const baseGameUrl = "/api/game";
 
   const getCurrentGame = (): Promise<Game> => {

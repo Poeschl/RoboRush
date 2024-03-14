@@ -2,22 +2,22 @@ import { defineStore } from "pinia";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot } from "@/models/Robot";
-import MapService from "@/services/MapService";
 import type { Tile } from "@/models/Map";
-import RobotService from "@/services/RobotService";
 import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
 import type { User } from "@/models/User";
-import { useGameInfo } from "@/services/GameService";
+import { useGameService } from "@/services/GameService";
 import type { Game } from "@/models/Game";
 import { GameState } from "@/models/Game";
+import useRobotService from "@/services/RobotService";
+import useMapService from "@/services/MapService";
 import log from "loglevel";
 
-const mapService = new MapService();
-const robotService = new RobotService();
+const mapService = useMapService();
+const robotService = useRobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
   const websocketService = useWebSocket();
-  const gameService = useGameInfo();
+  const gameService = useGameService();
 
   const currentGame = ref<Game>({ currentState: GameState.ENDED });
 

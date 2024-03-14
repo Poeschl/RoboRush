@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import SystemService from "@/services/SystemService";
+import useSystemService from "@/services/SystemService";
 import log from "loglevel";
 
-const systemService = new SystemService();
+const systemService = useSystemService();
 const backendCheckIntervalMs: number = 5000;
 
 export const useSystemStore = defineStore("systemStore", () => {
