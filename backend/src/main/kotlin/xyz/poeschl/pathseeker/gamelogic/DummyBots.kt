@@ -37,7 +37,7 @@ class DummyBots(
 
   @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
   fun dummyRobots() {
-    if (gameStateService.isInState(GameState.PREPARE)) {
+    if (gameStateService.isInState(GameState.WAIT_FOR_PLAYERS)) {
       gameHandler.registerRobotForNextGame(robot1.id!!)
       gameHandler.registerRobotForNextGame(robot2.id!!)
     } else if (gameStateService.isInState(GameState.WAIT_FOR_ACTION)) {

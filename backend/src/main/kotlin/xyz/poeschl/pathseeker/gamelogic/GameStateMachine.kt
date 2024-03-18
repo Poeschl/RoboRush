@@ -16,9 +16,9 @@ class GameStateMachine(private val websocketController: WebsocketController) {
 
   fun setGameState(state: GameState) {
     if (state.validPredecessor.contains(currentGameState)) {
+      LOGGER.debug("Game state change: {} -> {}", currentGameState, state)
       currentGameState = state
       websocketController.sendGameStateUpdate(currentGameState)
-      LOGGER.debug("Game state change: {} -> {}", currentGameState, state)
     } else {
       throw InvalidGameStateException(
         "Gamestate $state can't be initiated from current state $currentGameState. Allowed predecessor " +

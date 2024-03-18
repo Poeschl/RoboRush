@@ -26,7 +26,7 @@ class RobotHandler(
   private val activeRobots = mutableSetOf<ActiveRobot>()
 
   fun registerRobotForGame(robotId: Long, startPosition: Position): ActiveRobot? {
-    if (!gameStateService.isInState(GameState.PREPARE)) {
+    if (!gameStateService.isInState(GameState.WAIT_FOR_PLAYERS)) {
       throw InvalidGameStateException("Robot registration is only possible during 'Preparation' stage!")
     }
 
