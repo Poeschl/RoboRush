@@ -262,7 +262,7 @@ class GameHandlerTest {
   @Test
   fun robotMovesReceived() {
     // WHEN
-    val count = a(`$Int`()) + 1
+    val count = a(`$Int`(1, Int.MAX_VALUE))
     every { robotHandler.countPendingRobotActions() } returns count
 
     // THEN

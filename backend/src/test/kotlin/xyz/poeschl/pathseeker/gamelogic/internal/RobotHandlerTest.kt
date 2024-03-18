@@ -36,7 +36,7 @@ class RobotHandlerTest {
     val robot = a(`$Robot`().withId(1).withUser(user))
     val position = Position(1, 2)
 
-    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns true
     every { robotRepository.findById(robotId) } returns Optional.of(robot)
 
     // THEN
@@ -56,7 +56,7 @@ class RobotHandlerTest {
     val robotId = 1L
     val position = Position(1, 2)
 
-    every { gameStateMachine.isInState(GameState.PREPARE) } returns false
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns false
 
     // THEN
     assertThrows<InvalidGameStateException> {
@@ -74,7 +74,7 @@ class RobotHandlerTest {
     val robotId = 1L
     val position = Position(1, 2)
 
-    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns true
     every { robotRepository.findById(robotId) } returns Optional.empty()
 
     // THEN
@@ -94,7 +94,7 @@ class RobotHandlerTest {
     val position1 = Position(1, 2)
     val position2 = Position(1, 2)
 
-    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns true
     every { robotRepository.findById(robotId) } returns Optional.of(robot)
 
     // THEN
@@ -120,7 +120,7 @@ class RobotHandlerTest {
     val robot2 = a(`$Robot`().withId(1).withUser(user2))
     val position = Position(1, 2)
 
-    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns true
     every { robotRepository.findById(robotId1) } returns Optional.of(robot1)
     every { robotRepository.findById(robotId2) } returns Optional.of(robot2)
 
@@ -427,7 +427,7 @@ class RobotHandlerTest {
     val robot = a(`$Robot`().withId(robotId).withUser(user))
     val position = Position((2 + robotId).toInt(), (2 + robotId).toInt())
 
-    every { gameStateMachine.isInState(GameState.PREPARE) } returns true
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns true
     every { robotRepository.findById(robotId) } returns Optional.of(robot)
 
     robotHandler.registerRobotForGame(robotId, position)
