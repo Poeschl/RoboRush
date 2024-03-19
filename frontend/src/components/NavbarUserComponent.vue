@@ -32,6 +32,7 @@ import { useUserStore } from "@/stores/UserStore";
 import Toast from "@/components/Toast.vue";
 import { ToastType } from "@/models/ToastType";
 import UserModal from "@/components/UserModal.vue";
+import log from "loglevel";
 
 const userStore = useUserStore();
 
@@ -62,7 +63,7 @@ const loginUser = (data: LoginRequest) => {
       toast.value.message = "Login failed";
       toast.value.type = ToastType.ERROR;
       toast.value.shown = true;
-      console.warn(`Login not successful (${reason})`);
+      log.warn(`Login not successful (${reason})`);
     });
 };
 
@@ -86,7 +87,7 @@ const registerUser = (data: RegisterRequest) => {
       toast.value.message = "Registration failed";
       toast.value.type = ToastType.ERROR;
       toast.value.shown = true;
-      console.warn(`Registration not successful (${reason})`);
+      log.warn(`Registration not successful (${reason})`);
     });
 };
 

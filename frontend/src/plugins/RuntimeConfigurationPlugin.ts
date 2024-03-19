@@ -1,5 +1,6 @@
 import type { App, Plugin as VuePlugin } from "vue";
 import axios from "axios";
+import log from "loglevel";
 
 const configFile = "/config.json";
 let currentConfig: RuntimeConfig | undefined = undefined;
@@ -17,7 +18,7 @@ export const RuntimeConfigurationPlugin: VuePlugin & { getConfig: () => Promise<
         };
       })
       .catch((error) => {
-        console.info("No config found, using defaults " + error);
+        log.info("No config found, using defaults ", error);
         currentConfig = {
           plausibleDomain: undefined,
           plausibleCustomApiHost: undefined,
@@ -36,7 +37,7 @@ function waitForConfig(resolve: (value: RuntimeConfig) => void, reject: (value: 
   if (currentConfig !== undefined) {
     resolve(currentConfig);
   } else {
-    console.info("Waiting");
+    log.info("Waiting");
     setTimeout(() => waitForConfig(resolve, reject), 1);
   }
 }

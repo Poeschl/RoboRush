@@ -6,6 +6,7 @@ import type { ComputedRef } from "vue";
 import { watch } from "vue";
 import type { User } from "@/models/User";
 import type { GameState } from "@/models/Game";
+import log from "loglevel";
 
 export enum WebSocketTopic {
   PUBLIC_ROBOT_TOPIC = 0,
@@ -40,7 +41,7 @@ export function useWebSocket() {
     const client = createClient(user);
 
     client.onConnect = () => {
-      console.info("Websocket connected");
+      log.info("Websocket connected");
 
       connectToPublicTopics(client);
 
@@ -78,16 +79,16 @@ export function useWebSocket() {
       connectHeaders: connectHeaders,
 
       onWebSocketError: (error) => {
-        console.error(`Error with websocket (${JSON.stringify(error)})`);
+        log.error(`Error with websocket (${JSON.stringify(error)})`);
       },
 
       onStompError: (frame) => {
-        console.error(`Broker reported error: ${frame.headers["message"]}`);
-        console.error(`Additional details: ${frame.body}`);
+        log.error(`Broker reported error: ${frame.headers["message"]}`);
+        log.error(`Additional details: ${frame.body}`);
       },
 
       onWebSocketClose: (closeEvent: CloseEvent) => {
-        console.error("Websocket disconnected.");
+        log.error("Websocket disconnected.");
       },
     });
   };

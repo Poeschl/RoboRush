@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import SystemService from "@/services/SystemService";
+import log from "loglevel";
 
 const systemService = new SystemService();
 const backendCheckIntervalMs: number = 5000;
@@ -17,7 +18,7 @@ export const useSystemStore = defineStore("systemStore", () => {
       })
       .catch((reason) => {
         backendAvailable.value = false;
-        console.error(`Could not retrieve backend ping interface (${reason})`);
+        log.error(`Could not retrieve backend ping interface (${reason})`);
       });
   }
 

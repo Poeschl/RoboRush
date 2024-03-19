@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import log from "loglevel";
 
 const copied = ref<boolean>(false);
 const copiedIndicatorTimeout = 2000;
@@ -40,7 +41,7 @@ async function copyToClipboard() {
     try {
       document.execCommand("copy");
     } catch (error) {
-      console.error(error);
+      log.error(error);
     } finally {
       textArea.remove();
     }

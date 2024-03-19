@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { faCopy, faUser } from "@fortawesome/free-regular-svg-icons";
+import { useLogging } from "@/config/logging";
 
 const app = createApp(App);
 
@@ -48,4 +49,5 @@ runtimeConfigPlugin.getConfig().then((runtimeConfig) => {
   }
 });
 
+useLogging().setup();
 app.mount("#app");

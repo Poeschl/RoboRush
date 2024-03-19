@@ -10,6 +10,7 @@ import type { User } from "@/models/User";
 import { useGameInfo } from "@/services/GameService";
 import type { Game } from "@/models/Game";
 import { GameState } from "@/models/Game";
+import log from "loglevel";
 
 const mapService = new MapService();
 const robotService = new RobotService();
@@ -39,7 +40,7 @@ export const useGameStore = defineStore("gameStore", () => {
         internalHeightMap.value.tiles = response;
       })
       .catch((reason) => {
-        console.error(`Could not get heightmap (${reason})`);
+        log.error(`Could not get heightmap (${reason})`);
       });
   }
 
@@ -52,7 +53,7 @@ export const useGameStore = defineStore("gameStore", () => {
         internalRobots.value.robots = response;
       })
       .catch((reason) => {
-        console.error(`Could not get robots (${reason})`);
+        log.error(`Could not get robots (${reason})`);
       });
   }
 
@@ -61,7 +62,7 @@ export const useGameStore = defineStore("gameStore", () => {
       .getUserRobot()
       .then((activeRobot) => updateUserRobot(activeRobot))
       .catch((reason) => {
-        console.error(`Could not retrieve user robot data: ${reason}`);
+        log.error(`Could not retrieve user robot data: ${reason}`);
       });
   }
 
@@ -74,7 +75,7 @@ export const useGameStore = defineStore("gameStore", () => {
 
   function updateRobot(updatedRobot: PublicRobot) {
     const index = internalRobots.value.robots.findIndex((robot: PublicRobot) => robot.id == updatedRobot.id);
-    console.debug(`Update robot with index ${index}`);
+    log.debug(`Update robot with index ${index}`);
     internalRobots.value.robots[index] = updatedRobot;
   }
 
