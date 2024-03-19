@@ -31,7 +31,7 @@ export const useGameStore = defineStore("gameStore", () => {
 
   const userRobot = ref<ActiveRobot | undefined>();
 
-  function updateMap() {
+  const updateMap = () => {
     mapService
       .getHeightMap()
       .then((response) => {
@@ -42,9 +42,9 @@ export const useGameStore = defineStore("gameStore", () => {
       .catch((reason) => {
         log.error(`Could not get heightmap (${reason})`);
       });
-  }
+  };
 
-  function updateRobots() {
+  const updateRobots = () => {
     robotService
       .getRobots()
       .then((response: PublicRobot[]) => {
@@ -55,41 +55,66 @@ export const useGameStore = defineStore("gameStore", () => {
       .catch((reason) => {
         log.error(`Could not get robots (${reason})`);
       });
-  }
+  };
 
-  function retrieveUserRobotState() {
+  const retrieveUserRobotState = () => {
     robotService
       .getUserRobot()
       .then((activeRobot) => updateUserRobot(activeRobot))
       .catch((reason) => {
         log.error(`Could not retrieve user robot data: ${reason}`);
       });
-  }
+  };
 
-  function initWebsocket(user: ComputedRef<User | undefined>) {
+  const initWebsocket = (user: ComputedRef<User | undefined>) => {
     websocketService.initWebsocket(user);
     websocketService.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
     websocketService.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
     websocketService.registerForTopicCallback(WebSocketTopic.GAME_STATE_TOPIC, updateGameStateTo);
-  }
+  };
 
-  function updateRobot(updatedRobot: PublicRobot) {
+  const updateRobot = (updatedRobot: PublicRobot) => {
     const index = internalRobots.value.robots.findIndex((robot: PublicRobot) => robot.id == updatedRobot.id);
     log.debug(`Update robot with index ${index}`);
     internalRobots.value.robots[index] = updatedRobot;
-  }
+  };
 
-  function updateUserRobot(activeRobot: ActiveRobot | undefined) {
+  const updateUserRobot = (activeRobot: ActiveRobot | undefined) => {
     userRobot.value = activeRobot;
-  }
+  };
 
-  function updateGameInfo() {
+  const updateGameInfo = () => {
     gameService.getCurrentGame().then((gameInfo) => (currentGame.value = gameInfo));
-  }
+  };
 
-  function updateGameStateTo(gameState: GameState) {
+  const updateGameStateTo = (gameState: GameState) => {
     currentGame.value.currentState = gameState;
-  }
+  };
 
-  return { heightMap, robots, userRobot, updateMap, updateRobots, updateGameInfo, initWebsocket, retrieveUserRobotState, currentGame };
+  const registerRobotOnGame = (): Promise<void> => {
+    return robotService.registerCurrentRobotForGame();
+  };
+
+  const moveRobotInDirection = (direction: string): Promise<void> => {
+    return robotService.moveRobot(direction);
+  };
+
+  const scanAroundRobot = (distance: number): Promise<void> => {
+    return robotService.scanOnRobot(distance);
+  };
+
+  return {
+    heightMap,
+    robots,
+    userRobot,
+    updateMap,
+    updateRobots,
+    updateGameInfo,
+    initWebsocket,
+    retrieveUserRobotState,
+    currentGame,
+    registerRobotOnGame,
+    moveRobotInDirection,
+    scanAroundRobot,
+  };
 });

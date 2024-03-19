@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { ActiveRobot, PublicRobot } from "@/models/Robot";
+import type { ActiveRobot, Move, PublicRobot, Scan } from "@/models/Robot";
+import { correctTypesFromJson } from "@/models/Robot";
 import Color from "@/models/Color";
 import axiosWithAuth from "@/config/axiosWithAuth";
-import { correctTypesFromJson } from "@/models/Robot";
 
 export default function useRobotService() {
   const baseRobotUrl = "/api/robot";
@@ -26,5 +26,17 @@ export default function useRobotService() {
     });
   };
 
-  return { getRobots, getUserRobot };
+  const registerCurrentRobotForGame = (): Promise<void> => {
+    return axiosWithAuth.post(`${baseRobotUrl}/attend`);
+  };
+
+  const moveRobot = (direction: string): Promise<void> => {
+    return axiosWithAuth.post(`${baseRobotUrl}/action/move`, { direction: direction } as Move);
+  };
+
+  const scanOnRobot = (distance: number): Promise<void> => {
+    return axiosWithAuth.post(`${baseRobotUrl}/action/scan`, { distance: distance.toString() } as Scan);
+  };
+
+  return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot };
 }
