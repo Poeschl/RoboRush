@@ -11,11 +11,16 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  preview: {
+    port: 5173,
+  },
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules")) {
+          if (id.includes("Env.ts")) {
+            return "env";
+          } else if (id.includes("node_modules")) {
             return "vendor";
           }
         },

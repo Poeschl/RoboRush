@@ -10,6 +10,7 @@ import type { Position, Tile } from "@/models/Map";
 import type { PublicRobot } from "@/models/Robot";
 import { computed, onMounted, ref, watch } from "vue";
 import Color from "@/models/Color";
+import log from "loglevel";
 
 const cellSize = 16;
 const cellBorder = 1;
@@ -47,7 +48,7 @@ const updateCanvasSize = (data: Tile[]) => {
   maxX += 1;
   maxY += 1;
 
-  // console.debug(`Max X: ${maxX} Max Y: ${maxY}`);
+  // log.debug(`Max X: ${maxX} Max Y: ${maxY}`);
 
   mapWidth.value = maxX * (cellSize + 2 * cellBorder);
   mapHeight.value = maxY * (cellSize + 2 * cellBorder);
@@ -63,7 +64,7 @@ const updateCanvasSize = (data: Tile[]) => {
 const drawMap = () => {
   if (mapCanvas.value && mapDrawContext.value) {
     const drawContext = mapDrawContext.value;
-    console.info("Draw map");
+    log.debug("Draw map");
 
     updateCanvasSize(props.mapData);
 
@@ -71,7 +72,7 @@ const drawMap = () => {
 
     for (const index in props.mapData) {
       const tile = props.mapData[index];
-      // console.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
+      // log.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
       drawTile(drawContext, mapColor.enlighten(tile.height * mapHeightSteps));
@@ -87,13 +88,13 @@ watch(props.mapData, () => {
 const drawRobots = () => {
   if (robotCanvas.value && robotDrawContext.value) {
     const drawContext = robotDrawContext.value;
-    console.info("Draw robots");
+    log.debug("Draw robots");
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
     for (const index in props.robotData) {
       const robot = props.robotData[index];
-      // console.debug(`Draw robot ${JSON.stringify(robot)}`);
+      // log.debug(`Draw robot ${JSON.stringify(robot)}`);
       drawContext.save();
       drawContext.translate(robot.position.x * (cellSize + 2 * cellBorder), robot.position.y * (cellSize + 2 * cellBorder));
       drawRobot(drawContext, robot.color);

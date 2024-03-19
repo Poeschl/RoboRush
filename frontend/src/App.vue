@@ -14,8 +14,9 @@ import { computed, type ComputedRef, watch } from "vue";
 import { useUserStore } from "@/stores/UserStore";
 import { useSystemStore } from "@/stores/SystemStore";
 import { useRouter } from "vue-router";
+import log from "loglevel";
 
-console.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
+log.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
 
 const router = useRouter();
 

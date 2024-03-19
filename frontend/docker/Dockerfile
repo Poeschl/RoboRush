@@ -1,7 +1,7 @@
 FROM nginx:1.25.3-alpine
 
-RUN apk add jq --no-cache
 EXPOSE 80
 
-COPY docker/40-create-config-json.sh /docker-entrypoint.d
+COPY --chmod=555 docker/40-create-runtime-env.sh /docker-entrypoint.d/
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY dist /usr/share/nginx/html
