@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
 import { useSystemStore } from "@/stores/SystemStore";
 
 const PlayView = () => import("@/views/PlayView.vue");
@@ -6,7 +6,7 @@ const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 
 export const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: "/",
