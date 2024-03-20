@@ -82,6 +82,7 @@ import { GameState } from "@/models/Game";
 import type { Action, Move, Scan } from "@/models/Robot";
 import Toast from "@/components/Toast.vue";
 import { ToastType } from "@/models/ToastType";
+import { AxiosError } from "axios";
 
 const userStore = useUserStore();
 const gameStore = useGameStore();
@@ -107,46 +108,27 @@ const isScan = (action: Action | undefined) => {
 
 //TODO: Make it work
 const participateInGame = () => {
-  gameStore
-    .registerRobotOnGame()
-    .then(() => {
-      toast.value.message = "Registered robot for game";
-      toast.value.type = ToastType.SUCCESS;
-      toast.value.shown = true;
-    })
-    .catch((reason) => {
-      toast.value.message = `Failed to participate. (${reason})`;
-      toast.value.type = ToastType.ERROR;
-      toast.value.shown = true;
-    });
+  handleControlInput(gameStore.registerRobotOnGame());
 };
 
 const move = (direction: string) => {
-  gameStore
-    .moveRobotInDirection(direction)
-    .then(() => {
-      toast.value.message = "Send robot movement request";
-      toast.value.type = ToastType.SUCCESS;
-      toast.value.shown = true;
-    })
-    .catch((reason) => {
-      toast.value.message = `Failed to send robot move. (${reason})`;
-      toast.value.type = ToastType.ERROR;
-      toast.value.shown = true;
-    });
+  handleControlInput(gameStore.moveRobotInDirection(direction));
 };
 
 //TODO: Make it work
 const scan = (distance: number) => {
-  gameStore
-    .scanAroundRobot(distance)
+  handleControlInput(gameStore.scanAroundRobot(distance));
+};
+
+const handleControlInput = (promise: Promise<void>) => {
+  promise
     .then(() => {
-      toast.value.message = "Send robot scan request";
+      toast.value.message = "Sent action";
       toast.value.type = ToastType.SUCCESS;
       toast.value.shown = true;
     })
-    .catch((reason) => {
-      toast.value.message = `Failed to send robot scan. (${reason})`;
+    .catch((error: AxiosError) => {
+      toast.value.message = `${(error.response?.data as Error).message} (${error.response?.status})`;
       toast.value.type = ToastType.ERROR;
       toast.value.shown = true;
     });

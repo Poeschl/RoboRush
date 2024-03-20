@@ -8,3 +8,11 @@ export enum GameState {
   ACTION = "ACTION",
   ENDED = "ENDED",
 }
+
+export interface Error {
+  timestamp: string;
+  status: number;
+  error: string;
+  message: string;
+  path: string;
+}
