@@ -4,6 +4,7 @@ export interface Game {
 
 export enum GameState {
   PREPARE = "PREPARE",
+  WAIT_FOR_PLAYERS = "WAIT_FOR_PLAYERS",
   WAIT_FOR_ACTION = "WAIT_FOR_ACTION",
   ACTION = "ACTION",
   ENDED = "ENDED",

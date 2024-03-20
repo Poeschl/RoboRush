@@ -17,7 +17,7 @@ export interface Move extends Action {
 }
 
 export interface Scan extends Action {
-  distance: string;
+  distance: number;
 }
 
 export interface ActiveRobot {

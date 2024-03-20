@@ -35,7 +35,7 @@ export default function useRobotService() {
   };
 
   const scanOnRobot = (distance: number): Promise<void> => {
-    return axiosWithAuth.post(`${baseRobotUrl}/action/scan`, { distance: distance.toString() } as Scan);
+    return axiosWithAuth.post(`${baseRobotUrl}/action/scan`, { distance: distance } as Scan);
   };
 
   return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot };

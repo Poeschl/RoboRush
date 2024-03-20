@@ -2,7 +2,7 @@
   <div class="box">
     <div class="is-size-3 mb-3">Robot Control</div>
     <div v-if="userStore.loggedIn">
-      <div v-if="robot != undefined">
+      <div v-if="gameStore.userRobotActive">
         <div class="columns">
           <div class="column is-one-third">
             <div class="is-dpad-control">
@@ -45,10 +45,17 @@
           <div class="column">
             <div class="field has-addons is-scan-action">
               <div class="control is-flex-grow-1">
-                <input class="input" type="number" min="0" :disabled="!controlsEnabled" placeholder="Scan distance" />
+                <input
+                  class="input"
+                  type="number"
+                  min="0"
+                  :disabled="!controlsEnabled"
+                  placeholder="Scan distance"
+                  @input="(event) => (scanNumber = parseInt((event.target as HTMLInputElement)?.value))"
+                />
               </div>
               <div class="control">
-                <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }">
+                <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }" @click="scan">
                   <div class="icon">
                     <FontAwesomeIcon icon="fa-solid fa-satellite-dish" class="fa-xl" />
                   </div>
@@ -57,17 +64,30 @@
             </div>
             <div class="mb-3">
               <p class="mb-1">Set action:</p>
-              <p v-if="robot.nextAction?.type == 'move'">Move {{ (robot.nextAction as Move).direction }}</p>
-              <p v-if="robot.nextAction?.type == 'scan'">Scan with distance {{ (robot.nextAction as Scan).distance }}</p>
+              <p v-if="robot?.nextAction?.type == 'move'">Move {{ (robot?.nextAction as Move).direction }}</p>
+              <p v-if="robot?.nextAction?.type == 'scan'">Scan with distance {{ (robot?.nextAction as Scan).distance }}</p>
             </div>
             <div>
               <p class="mb-1">Last result:</p>
-              <p>{{ robot.lastResult }}</p>
+              <p>{{ robot?.lastResult }}</p>
             </div>
           </div>
         </div>
       </div>
-      <div v-else class="has-text-centered">Your robot does not participate in the current game.</div>
+      <div v-else class="has-text-centered">
+        <div class="mb-2">Your robot does not participate in the current game.</div>
+        <button
+          class="button"
+          @click="participateInGame"
+          :disabled="!participationEnabled"
+          title="Participation only possible during WAITING_FOR_PLAYERS phase"
+        >
+          <span class="icon">
+            <FontAwesomeIcon icon="fa-solid fa-play" class="fa-xl" />
+          </span>
+          <span>Participate in current game</span>
+        </button>
+      </div>
     </div>
     <div v-else class="has-text-centered">Login to control your robot.</div>
   </div>
@@ -88,9 +108,11 @@ const userStore = useUserStore();
 const gameStore = useGameStore();
 
 const toast = ref<{ shown: boolean; type: ToastType; message: string }>({ shown: false, type: ToastType.INFO, message: "" });
+const scanNumber = ref<number>(0);
 
 const robot = computed(() => gameStore.userRobot);
 const controlsEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_ACTION);
+const participationEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_PLAYERS);
 
 const highlightUp = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "NORTH"));
 const highlightRight = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "EAST"));
@@ -106,7 +128,6 @@ const isScan = (action: Action | undefined) => {
   return action?.type == "scan";
 };
 
-//TODO: Make it work
 const participateInGame = () => {
   handleControlInput(gameStore.registerRobotOnGame());
 };
@@ -115,9 +136,8 @@ const move = (direction: string) => {
   handleControlInput(gameStore.moveRobotInDirection(direction));
 };
 
-//TODO: Make it work
-const scan = (distance: number) => {
-  handleControlInput(gameStore.scanAroundRobot(distance));
+const scan = () => {
+  handleControlInput(gameStore.scanAroundRobot(scanNumber.value));
 };
 
 const handleControlInput = (promise: Promise<void>) => {

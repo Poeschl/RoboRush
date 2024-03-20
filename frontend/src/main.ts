@@ -14,6 +14,7 @@ import {
   faClipboard,
   faGasPump,
   faLocationDot,
+  faPlay,
   faRobot,
   faRotate,
   faRoute,
@@ -46,6 +47,7 @@ library.add(
   faCaretDown,
   faCaretLeft,
   faSatelliteDish,
+  faPlay,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

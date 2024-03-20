@@ -11,6 +11,8 @@ import { GameState } from "@/models/Game";
 import useRobotService from "@/services/RobotService";
 import useMapService from "@/services/MapService";
 import log from "loglevel";
+import type { AxiosError } from "axios";
+import type { Error } from "@/models/Game";
 
 const mapService = useMapService();
 const robotService = useRobotService();
@@ -30,6 +32,9 @@ export const useGameStore = defineStore("gameStore", () => {
   const robots = computed<PublicRobot[]>(() => internalRobots.value.robots);
 
   const userRobot = ref<ActiveRobot | undefined>();
+  const userRobotActive = computed<boolean>(() => {
+    return userRobot.value != null && internalRobots.value.robots.map((robot) => robot.id).includes(userRobot.value.id);
+  });
 
   const updateMap = () => {
     mapService
@@ -61,8 +66,9 @@ export const useGameStore = defineStore("gameStore", () => {
     robotService
       .getUserRobot()
       .then((activeRobot) => updateUserRobot(activeRobot))
-      .catch((reason) => {
-        log.error(`Could not retrieve user robot data: ${reason}`);
+      .catch((error: AxiosError) => {
+        log.info(`Could not retrieve user robot data: ${(error.response?.data as Error).message}`);
+        userRobot.value = undefined;
       });
   };
 
@@ -92,7 +98,9 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const registerRobotOnGame = (): Promise<void> => {
-    return robotService.registerCurrentRobotForGame();
+    return robotService.registerCurrentRobotForGame().then(() => {
+      updateRobots();
+    });
   };
 
   const moveRobotInDirection = (direction: string): Promise<void> => {
@@ -116,5 +124,6 @@ export const useGameStore = defineStore("gameStore", () => {
     registerRobotOnGame,
     moveRobotInDirection,
     scanAroundRobot,
+    userRobotActive,
   };
 });
