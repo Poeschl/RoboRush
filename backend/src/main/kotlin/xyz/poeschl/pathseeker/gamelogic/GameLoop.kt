@@ -58,6 +58,8 @@ class GameLoop(
       GameState.ACTION -> {
         if (!gameHandler.robotMovesReceived()) {
           noRobotActionCounter++
+        } else {
+          noRobotActionCounter = 0
         }
 
         // TODO: Add target tile check
