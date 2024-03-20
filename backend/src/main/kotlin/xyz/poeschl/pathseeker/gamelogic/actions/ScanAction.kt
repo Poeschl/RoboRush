@@ -6,10 +6,10 @@ import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Tile
 
-class ScanAction @JsonCreator constructor(val scanDistance: Int) : RobotAction<List<Tile>> {
+class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<Tile>> {
 
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
-    val scanResult = gameHandler.getTilesInDistance(robot.position, scanDistance)
+    val scanResult = gameHandler.getTilesInDistance(robot.position, distance)
     val fuelCost = scanResult.second
 
     if (fuelCost > robot.fuel) {
@@ -18,7 +18,7 @@ class ScanAction @JsonCreator constructor(val scanDistance: Int) : RobotAction<L
   }
 
   override fun action(robot: ActiveRobot, gameHandler: GameHandler): List<Tile> {
-    val scanResult = gameHandler.getTilesInDistance(robot.position, scanDistance)
+    val scanResult = gameHandler.getTilesInDistance(robot.position, distance)
     val fuelCost = scanResult.second
     val tileList = scanResult.first
 
@@ -27,7 +27,7 @@ class ScanAction @JsonCreator constructor(val scanDistance: Int) : RobotAction<L
   }
 
   override fun toString(): String {
-    return "Scan(scanDistance=$scanDistance)"
+    return "Scan(distance=$distance)"
   }
 
   override fun equals(other: Any?): Boolean {
@@ -36,10 +36,10 @@ class ScanAction @JsonCreator constructor(val scanDistance: Int) : RobotAction<L
 
     other as ScanAction
 
-    return scanDistance == other.scanDistance
+    return distance == other.distance
   }
 
   override fun hashCode(): Int {
-    return scanDistance
+    return distance
   }
 }

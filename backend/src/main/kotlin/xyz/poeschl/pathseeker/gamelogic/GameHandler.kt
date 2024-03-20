@@ -37,8 +37,8 @@ class GameHandler(
     }
   }
 
-  fun getTilesInDistance(position: Position, scanDistance: Int): Pair<List<Tile>, Int> {
-    return mapHandler.getTilesInDistance(position, scanDistance)
+  fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
+    return mapHandler.getTilesInDistance(position, distance)
   }
 
   fun sendRobotUpdate(activeRobot: ActiveRobot) {
