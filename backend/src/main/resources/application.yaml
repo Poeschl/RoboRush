@@ -24,6 +24,8 @@ springdoc:
 server:
   error:
     include-message: always
+    whitelabel:
+      enabled: false
   tomcat:
     max-http-form-post-size: 10MB
 

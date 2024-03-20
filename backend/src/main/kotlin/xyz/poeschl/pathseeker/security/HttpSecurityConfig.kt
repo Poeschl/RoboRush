@@ -36,6 +36,8 @@ class HttpSecurityConfig(
         authorize("/v3/api-docs/**", permitAll)
         authorize("/ping", permitAll)
         authorize("/auth/**", permitAll)
+        // Allow the error handler to work, also REST
+        authorize("/error", permitAll)
 
         // allow the map api and websockets for all users
         authorize("/ws", permitAll)
