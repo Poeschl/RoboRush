@@ -14,6 +14,7 @@ import xyz.poeschl.pathseeker.configuration.OpenApiConfig.Companion.VISIBILITY_K
 import xyz.poeschl.pathseeker.configuration.OpenApiConfig.Companion.VISIBILITY_PUBLIC
 import xyz.poeschl.pathseeker.controller.restmodels.Move
 import xyz.poeschl.pathseeker.controller.restmodels.Scan
+import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.PublicRobot
 import xyz.poeschl.pathseeker.security.repository.User
@@ -33,14 +34,14 @@ class RobotRestController(private val robotService: RobotService) {
   }
 
   @Operation(
-    summary = "Retrieves data about your robot.",
+    summary = "Retrieves data about your robot. (Only successful when participating in a game)",
     extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
   )
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getRobot(auth: Authentication): ActiveRobot {
-    LOGGER.debug("Get robot")
-    return robotService.getActiveRobotByUser(auth.principal as User) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+  fun getActiveUserRobot(auth: Authentication): ActiveRobot {
+    LOGGER.debug("Get active user robot")
+    return robotService.getActiveRobotByUser(auth.principal as User) ?: throw RobotNotActiveException("Your robot is not active right now")
   }
 
   @Operation(
@@ -64,7 +65,7 @@ class RobotRestController(private val robotService: RobotService) {
   )
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping("/action/scan", consumes = [MediaType.APPLICATION_JSON_VALUE])
-  fun scan(auth: Authentication, @RequestParam scan: Scan) {
+  fun scan(auth: Authentication, @RequestBody scan: Scan) {
     LOGGER.debug("Called scan")
     robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
       robotService.scheduleScan(it, scan.distance)
@@ -78,7 +79,7 @@ class RobotRestController(private val robotService: RobotService) {
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping("/action/move", consumes = [MediaType.APPLICATION_JSON_VALUE])
   fun moveInDirection(auth: Authentication, @RequestBody move: Move) {
-    LOGGER.debug("Move robot")
+    LOGGER.debug("Set next robot move")
     robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
       robotService.scheduleMove(it, move.direction)
     }

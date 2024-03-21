@@ -44,37 +44,6 @@
             </div>
           </div>
         </div>
-
-        <div class="level">
-          <div class="level-left">
-            <div class="level-item is-size-5">
-              <FontAwesomeIcon icon="fa-solid fa-clipboard" class="mr-2" />
-              Next action
-            </div>
-          </div>
-          <div class="level-right">
-            <div class="level-item">
-              <div title="The action of your robot in the next round" v-if="robot.nextAction">
-                <span v-if="robot.nextAction.type == 'move'">Move {{ (robot.nextAction as Move).direction }}</span>
-                <span v-if="robot.nextAction.type == 'scan'">Scan with distance {{ (robot.nextAction as Scan).distance }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="level">
-          <div class="level-left">
-            <div class="level-item is-size-5">
-              <FontAwesomeIcon icon="fa-solid fa-clipboard" class="mr-2" />
-              Last action result
-            </div>
-          </div>
-          <div class="level-right">
-            <div class="level-item">
-              <div title="Result from the last executed action" v-if="robot.lastResult">{{ robot.lastResult }}</div>
-            </div>
-          </div>
-        </div>
       </div>
       <div v-else class="has-text-centered">Your robot does not participate in the current game.</div>
     </div>

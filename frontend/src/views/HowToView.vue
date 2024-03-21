@@ -49,7 +49,7 @@
           <a href="https://en.wikipedia.org/wiki/Taxicab_geometry" target="_blank">Manhattan geometry</a> equal or less then the scan distance parameter. A scan
           is very fuel consuming on large patches, since the cost is the distance squared.
         </div>
-        <div class="mb-2">As cost formula: <code>scanDistance * scanDistance</code></div>
+        <div class="mb-2">As cost formula: <code>distance * distance</code></div>
       </HelpText>
     </div>
     <div class="column is-half">

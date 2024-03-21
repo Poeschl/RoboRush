@@ -79,6 +79,6 @@ class ScanActionTest {
     val json = objectMapper.writeValueAsString(move)
 
     // VERIFY
-    assertThat(json).isEqualTo("""{"type":"scan","scanDistance":100}""")
+    assertThat(json).isEqualTo("""{"type":"scan","distance":100}""")
   }
 }

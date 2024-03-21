@@ -2,7 +2,7 @@
   <div class="is-flex is-justify-content-center mb-5">
     <FullMapCanvas :robot-data="robots" :map-data="heightMap" />
   </div>
-  <div class="columns is-fullwidth is-justify-content-center data-columns">
+  <div class="columns is-multiline is-fullwidth is-justify-content-center data-columns">
     <div class="column">
       <RobotsList />
     </div>
@@ -11,6 +11,9 @@
     </div>
     <div class="column">
       <GameDetails />
+    </div>
+    <div class="column">
+      <RobotControl />
     </div>
   </div>
 </template>
@@ -24,6 +27,7 @@ import { useGameStore } from "@/stores/GameStore";
 import RobotsList from "@/components/PublicRobotsList.vue";
 import UserRobotDetails from "@/components/UserRobotDetails.vue";
 import GameDetails from "@/components/GameDetails.vue";
+import RobotControl from "@/components/RobotsControl.vue";
 
 const gameStore = useGameStore();
 
@@ -33,6 +37,7 @@ const robots = computed<PublicRobot[]>(() => gameStore.robots);
 
 <style scoped>
 .data-columns .column {
+  min-width: 30%;
   max-width: 33%;
 }
 </style>
