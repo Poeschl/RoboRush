@@ -1,7 +1,10 @@
 package xyz.poeschl.pathseeker.security.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.event.EventListener
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -12,6 +15,7 @@ import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.security.repository.UserRepository
 import xyz.poeschl.pathseeker.security.utils.JwtTokenProvider
+import java.security.SecureRandom
 
 @Configuration
 class UserDetailsService(
@@ -23,7 +27,11 @@ class UserDetailsService(
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(UserDetailsService::class.java)
+    private const val INITIAL_ROOT_PASSWORD_LENGTH = 32
   }
+
+  @Value("\${INITIAL_ROOT_PASSWORD:}")
+  private val initialRootPassword: String = ""
 
   override fun loadUserByUsername(username: String): UserDetails {
     return userRepository.findByUsername(username) ?: throw UsernameNotFoundException("User '$username' not found!")
@@ -41,5 +49,28 @@ class UserDetailsService(
     } else {
       null
     }
+  }
+
+  @EventListener(ApplicationReadyEvent::class)
+  fun createAdminIfNotExisting() {
+    if (userRepository.findByUsername(User.ROOT_USERNAME) == null) {
+      LOGGER.info("No admin user found with name '{}'", User.ROOT_USERNAME)
+      val password = initialRootPassword.ifBlank { generateRandomPassword(INITIAL_ROOT_PASSWORD_LENGTH) }
+      userRepository.save(User(User.ROOT_USERNAME, passwordEncoder.encode(password)))
+      LOGGER.info("################################")
+      LOGGER.info("Generated password for user '{}':", User.ROOT_USERNAME)
+      LOGGER.info("{}", password)
+      LOGGER.info("################################")
+    } else {
+      LOGGER.debug("Admin user found.")
+    }
+  }
+
+  private fun generateRandomPassword(length: Int): String {
+    val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('!', '@', '#', '$', '%', '?', '&', '*', '+', '-')
+    val secureRandom = SecureRandom()
+    return (1..length)
+      .map { charset[secureRandom.nextInt(charset.size)] }
+      .joinToString("")
   }
 }
