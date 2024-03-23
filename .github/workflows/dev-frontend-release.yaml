@@ -5,9 +5,31 @@ on:
       - main
 
 jobs:
+  test:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: ↩️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Install Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 🏗️ Install packages
+        run: cd frontend && npm ci
+
+      - name: ✅ Test frontend
+        run: cd frontend && npm run type-check && npm run test:unit
+
   build:
     name: Build Vue
     runs-on: ubuntu-latest
+    needs:
+      - test
     steps:
       - name: ↩️ Checkout
         uses: actions/checkout@v4

@@ -5,9 +5,27 @@ on:
       - main
 
 jobs:
+  test:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: ↩️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: ✅ Test backend
+        run: ./gradlew --stacktrace check
+
   build:
     name: Build Backend
     runs-on: ubuntu-latest
+    needs:
+      - test
     steps:
       - name: ↩️ Checkout
         uses: actions/checkout@v4
