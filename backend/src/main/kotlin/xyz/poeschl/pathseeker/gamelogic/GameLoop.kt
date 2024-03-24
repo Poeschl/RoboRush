@@ -4,19 +4,22 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import java.time.Duration
+import xyz.poeschl.pathseeker.service.ConfigService
 import kotlin.concurrent.thread
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @GameLogic
 class GameLoop(
   private val gameHandler: GameHandler,
-  private val gameStateService: GameStateMachine
+  private val gameStateService: GameStateMachine,
+  private val configService: ConfigService
 ) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
-    private val WAIT_FOR_PLAYERS_TIMEOUT = Duration.ofMinutes(3)
-    private val WAIT_FOR_ACTION_TIMEOUT = Duration.ofSeconds(30)
-    private val ENDED_GAME_TIMEOUT = Duration.ofMinutes(1)
+    private val WAIT_FOR_PLAYERS_TIMEOUT = 3.minutes
+    private val WAIT_FOR_ACTION_TIMEOUT = 30.seconds
+    private val ENDED_GAME_TIMEOUT = 2.minutes
     private const val NO_ACTION_END_THRESHOLD = 3
   }
 
@@ -42,7 +45,7 @@ class GameLoop(
       }
 
       GameState.WAIT_FOR_PLAYERS -> {
-        Thread.sleep(WAIT_FOR_PLAYERS_TIMEOUT.toMillis())
+        Thread.sleep(WAIT_FOR_PLAYERS_TIMEOUT.inWholeMilliseconds)
         if (!gameHandler.getActiveRobots().isEmpty()) {
           // If there are registered robots we start the game
           gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
@@ -51,7 +54,7 @@ class GameLoop(
 
       GameState.WAIT_FOR_ACTION -> {
         LOGGER.debug("Waiting for robot inputs")
-        Thread.sleep(WAIT_FOR_ACTION_TIMEOUT.toMillis())
+        Thread.sleep(WAIT_FOR_ACTION_TIMEOUT.inWholeMilliseconds)
         gameStateService.setGameState(GameState.ACTION)
       }
 
@@ -75,7 +78,7 @@ class GameLoop(
 
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
-        Thread.sleep(ENDED_GAME_TIMEOUT.toMillis())
+        Thread.sleep(ENDED_GAME_TIMEOUT.inWholeMilliseconds)
         gameStateService.setGameState(GameState.PREPARE)
       }
     }
