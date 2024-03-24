@@ -20,6 +20,7 @@ class JwtTokenProvider {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(JwtTokenProvider::class.java)
+    private const val ROLE_CLAIM_NAME = "role"
   }
 
   @Value("\${AUTH_ISSUER:PathSeeker}")
@@ -41,6 +42,7 @@ class JwtTokenProvider {
     val user = authentication.principal as User
     return Jwts.builder()
       .subject(user.username)
+      .claim(ROLE_CLAIM_NAME, user.authorities.first().authority)
       .issuedAt(Date.from(now.toInstant()))
       .issuer(jwtIssuer)
       .signWith(key)

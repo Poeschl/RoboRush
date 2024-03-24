@@ -29,13 +29,20 @@ constructor(
   @CreatedDate @Column(name = "registered_at") var registeredAt: ZonedDateTime = ZonedDateTime.now()
 ) : UserDetails {
 
+  companion object {
+    const val ROLE_ADMIN = "ADMIN"
+    const val ROLE_USER = "USER"
+    const val ROOT_USERNAME = "root"
+  }
+
   constructor(username: String, password: String) : this(null, username, password)
 
   override fun getUsername() = username
 
   override fun getPassword() = password
 
-  override fun getAuthorities(): Collection<GrantedAuthority> = listOf(SimpleGrantedAuthority("user"))
+  override fun getAuthorities(): Collection<GrantedAuthority> =
+    if (username == ROOT_USERNAME) listOf(SimpleGrantedAuthority(ROLE_ADMIN)) else listOf(SimpleGrantedAuthority(ROLE_USER))
 
   override fun isAccountNonExpired() = true
 

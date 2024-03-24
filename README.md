@@ -12,14 +12,29 @@ For an easy setup, a docker-compose file is provided in the `deploy` folder.
 It is just a basic setup with traefik as reverse proxy on `http`.
 Depending on the environment a certificate for TLS is recommended.
 
-Additional environment variables:
+### Environment variables frontend
 
-* `AUTH_ISSUER`: Set an explicit issuer string for the auth tokens.
-  This can be useful for parallel instances and should be set in production-like envs.
-* `AUTH_KEY`: Set the input for the JWT signing key.
-  This should be a random string with the length of 64. If changed every user needs to re-login to make auth work correctly again.
+* `PLAUSIBLE_DOMAIN`: The tracked domain for Plausible.
+* `PLAUSIBLE_API_HOST` (optional): An alternative Plausible api host. If not set https://plausible.io is used.
+
+### Environment variables backend
+
+* `SPRING_DATASOURCE_*`: Those environment variables are used to connect to an external database.
 * `SPRING_PROFILES_ACTIVE`: Set this environment variable to `prod` to disable some dev features.
   It will also hide the OpenApi Docs for all internal interfaces.
+* `INITIAL_ROOT_PASSWORD` (optional): The initial root user password.
+  If not set a random one is generated at first start and output in the backend log.
+* `AUTH_ISSUER` (optional): Set an explicit issuer string for the auth tokens.
+  This can be useful for parallel instances and should be set in production-like envs.
+* `AUTH_KEY`(optional): Set the input for the JWT signing key.
+  This should be a random string with the length of 64. If changed every user needs to re-login to make auth work correctly again.
+
+### Admin authentication
+
+At the first start the user `root` is created with a random password which gets displayed **one-time at the first backend start** in the start logs.
+The password can also be specified via an environment variable, but keep it mind it will only be used one-time at the first start.
+
+The admin user can never participate in a game!
 
 ### Plausible tracking
 
@@ -37,7 +52,7 @@ This software will get no versioning and lives on the bloody main branch.
 
 ### Requirements
 
-Have a [Java 17 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&version=17), [node 20](https://nodejs.org/en/download/) and
+Have a [Java 21 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&version=21), [node 20](https://nodejs.org/en/download/) and
 [python 3.10](https://www.python.org/downloads/) installation is required to make it all run.
 Make sure you have [podman](https://podman.io/docs/installation) and [podman-compose](https://github.com/containers/podman-compose)
 (or docker and docker-compose) installed on your system, since the dev environment runs on a container-based reverse proxy.
