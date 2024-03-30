@@ -11,7 +11,7 @@ import xyz.poeschl.pathseeker.models.SettingType
 @Repository
 interface ConfigRepository : CrudRepository<SettingEntity, Long> {
 
-  fun save(setting: SettingEntity)
+  fun save(setting: SettingEntity): SettingEntity
 
   fun findByKey(key: SettingKey): SettingEntity
 }

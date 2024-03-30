@@ -22,6 +22,8 @@ class IntSetting(override val key: SettingKey, override val value: Int) : Settin
     get() = SettingType.INT
 }
 
+class SaveSettingDto(val key: SettingKey, val value: String)
+
 enum class SettingKey {
   TIMEOUT_WAIT_FOR_PLAYERS,
   TIMEOUT_WAIT_FOR_ACTION,
@@ -37,7 +39,17 @@ enum class SettingType {
 @Component
 class SettingEntityMapper {
 
-  fun <T> toEntity(setting: Setting<T>, id: Long): SettingEntity {
+  /**
+   * Convert a settingInput to a SettingEntity. It also makes sure to get the right type.
+   */
+  fun toEntity(settingEntity: SettingEntity, settingInput: SaveSettingDto): SettingEntity {
+    return when (settingEntity.type) {
+      SettingType.INT -> SettingEntity(settingEntity.id, settingEntity.key, settingEntity.type, settingInput.value.toInt().toString())
+      SettingType.DURATION -> SettingEntity(settingEntity.id, settingEntity.key, settingEntity.type, Duration.parseIsoString(settingInput.value).toIsoString())
+    }
+  }
+
+  fun toEntity(setting: Setting<*>, id: Long): SettingEntity {
     return when (setting.type) {
       SettingType.INT -> SettingEntity(id, setting.key, setting.type, (setting.value as Int).toString())
       SettingType.DURATION -> SettingEntity(id, setting.key, setting.type, (setting.value as Duration).toIsoString())

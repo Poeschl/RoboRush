@@ -6,7 +6,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
+import xyz.poeschl.pathseeker.exceptions.GameStateException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.GameState
 import xyz.poeschl.pathseeker.gamelogic.GameStateMachine
@@ -59,7 +59,7 @@ class RobotHandlerTest {
     every { gameStateMachine.isInState(GameState.WAIT_FOR_PLAYERS) } returns false
 
     // THEN
-    assertThrows<InvalidGameStateException> {
+    assertThrows<GameStateException> {
       robotHandler.registerRobotForGame(robotId, position)
     }
 
@@ -173,7 +173,7 @@ class RobotHandlerTest {
     val action = mockk<MoveAction>()
 
     // THEN
-    assertThrows<InvalidGameStateException> {
+    assertThrows<GameStateException> {
       robotHandler.setNextMove(robot.id, gameHandler, action)
     }
 
@@ -225,7 +225,7 @@ class RobotHandlerTest {
     every { gameStateMachine.isInState(GameState.ACTION) } returns false
 
     // THEN
-    assertThrows<InvalidGameStateException> {
+    assertThrows<GameStateException> {
       robotHandler.executeRobotActions(gameHandler)
     }
 

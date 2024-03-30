@@ -11,11 +11,15 @@ class ConfigService(
   private val settingsEntityMapper: SettingEntityMapper
 ) {
 
-  fun <T> saveSetting(setting: Setting<T>) {
-    val existingEntity: SettingEntity = configRepository.findByKey(setting.key)
-    val updatedEntity = settingsEntityMapper.toEntity(setting, existingEntity.id)
+  fun saveSetting(settingDto: SaveSettingDto): Setting<*> {
+    val existingEntity: SettingEntity = configRepository.findByKey(settingDto.key)
+    val updatedEntity = settingsEntityMapper.toEntity(existingEntity, settingDto)
 
-    return configRepository.save(updatedEntity)
+    return settingsEntityMapper.fromEntity(configRepository.save(updatedEntity))
+  }
+
+  fun getAllSettings(): List<Setting<*>> {
+    return configRepository.findAll().map { settingsEntityMapper.fromEntity(it) }
   }
 
   fun getIntSetting(key: SettingKey): IntSetting {
@@ -26,7 +30,7 @@ class ConfigService(
     return getSetting(key) as DurationSetting
   }
 
-  private fun getSetting(key: SettingKey): Setting<*> {
+  fun getSetting(key: SettingKey): Setting<*> {
     val entity: SettingEntity = configRepository.findByKey(key)
     return settingsEntityMapper.fromEntity(entity)
   }

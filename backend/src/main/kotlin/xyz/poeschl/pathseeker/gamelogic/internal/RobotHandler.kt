@@ -2,7 +2,7 @@ package xyz.poeschl.pathseeker.gamelogic.internal
 
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
+import xyz.poeschl.pathseeker.exceptions.GameStateException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.GameState
 import xyz.poeschl.pathseeker.gamelogic.GameStateMachine
@@ -27,7 +27,7 @@ class RobotHandler(
 
   fun registerRobotForGame(robotId: Long, startPosition: Position): ActiveRobot? {
     if (!gameStateService.isInState(GameState.WAIT_FOR_PLAYERS)) {
-      throw InvalidGameStateException("Robot registration is only possible during 'Preparation' stage!")
+      throw GameStateException("Robot registration is only possible during 'Preparation' stage!")
     }
 
     var activeRobot: ActiveRobot? = null
@@ -53,7 +53,7 @@ class RobotHandler(
 
   fun setNextMove(robotId: Long, gameHandler: GameHandler, nextAction: RobotAction<*>): ActiveRobot? {
     if (!gameStateService.isInState(GameState.WAIT_FOR_ACTION)) {
-      throw InvalidGameStateException("Sending the next robot move is only allowed during 'Waiting for action' stage!")
+      throw GameStateException("Sending the next robot move is only allowed during 'Waiting for action' stage!")
     }
     activeRobots.firstOrNull { it.id == robotId }?.let { robot ->
       // If all checks are successful, the action will be saved
@@ -67,7 +67,7 @@ class RobotHandler(
 
   fun executeRobotActions(gameHandler: GameHandler) {
     if (!gameStateService.isInState(GameState.ACTION)) {
-      throw InvalidGameStateException("Actions are only allowed to be executed during 'Action' stage")
+      throw GameStateException("Actions are only allowed to be executed during 'Action' stage")
     }
     activeRobots.forEach { robot ->
       // Execute action for every robot with action
