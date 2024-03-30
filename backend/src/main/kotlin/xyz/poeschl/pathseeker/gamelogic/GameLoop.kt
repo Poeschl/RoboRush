@@ -4,10 +4,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import xyz.poeschl.pathseeker.configuration.GameLogic
+import xyz.poeschl.pathseeker.models.SettingKey.*
 import xyz.poeschl.pathseeker.service.ConfigService
 import kotlin.concurrent.thread
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @GameLogic
 class GameLoop(
@@ -17,13 +16,9 @@ class GameLoop(
 ) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
-    private val WAIT_FOR_PLAYERS_TIMEOUT = 3.minutes
-    private val WAIT_FOR_ACTION_TIMEOUT = 30.seconds
-    private val ENDED_GAME_TIMEOUT = 2.minutes
-    private const val NO_ACTION_END_THRESHOLD = 3
   }
 
-  var noRobotActionCounter = 0
+  private var noRobotActionCounter = 0
 
   @EventListener(ApplicationReadyEvent::class)
   fun startGameLoop() {
@@ -45,8 +40,8 @@ class GameLoop(
       }
 
       GameState.WAIT_FOR_PLAYERS -> {
-        Thread.sleep(WAIT_FOR_PLAYERS_TIMEOUT.inWholeMilliseconds)
-        if (!gameHandler.getActiveRobots().isEmpty()) {
+        Thread.sleep(configService.getDurationSetting(TIMEOUT_WAIT_FOR_PLAYERS).inWholeMilliseconds())
+        if (gameHandler.getActiveRobots().isNotEmpty()) {
           // If there are registered robots we start the game
           gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
         }
@@ -54,7 +49,7 @@ class GameLoop(
 
       GameState.WAIT_FOR_ACTION -> {
         LOGGER.debug("Waiting for robot inputs")
-        Thread.sleep(WAIT_FOR_ACTION_TIMEOUT.inWholeMilliseconds)
+        Thread.sleep(configService.getDurationSetting(TIMEOUT_WAIT_FOR_ACTION).inWholeMilliseconds())
         gameStateService.setGameState(GameState.ACTION)
       }
 
@@ -66,7 +61,7 @@ class GameLoop(
         }
 
         // TODO: Add target tile check
-        if (noRobotActionCounter >= NO_ACTION_END_THRESHOLD) {
+        if (noRobotActionCounter >= configService.getIntSetting(THRESHOLD_NO_ROBOT_ACTION_END_GAME).value) {
           LOGGER.debug("No robot actions received.")
           gameStateService.setGameState(GameState.ENDED)
         } else {
@@ -78,7 +73,7 @@ class GameLoop(
 
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
-        Thread.sleep(ENDED_GAME_TIMEOUT.inWholeMilliseconds)
+        Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
         gameStateService.setGameState(GameState.PREPARE)
       }
     }

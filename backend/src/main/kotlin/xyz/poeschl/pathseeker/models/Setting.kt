@@ -13,6 +13,8 @@ interface Setting<T> {
 class DurationSetting(override val key: SettingKey, override val value: Duration) : Setting<Duration> {
   override val type: SettingType
     get() = SettingType.DURATION
+
+  fun inWholeMilliseconds() = value.inWholeMilliseconds
 }
 
 class IntSetting(override val key: SettingKey, override val value: Int) : Setting<Int> {
