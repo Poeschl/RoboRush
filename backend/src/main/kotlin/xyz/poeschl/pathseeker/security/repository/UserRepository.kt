@@ -33,6 +33,8 @@ constructor(
     const val ROLE_ADMIN = "ADMIN"
     const val ROLE_USER = "USER"
     const val ROOT_USERNAME = "root"
+    private const val INTERNAL_ROLE_ADMIN = "ROLE_ADMIN"
+    private const val INTERNAL_ROLE_USER = "ROLE_USER"
   }
 
   constructor(username: String, password: String) : this(null, username, password)
@@ -42,7 +44,7 @@ constructor(
   override fun getPassword() = password
 
   override fun getAuthorities(): Collection<GrantedAuthority> =
-    if (username == ROOT_USERNAME) listOf(SimpleGrantedAuthority(ROLE_ADMIN)) else listOf(SimpleGrantedAuthority(ROLE_USER))
+    if (username == ROOT_USERNAME) listOf(SimpleGrantedAuthority(INTERNAL_ROLE_ADMIN)) else listOf(SimpleGrantedAuthority(INTERNAL_ROLE_USER))
 
   override fun isAccountNonExpired() = true
 
