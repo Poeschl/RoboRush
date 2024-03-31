@@ -14,7 +14,7 @@ class UserTest {
     val user = User(a(`$String`("user")), a(`$String`("password")))
 
     // VERIFY
-    assertThat(user.authorities).containsExactly(SimpleGrantedAuthority("USER"))
+    assertThat(user.authorities).containsExactly(SimpleGrantedAuthority("ROLE_USER"))
   }
 
   @Test
@@ -23,6 +23,6 @@ class UserTest {
     val user = User("root", a(`$String`("password")))
 
     // VERIFY
-    assertThat(user.authorities).containsExactly(SimpleGrantedAuthority("ADMIN"))
+    assertThat(user.authorities).containsExactly(SimpleGrantedAuthority("ROLE_ADMIN"))
   }
 }

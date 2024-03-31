@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import xyz.poeschl.pathseeker.controller.WebsocketController
-import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
+import xyz.poeschl.pathseeker.exceptions.GameStateException
 import java.util.stream.Stream
 
 class GameStateMachineTest {
@@ -83,7 +83,7 @@ class GameStateMachineTest {
       verify { websocketController.sendGameStateUpdate(testState) }
     } else {
       // VERIFY
-      assertThrows<InvalidGameStateException> {
+      assertThrows<GameStateException> {
         gameStateService.setGameState(testState)
       }
       assertThat(!gameStateService.isInState(testState))

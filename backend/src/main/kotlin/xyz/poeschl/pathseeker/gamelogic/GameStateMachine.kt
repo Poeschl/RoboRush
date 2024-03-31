@@ -3,7 +3,7 @@ package xyz.poeschl.pathseeker.gamelogic
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.controller.WebsocketController
-import xyz.poeschl.pathseeker.exceptions.InvalidGameStateException
+import xyz.poeschl.pathseeker.exceptions.GameStateException
 
 @GameLogic
 class GameStateMachine(private val websocketController: WebsocketController) {
@@ -20,7 +20,7 @@ class GameStateMachine(private val websocketController: WebsocketController) {
       currentGameState = state
       websocketController.sendGameStateUpdate(currentGameState)
     } else {
-      throw InvalidGameStateException(
+      throw GameStateException(
         "Gamestate $state can't be initiated from current state $currentGameState. Allowed predecessor " +
           "of $state are: ${state.validPredecessor.joinToString(",")}"
       )

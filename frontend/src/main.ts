@@ -7,10 +7,14 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowRightFromBracket,
   faArrowRightToBracket,
+  faArrowRotateLeft,
+  faBook,
   faCaretDown,
   faCaretLeft,
   faCaretRight,
   faCaretUp,
+  faChalkboard,
+  faCheck,
   faClipboard,
   faGasPump,
   faLocationDot,
@@ -20,6 +24,7 @@ import {
   faRoute,
   faSatelliteDish,
   faUserPlus,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createPinia } from "pinia";
@@ -48,6 +53,11 @@ library.add(
   faCaretLeft,
   faSatelliteDish,
   faPlay,
+  faUserTie,
+  faBook,
+  faChalkboard,
+  faArrowRotateLeft,
+  faCheck,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

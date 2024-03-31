@@ -40,7 +40,7 @@ class RobotRestController(private val robotService: RobotService) {
   )
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-  @PreAuthorize("!principal.authorities.contains('${User.ROLE_ADMIN}')")
+  @PreAuthorize("hasRole('${User.ROLE_USER}')")
   fun getActiveUserRobot(auth: Authentication): ActiveRobot {
     LOGGER.debug("Get active user robot")
     return robotService.getActiveRobotByUser(auth.principal as User) ?: throw RobotNotActiveException("Your robot is not active right now")
@@ -52,7 +52,7 @@ class RobotRestController(private val robotService: RobotService) {
   )
   @SecurityRequirement(name = "Bearer Authentication")
   @PostMapping("/attend")
-  @PreAuthorize("!principal.authorities.contains('${User.ROLE_ADMIN}')")
+  @PreAuthorize("hasRole('${User.ROLE_USER}')")
   fun registerRobotForGame(auth: Authentication) {
     val robot = robotService.getRobotByUser(auth.principal as User)
     if (robot != null) {

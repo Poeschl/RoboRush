@@ -80,7 +80,7 @@ class UserDetailsServiceTest {
     assertThat(userSlot.captured.username).isEqualTo(userName)
     assertThat(userSlot.captured.password).isEqualTo(encodedPassword)
     assertThat(userSlot.captured.registeredAt).isAfterOrEqualTo(ZonedDateTime.now().minusSeconds(5))
-    assertThat(userSlot.captured.authorities).containsExactly(SimpleGrantedAuthority("USER"))
+    assertThat(userSlot.captured.authorities).containsExactly(SimpleGrantedAuthority("ROLE_USER"))
     assertThat(userSlot.captured.isEnabled).isTrue()
     assertThat(userSlot.captured.isAccountNonLocked).isTrue()
     assertThat(userSlot.captured.isAccountNonExpired).isTrue()
