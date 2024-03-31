@@ -50,15 +50,6 @@ class GameHandlerTest {
   }
 
   @Test
-  fun getTargetPosition() {
-    // WHEN
-
-    // THEN
-
-    // VERIFY
-  }
-
-  @Test
   fun isPositionValidForMove() {
     // WHEN
     val position = Position(3, 4)
