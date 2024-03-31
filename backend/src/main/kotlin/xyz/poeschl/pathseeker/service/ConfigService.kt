@@ -19,7 +19,7 @@ class ConfigService(
   }
 
   fun getAllSettings(): List<Setting<*>> {
-    return configRepository.findAll().map { settingsEntityMapper.fromEntity(it) }
+    return configRepository.findAll().map { settingsEntityMapper.fromEntity(it) }.sortedByDescending { it.key }
   }
 
   fun getIntSetting(key: SettingKey): IntSetting {

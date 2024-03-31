@@ -16,11 +16,11 @@ class JacksonConfig {
     return Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
 
       // Setup proper duration serialization in ISO-8601
+      builder.modulesToInstall(JavaTimeModule())
       val kotlinModule = KotlinModule.Builder()
         .enable(KotlinFeature.UseJavaDurationConversion)
         .build()
       builder.modulesToInstall(kotlinModule)
-      builder.modulesToInstall(JavaTimeModule())
     }
   }
 }

@@ -7,12 +7,14 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowRightFromBracket,
   faArrowRightToBracket,
+  faArrowRotateLeft,
   faBook,
   faCaretDown,
   faCaretLeft,
   faCaretRight,
   faCaretUp,
   faChalkboard,
+  faCheck,
   faClipboard,
   faGasPump,
   faLocationDot,
@@ -54,6 +56,8 @@ library.add(
   faUserTie,
   faBook,
   faChalkboard,
+  faArrowRotateLeft,
+  faCheck,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
