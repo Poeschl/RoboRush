@@ -15,8 +15,24 @@
 
       <div id="menuItems" class="navbar-menu" :class="{ 'is-active': mobileNavOpen }">
         <div class="navbar-start">
-          <router-link class="navbar-item" to="/">Home</router-link>
-          <router-link class="navbar-item" to="/how-to-play">How To Play</router-link>
+          <router-link class="navbar-item" to="/">
+            <div class="icon mr-1">
+              <FontAwesomeIcon icon="fa-solid fa-chalkboard" />
+            </div>
+            Overview
+          </router-link>
+          <router-link v-if="!showAdminOptions" class="navbar-item" to="/how-to-play">
+            <div class="icon mr-1">
+              <FontAwesomeIcon icon="fa-solid fa-book" />
+            </div>
+            How To Play
+          </router-link>
+          <router-link v-if="showAdminOptions" class="navbar-item" to="/config">
+            <div class="icon mr-1">
+              <FontAwesomeIcon icon="fa-solid fa-user-tie" />
+            </div>
+            Game Configuration
+          </router-link>
         </div>
         <div class="navbar-end">
           <NavbarUserComponent />
@@ -27,10 +43,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import NavbarUserComponent from "@/components/NavbarUserComponent.vue";
+import { useUserStore } from "@/stores/UserStore";
 
 const mobileNavOpen = ref<boolean>(false);
+const showAdminOptions = computed<boolean>(() => useUserStore().isAdmin);
+
 const toggleMobileNav = () => {
   mobileNavOpen.value = !mobileNavOpen.value;
 };
