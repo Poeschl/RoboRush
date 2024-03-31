@@ -17,14 +17,14 @@
               </div>
               <div class="columns">
                 <div class="column is-one-third">
-                  <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightLeft }" @click="move('EAST')">
+                  <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightLeft }" @click="move('WEST')">
                     <div class="icon">
                       <FontAwesomeIcon icon="fa-solid fa-caret-left" class="fa-2x" />
                     </div>
                   </button>
                 </div>
                 <div class="column is-offset-one-third is-one-third">
-                  <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightRight }" @click="move('WEST')">
+                  <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightRight }" @click="move('EAST')">
                     <div class="icon">
                       <FontAwesomeIcon icon="fa-solid fa-caret-right" class="fa-2x" />
                     </div>
@@ -156,26 +156,23 @@ const handleControlInput = (promise: Promise<void>) => {
 </script>
 
 <style scoped lang="scss">
-@import "../assets/custom-variables";
-@import "../assets/darkly-variables";
+@use "../assets/custom-variables";
 
 .is-dpad-control {
   height: 7.6rem;
   width: 7.6rem;
+  --bulma-column-gap: 0;
+  --bulma-block-spacing: 0;
 
-  .columns {
-    margin: 0;
-  }
-
-  .column {
-    padding: 0;
-  }
-
-  .button.is-selected,
-  .is-scan-action .button {
+  .button.is-selected {
     .icon {
-      color: $link-hover;
+      color: custom-variables.$primary;
     }
+  }
+}
+.is-scan-action .button.is-selected {
+  .icon {
+    color: custom-variables.$primary;
   }
 }
 </style>

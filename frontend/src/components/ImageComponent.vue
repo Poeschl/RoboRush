@@ -1,5 +1,5 @@
 <template>
-  <img class="grey-shadow" :src="imageSrc" :alt="title" :title="title" />
+  <img :src="imageSrc" :alt="title" :title="title" />
 </template>
 
 <script setup lang="ts">
@@ -9,4 +9,10 @@ defineProps<{
 }>();
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@use "bulma/sass/utilities/initial-variables";
+
+img {
+  box-shadow: initial-variables.$grey 0 0 4px 1px;
+}
+</style>
