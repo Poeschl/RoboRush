@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.models.Size
 import xyz.poeschl.pathseeker.models.Tile
+import xyz.poeschl.pathseeker.models.TileType
 import java.util.stream.Stream
 import kotlin.math.ceil
 
@@ -48,7 +49,7 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0), Position(1, 1))
 
     // THEN
     val tile1 = mapHandler.getTileAtPosition(Position(0, 0))
@@ -57,10 +58,10 @@ class MapHandlerTest {
     val tile4 = mapHandler.getTileAtPosition(Position(1, 1))
 
     // VERIFY
-    assertThat(tile1).isEqualTo(Tile(Position(0, 0), 1))
+    assertThat(tile1).isEqualTo(Tile(Position(0, 0), 1, TileType.START_TILE))
     assertThat(tile2).isEqualTo(Tile(Position(1, 0), 2))
     assertThat(tile3).isEqualTo(Tile(Position(0, 1), 3))
-    assertThat(tile4).isEqualTo(Tile(Position(1, 1), 4))
+    assertThat(tile4).isEqualTo(Tile(Position(1, 1), 4, TileType.TARGET_TILE))
   }
 
   @Test

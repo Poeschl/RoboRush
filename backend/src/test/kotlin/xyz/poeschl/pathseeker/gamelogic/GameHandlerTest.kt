@@ -13,12 +13,16 @@ import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.settings.BooleanSetting
+import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.service.ConfigService
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
 
@@ -28,8 +32,9 @@ class GameHandlerTest {
   private val robotHandler = mockk<RobotHandler>(relaxUnitFun = true)
   private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
   private val gameStateMachine = mockk<GameStateMachine>(relaxUnitFun = true)
+  private val configService = mockk<ConfigService>(relaxUnitFun = true)
 
-  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine)
+  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService)
 
   @Test
   fun getHeightMap() {
@@ -250,13 +255,34 @@ class GameHandlerTest {
   fun getPublicGameInfo() {
     // WHEN
     val state = a(`$GameState`())
+    val target = a(`$Position`())
     every { gameStateMachine.getCurrentState() } returns state
+    every { mapHandler.getTargetPosition() } returns target
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
 
     // THEN
     val game = gameHandler.getPublicGameInfo()
 
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
+    assertThat(game.targetPosition).isEqualTo(target)
+  }
+
+  @Test
+  fun getPublicGameInfo_noTargetPosition() {
+    // WHEN
+    val state = a(`$GameState`())
+    val target = a(`$Position`())
+    every { gameStateMachine.getCurrentState() } returns state
+    every { mapHandler.getTargetPosition() } returns target
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
+
+    // THEN
+    val game = gameHandler.getPublicGameInfo()
+
+    // VERIFY
+    assertThat(game.currentState).isEqualTo(state)
+    assertThat(game.targetPosition).isNull()
   }
 
   @Test

@@ -7,6 +7,7 @@ export interface Setting {
 export enum SettingType {
   INT = "INT",
   DURATION = "DURATION",
+  BOOLEAN = "BOOLEAN",
 }
 
 export interface SaveSetting {

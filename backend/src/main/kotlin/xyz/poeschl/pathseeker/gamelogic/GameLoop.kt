@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import xyz.poeschl.pathseeker.models.SettingKey.*
+import xyz.poeschl.pathseeker.models.settings.SettingKey.*
 import xyz.poeschl.pathseeker.service.ConfigService
 import kotlin.concurrent.thread
 

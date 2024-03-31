@@ -5,6 +5,7 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.settings.*
 import xyz.poeschl.pathseeker.repositories.ConfigRepository
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.ConfigTypes.Companion.`$SettingEntity`
@@ -84,6 +85,23 @@ class ConfigServiceTest {
 
     // THEN
     val setting = configService.getDurationSetting(searchKey)
+
+    // VERIFY
+    assertThat(setting).isEqualTo(expected)
+  }
+
+  @Test
+  fun getBooleanSetting() {
+    // WHEN
+    val settingEntity = a(`$SettingEntity`().withType(SettingType.BOOLEAN).withValue("true"))
+    val expected = BooleanSetting(settingEntity.key, true)
+    val searchKey = SettingKey.TARGET_POSITION_IN_GAMEINFO
+
+    every { configRepository.findByKey(searchKey) } returns settingEntity
+    every { settingEntityMapper.fromEntity(any()) } answers { callOriginal() }
+
+    // THEN
+    val setting = configService.getBooleanSetting(searchKey)
 
     // VERIFY
     assertThat(setting).isEqualTo(expected)

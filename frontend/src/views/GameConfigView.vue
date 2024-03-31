@@ -6,6 +6,7 @@
         <div class="box">
           <ConfigIntSettingComponent v-if="setting.type == SettingType.INT" :setting-key="setting.key" />
           <ConfigDurationSettingComponent v-if="setting.type == SettingType.DURATION" :setting-key="setting.key" />
+          <ConfigBooleanSettingComponent v-if="setting.type == SettingType.BOOLEAN" :setting-key="setting.key" />
         </div>
       </div>
     </div>
@@ -21,6 +22,7 @@ import { onMounted } from "vue";
 import ConfigIntSettingComponent from "@/components/ConfigIntSettingComponent.vue";
 import { SettingType } from "@/models/Config";
 import ConfigDurationSettingComponent from "@/components/ConfigDurationSettingComponent.vue";
+import ConfigBooleanSettingComponent from "@/components/ConfigBooleanSettingComponent.vue";
 
 const configStore = useConfigStore();
 

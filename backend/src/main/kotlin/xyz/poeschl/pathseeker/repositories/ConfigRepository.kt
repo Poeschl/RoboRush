@@ -5,8 +5,8 @@ import net.karneim.pojobuilder.GeneratePojoBuilder
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import xyz.poeschl.pathseeker.configuration.Builder
-import xyz.poeschl.pathseeker.models.SettingKey
-import xyz.poeschl.pathseeker.models.SettingType
+import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.models.settings.SettingType
 
 @Repository
 interface ConfigRepository : CrudRepository<SettingEntity, Long> {
