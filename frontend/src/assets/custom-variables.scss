@@ -1,5 +1,19 @@
 $primary: #981515;
 
-$link: lighten($primary, 20);
+$hue: 0;
+$saturation: 0%;
 
-$input-background-color: #3c4545;
+$black: hsl($hue, $saturation, 5%) !default;
+$black-bis: hsl($hue, $saturation, 9%) !default;
+$black-ter: hsl($hue, $saturation, 14%) !default;
+
+$grey-darker: hsl($hue, $saturation, 21%) !default;
+$grey-dark: hsl($hue, $saturation, 29%) !default;
+$grey: hsl($hue, $saturation, 60%) !default;
+$grey-light: hsl($hue, $saturation, 71%) !default;
+$grey-lighter: hsl($hue, $saturation, 86%) !default;
+$grey-lightest: hsl($hue, $saturation, 93%) !default;
+
+$white-ter: hsl($hue, $saturation, 96%) !default;
+$white-bis: hsl($hue, $saturation, 98%) !default;
+$white: hsl($hue, $saturation, 100%) !default;

@@ -1,14 +1,53 @@
-@import "../../node_modules/minireset.css/minireset";
-@import "custom-variables";
-@import "darkly-variables";
+@use "custom-variables";
 
-$bulmaswatch-import-font: false;
-$radius: 4px;
+@use "bulma/sass/utilities" with (
+  $primary: custom-variables.$primary,
+  $link: lighten(custom-variables.$primary, 20),
+  $black: custom-variables.$black,
+  $black-bis: custom-variables.$black-bis,
+  $black-ter: custom-variables.$black-ter,
 
-$input-color: $white-ter;
+  $grey-darker: custom-variables.$grey-darker,
+  $grey-dark: custom-variables.$grey-dark,
+  $grey: custom-variables.$grey,
+  $grey-light: custom-variables.$grey-lighter,
+  $grey-lighter: custom-variables.$grey-lighter,
+  $grey-lightest: custom-variables.$grey-lightest,
 
-$progress-bar-background-color: $grey-lighter;
+  $white-ter: custom-variables.$white-ter,
+  $white-bis: custom-variables.$white-bis,
+  $white: custom-variables.$white
+);
 
-@import "../../node_modules/bulma/bulma";
-@import "darkly-overrides";
-@import "custom-overwrites";
+@use "bulma/sass/elements/box" with (
+  $box-background-color: lighten(utilities.$black-ter, 5),
+  $box-shadow: none,
+  $box-color: utilities.$grey-lightest
+);
+
+@use "bulma/sass/base" with (
+  $body-background-color: lighten(utilities.$black, 5)
+);
+
+// All bulma modules which are used without a modification
+@forward "bulma/sass/components/card";
+@forward "bulma/sass/components/modal";
+@forward "bulma/sass/components/navbar";
+@forward "bulma/sass/elements/button";
+@forward "bulma/sass/elements/content";
+@forward "bulma/sass/elements/icon";
+@forward "bulma/sass/elements/notification";
+@forward "bulma/sass/elements/progress";
+@forward "bulma/sass/elements/title";
+@forward "bulma/sass/form";
+@forward "bulma/sass/grid/columns-v2";
+@forward "bulma/sass/helpers/color";
+@forward "bulma/sass/helpers/flexbox";
+@forward "bulma/sass/helpers/spacing";
+@forward "bulma/sass/helpers/typography";
+@forward "bulma/sass/helpers/visibility";
+@forward "bulma/sass/layout/container";
+@forward "bulma/sass/layout/level";
+@forward "bulma/sass/layout/section";
+
+@forward "bulma/sass/themes";
