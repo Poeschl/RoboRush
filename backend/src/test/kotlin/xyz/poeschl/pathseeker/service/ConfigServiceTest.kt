@@ -35,7 +35,7 @@ class ConfigServiceTest {
     // VERIFY
     assertThat(setting.key).isEqualTo(settingEntity.key)
     assertThat(setting.type).isEqualTo(SettingType.INT)
-    assertThat(setting.value).isEqualTo(settingDto.value)
+    assertThat(setting.value).isEqualTo(50)
   }
 
   @Test
