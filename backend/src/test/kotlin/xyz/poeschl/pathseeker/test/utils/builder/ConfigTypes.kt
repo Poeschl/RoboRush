@@ -1,8 +1,8 @@
 package xyz.poeschl.pathseeker.test.utils.builder
 
 import org.junit.jupiter.api.Disabled
-import xyz.poeschl.pathseeker.models.SettingKey
-import xyz.poeschl.pathseeker.models.SettingType
+import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.models.settings.SettingType
 import xyz.poeschl.pathseeker.repositories.SettingEntityBuilder
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Id`

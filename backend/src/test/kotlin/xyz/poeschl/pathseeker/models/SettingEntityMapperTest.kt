@@ -2,6 +2,7 @@ package xyz.poeschl.pathseeker.models
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import xyz.poeschl.pathseeker.models.settings.*
 import xyz.poeschl.pathseeker.repositories.SettingEntity
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Id`
@@ -45,6 +46,22 @@ class SettingEntityMapperTest {
   }
 
   @Test
+  fun toEntity_boolean() {
+    // WHEN
+    val id = a(`$Id`())
+    val setting = BooleanSetting(SettingKey.entries.random(), true)
+
+    // THEN
+    val entity = settingEntityMapper.toEntity(setting, id)
+
+    // VERIFY
+    assertThat(entity.id).isEqualTo(id)
+    assertThat(entity.key).isEqualTo(setting.key)
+    assertThat(entity.type).isEqualTo(SettingType.BOOLEAN)
+    assertThat(entity.value).isEqualTo(setting.value.toString())
+  }
+
+  @Test
   fun toEntity_withSettingEntity_int() {
     // WHEN
     val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.INT, "20")
@@ -77,6 +94,22 @@ class SettingEntityMapperTest {
   }
 
   @Test
+  fun toEntity_withSettingEntity_boolean() {
+    // WHEN
+    val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.BOOLEAN, "false")
+    val settingInput = SaveSettingDto(settingEntity.key, "true")
+
+    // THEN
+    val entity = settingEntityMapper.toEntity(settingEntity, settingInput)
+
+    // VERIFY
+    assertThat(entity.id).isEqualTo(settingEntity.id)
+    assertThat(entity.key).isEqualTo(settingEntity.key)
+    assertThat(entity.type).isEqualTo(SettingType.BOOLEAN)
+    assertThat(entity.value).isEqualTo(settingInput.value)
+  }
+
+  @Test
   fun fromEntity_int() {
     // WHEN
     val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.INT, "20")
@@ -102,5 +135,19 @@ class SettingEntityMapperTest {
     assertThat(setting.key).isEqualTo(settingEntity.key)
     assertThat(setting.type).isEqualTo(SettingType.DURATION)
     assertThat(setting.value).isEqualTo(Duration.parseIsoString(settingEntity.value))
+  }
+
+  @Test
+  fun fromEntity_boolean() {
+    // WHEN
+    val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.BOOLEAN, "false")
+
+    // THEN
+    val setting = settingEntityMapper.fromEntity(settingEntity) as BooleanSetting
+
+    // VERIFY
+    assertThat(setting.key).isEqualTo(settingEntity.key)
+    assertThat(setting.type).isEqualTo(SettingType.BOOLEAN)
+    assertThat(setting.value).isEqualTo(false)
   }
 }

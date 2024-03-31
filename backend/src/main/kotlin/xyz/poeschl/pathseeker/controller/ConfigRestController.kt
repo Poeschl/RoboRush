@@ -6,9 +6,9 @@ import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import xyz.poeschl.pathseeker.exceptions.InvalidConfigKeyException
-import xyz.poeschl.pathseeker.models.SaveSettingDto
-import xyz.poeschl.pathseeker.models.Setting
-import xyz.poeschl.pathseeker.models.SettingKey
+import xyz.poeschl.pathseeker.models.settings.SaveSettingDto
+import xyz.poeschl.pathseeker.models.settings.Setting
+import xyz.poeschl.pathseeker.models.settings.SettingKey
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.service.ConfigService
 

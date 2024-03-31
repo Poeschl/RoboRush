@@ -1,7 +1,7 @@
 package xyz.poeschl.pathseeker.service
 
 import org.springframework.stereotype.Service
-import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.settings.*
 import xyz.poeschl.pathseeker.repositories.ConfigRepository
 import xyz.poeschl.pathseeker.repositories.SettingEntity
 
@@ -28,6 +28,10 @@ class ConfigService(
 
   fun getDurationSetting(key: SettingKey): DurationSetting {
     return getSetting(key) as DurationSetting
+  }
+
+  fun getBooleanSetting(key: SettingKey): BooleanSetting {
+    return getSetting(key) as BooleanSetting
   }
 
   fun getSetting(key: SettingKey): Setting<*> {

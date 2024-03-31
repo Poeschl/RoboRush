@@ -8,13 +8,16 @@ import xyz.poeschl.pathseeker.gamelogic.actions.RobotAction
 import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.service.ConfigService
 
 @GameLogic
 class GameHandler(
   private val mapHandler: MapHandler,
   private val robotHandler: RobotHandler,
   private val websocketController: WebsocketController,
-  private val gameStateMachine: GameStateMachine
+  private val gameStateMachine: GameStateMachine,
+  private val configService: ConfigService
 ) {
 
   fun getHeightMap(): List<Tile> {
@@ -92,7 +95,7 @@ class GameHandler(
   fun getPublicGameInfo(): Game {
     return Game(
       gameStateMachine.getCurrentState(),
-      mapHandler.getTargetPosition()
+      if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null
     )
   }
 }
