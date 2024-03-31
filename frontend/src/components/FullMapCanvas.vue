@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Position, Tile } from "@/models/Map";
+import { type Position, type Tile, TileType } from "@/models/Map";
 import type { PublicRobot } from "@/models/Robot";
 import { computed, onMounted, ref, watch } from "vue";
 import Color from "@/models/Color";
@@ -14,9 +14,12 @@ import log from "loglevel";
 
 const cellSize = 16;
 const cellBorder = 1;
+const maxHeightColorEnlighten = 150;
 const mapBorderColor = new Color(0, 0, 0);
-const mapColor = new Color(120, 211, 71);
-const mapHeightSteps = 5;
+const mapColor = new Color(100, 190, 71);
+const targetTileBorderColor = new Color(0, 130, 255);
+const startTileBorderColor = new Color(210, 110, 0);
+const specialTileBorderWidth = 4;
 
 const props = defineProps<{
   mapData: Tile[];
@@ -68,14 +71,29 @@ const drawMap = () => {
 
     updateCanvasSize(props.mapData);
 
+    const maxHeight = Math.max(...props.mapData.map((t) => t.height));
+    const steps = maxHeight / maxHeightColorEnlighten;
+    let mapHeightSteps = Math.ceil(steps);
+    if (steps < 1) {
+      mapHeightSteps = Math.ceil(1 / steps);
+    }
+    log.debug("Max height: ", maxHeight, "Step size: ", mapHeightSteps);
+
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
     for (const index in props.mapData) {
-      const tile = props.mapData[index];
+      const tile: Tile = props.mapData[index];
       // log.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
       drawTile(drawContext, mapColor.enlighten(tile.height * mapHeightSteps));
+
+      if (tile.type == TileType.TARGET_TILE) {
+        drawTileBorder(drawContext, targetTileBorderColor);
+      } else if (tile.type == TileType.START_TILE) {
+        drawTileBorder(drawContext, startTileBorderColor);
+      }
+
       drawContext.restore();
     }
   }
@@ -109,6 +127,17 @@ const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.fillRect(0, 0, cellSize + 2 * cellBorder, cellSize + 2 * cellBorder);
   drawContext.fillStyle = color.toHex();
   drawContext.fillRect(cellBorder, cellBorder, cellSize, cellSize);
+};
+
+const drawTileBorder = (drawContext: CanvasRenderingContext2D, color: Color) => {
+  drawContext.lineWidth = specialTileBorderWidth;
+  drawContext.strokeStyle = color.toHex();
+  drawContext.strokeRect(
+    cellBorder + specialTileBorderWidth / 2,
+    cellBorder + specialTileBorderWidth / 2,
+    cellSize - specialTileBorderWidth,
+    cellSize - specialTileBorderWidth,
+  );
 };
 
 const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
