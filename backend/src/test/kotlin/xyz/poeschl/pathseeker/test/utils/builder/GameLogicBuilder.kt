@@ -3,14 +3,7 @@ package xyz.poeschl.pathseeker.test.utils.builder
 import org.junit.jupiter.api.Disabled
 import xyz.poeschl.pathseeker.configuration.Builder
 import xyz.poeschl.pathseeker.gamelogic.GameState
-import xyz.poeschl.pathseeker.models.ActiveRobotBuilder
-import xyz.poeschl.pathseeker.models.ColorBuilder
-import xyz.poeschl.pathseeker.models.Direction
-import xyz.poeschl.pathseeker.models.MapBuilder
-import xyz.poeschl.pathseeker.models.PositionBuilder
-import xyz.poeschl.pathseeker.models.PublicRobotBuilder
-import xyz.poeschl.pathseeker.models.SizeBuilder
-import xyz.poeschl.pathseeker.models.TileBuilder
+import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.repositories.RobotBuilder
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
@@ -51,6 +44,7 @@ class GameLogicBuilder {
     fun `$Tile`() = TileBuilder()
       .withPosition(a(`$Position`()))
       .withHeight(a(`$Int`()))
+      .withType(TileType.DEFAULT_TILE)
 
     fun `$Size`() = SizeBuilder()
       .withHeight(a(`$Int`()))

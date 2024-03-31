@@ -19,6 +19,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
 
@@ -42,6 +43,15 @@ class GameHandlerTest {
 
     // VERIFY
     assertThat(result).isEqualTo(tiles)
+  }
+
+  @Test
+  fun getTargetPosition() {
+    // WHEN
+
+    // THEN
+
+    // VERIFY
   }
 
   @Test
@@ -250,13 +260,16 @@ class GameHandlerTest {
   fun getPublicGameInfo() {
     // WHEN
     val state = a(`$GameState`())
+    val target = a(`$Position`())
     every { gameStateMachine.getCurrentState() } returns state
+    every { mapHandler.getTargetPosition() } returns target
 
     // THEN
     val game = gameHandler.getPublicGameInfo()
 
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
+    assertThat(game.targetPosition).isEqualTo(target)
   }
 
   @Test

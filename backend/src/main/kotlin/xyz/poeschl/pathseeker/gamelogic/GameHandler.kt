@@ -90,6 +90,9 @@ class GameHandler(
   }
 
   fun getPublicGameInfo(): Game {
-    return Game(gameStateMachine.getCurrentState())
+    return Game(
+      gameStateMachine.getCurrentState(),
+      mapHandler.getTargetPosition()
+    )
   }
 }
