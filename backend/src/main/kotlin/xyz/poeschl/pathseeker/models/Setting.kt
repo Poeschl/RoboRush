@@ -15,11 +15,58 @@ class DurationSetting(override val key: SettingKey, override val value: Duration
     get() = SettingType.DURATION
 
   fun inWholeMilliseconds() = value.inWholeMilliseconds
+  override fun toString(): String {
+    return "DurationSetting(key=$key, value=$value)"
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as DurationSetting
+
+    if (key != other.key) return false
+    if (value != other.value) return false
+    if (type != other.type) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = key.hashCode()
+    result = 31 * result + value.hashCode()
+    result = 31 * result + type.hashCode()
+    return result
+  }
 }
 
 class IntSetting(override val key: SettingKey, override val value: Int) : Setting<Int> {
   override val type: SettingType
     get() = SettingType.INT
+
+  override fun toString(): String {
+    return "IntSetting(key=$key, value=$value)"
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as IntSetting
+
+    if (key != other.key) return false
+    if (value != other.value) return false
+    if (type != other.type) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = key.hashCode()
+    result = 31 * result + value
+    result = 31 * result + type.hashCode()
+    return result
+  }
 }
 
 class SaveSettingDto(val key: SettingKey, val value: String)

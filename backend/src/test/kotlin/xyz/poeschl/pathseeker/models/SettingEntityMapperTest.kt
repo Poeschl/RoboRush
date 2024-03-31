@@ -45,6 +45,38 @@ class SettingEntityMapperTest {
   }
 
   @Test
+  fun toEntity_withSettingEntity_int() {
+    // WHEN
+    val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.INT, "20")
+    val settingInput = SaveSettingDto(settingEntity.key, "123")
+
+    // THEN
+    val entity = settingEntityMapper.toEntity(settingEntity, settingInput)
+
+    // VERIFY
+    assertThat(entity.id).isEqualTo(settingEntity.id)
+    assertThat(entity.key).isEqualTo(settingEntity.key)
+    assertThat(entity.type).isEqualTo(SettingType.INT)
+    assertThat(entity.value).isEqualTo(settingInput.value)
+  }
+
+  @Test
+  fun toEntity_withSettingEntity_duration() {
+    // WHEN
+    val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.DURATION, "PT1M")
+    val settingInput = SaveSettingDto(settingEntity.key, "PT3M")
+
+    // THEN
+    val entity = settingEntityMapper.toEntity(settingEntity, settingInput)
+
+    // VERIFY
+    assertThat(entity.id).isEqualTo(settingEntity.id)
+    assertThat(entity.key).isEqualTo(settingEntity.key)
+    assertThat(entity.type).isEqualTo(SettingType.DURATION)
+    assertThat(entity.value).isEqualTo(settingInput.value)
+  }
+
+  @Test
   fun fromEntity_int() {
     // WHEN
     val settingEntity = SettingEntity(a(`$Id`()), SettingKey.entries.random(), SettingType.INT, "20")
