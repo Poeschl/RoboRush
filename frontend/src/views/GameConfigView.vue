@@ -1,5 +1,5 @@
 <template>
-  <div class="section">
+  <div class="section pt-0">
     <div class="title">Settings</div>
     <div class="columns is-multiline">
       <div class="column" v-for="setting in configStore.currentConfig.values()">
@@ -13,6 +13,14 @@
   </div>
   <div class="section">
     <div class="title">Map Editor</div>
+    <div class="columns">
+      <div class="column"></div>
+      <div class="column is-one-third">
+        <div class="box">
+          <HeightMapUploadComponent />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -23,6 +31,7 @@ import ConfigIntSettingComponent from "@/components/ConfigIntSettingComponent.vu
 import { SettingType } from "@/models/Config";
 import ConfigDurationSettingComponent from "@/components/ConfigDurationSettingComponent.vue";
 import ConfigBooleanSettingComponent from "@/components/ConfigBooleanSettingComponent.vue";
+import HeightMapUploadComponent from "@/components/HeightMapUploadComponent.vue";
 
 const configStore = useConfigStore();
 

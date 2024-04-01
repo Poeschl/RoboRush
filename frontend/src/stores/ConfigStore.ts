@@ -20,5 +20,9 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
-  return { currentConfig, updateConfig, save };
+  const uploadNewHeightmap = (file: File): Promise<void> => {
+    return configService.uploadNewHeightmap(file);
+  };
+
+  return { currentConfig, updateConfig, save, uploadNewHeightmap };
 });

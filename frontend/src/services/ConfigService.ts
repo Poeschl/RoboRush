@@ -12,5 +12,14 @@ export default function useConfigService() {
     return axiosWithAuth.post(`${baseConfigUrl}`, setting).then((response) => response.data);
   };
 
-  return { getAllSettings, saveSetting };
+  const uploadNewHeightmap = (file: File): Promise<void> => {
+    const data = new FormData();
+    data.append("heightmap", file);
+
+    return axiosWithAuth.post(`${baseConfigUrl}/map/heightmap`, data, {
+      headers: { "Content-Type": `multipart/form-data` },
+    });
+  };
+
+  return { getAllSettings, saveSetting, uploadNewHeightmap };
 }

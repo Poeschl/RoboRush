@@ -24,6 +24,7 @@ import {
   faRotate,
   faRoute,
   faSatelliteDish,
+  faUpload,
   faUserPlus,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
@@ -59,6 +60,7 @@ library.add(
   faChalkboard,
   faArrowRotateLeft,
   faCheck,
+  faUpload,
   faHourglassHalf,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
