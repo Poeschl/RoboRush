@@ -19,6 +19,16 @@
       </button>
     </div>
   </div>
+
+  <div class="notification is-warning" v-if="genResult.warnings.length > 0">
+    <button class="delete" @click="genResult.warnings = []"></button>
+    <div v-for="text in genResult.warnings">{{ text }}</div>
+  </div>
+  <div class="notification is-danger" v-if="genResult.errors.length > 0">
+    <button class="delete" @click="genResult.errors = []"></button>
+    <div v-for="text in genResult.errors">{{ text }}</div>
+  </div>
+
   <a class="button is-text is-fullwidth" target="_blank" href="https://github.com/Poeschl/PathSeeker/tree/main/maps/README.md">How to create a heightmap?</a>
 </template>
 
@@ -26,23 +36,29 @@
 import { useConfigStore } from "@/stores/ConfigStore";
 import { ref } from "vue";
 import log from "loglevel";
+import type { MapGenerationResult } from "@/models/Config";
+import type { AxiosError } from "axios";
 
 const configStore = useConfigStore();
 
 const fileToUpload = ref<File | null>();
 const status = ref({ success: false, failed: false, processing: false });
+const genResult = ref<{ warnings: string[]; errors: string[] }>({ warnings: [], errors: [] });
 
 const uploadHeightMap = () => {
   if (fileToUpload.value != null) {
     status.value.processing = true;
+    genResult.value = { warnings: [], errors: [] };
     configStore
       .uploadNewHeightmap(fileToUpload.value)
-      .then(() => {
+      .then((result: MapGenerationResult) => {
+        genResult.value.warnings = result.warnings;
         status.value.success = true;
         triggerResetStatus();
       })
-      .catch((reason) => {
-        log.warn("Could not save int setting. ", reason);
+      .catch((reason: AxiosError<{ message: string }>) => {
+        log.warn("Could not upload height map. ", reason);
+        genResult.value.errors[0] = reason.response?.data?.message || "";
         status.value.failed = true;
         triggerResetStatus();
       })

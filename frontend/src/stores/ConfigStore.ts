@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import type { SaveSetting, Setting } from "@/models/Config";
+import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import useConfigService from "@/services/ConfigService";
 
 const configService = useConfigService();
@@ -20,7 +20,7 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
-  const uploadNewHeightmap = (file: File): Promise<void> => {
+  const uploadNewHeightmap = (file: File): Promise<MapGenerationResult> => {
     return configService.uploadNewHeightmap(file);
   };
 

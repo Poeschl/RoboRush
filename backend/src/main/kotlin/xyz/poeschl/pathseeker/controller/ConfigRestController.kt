@@ -7,6 +7,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import xyz.poeschl.pathseeker.controller.restmodels.MapGenerationResult
 import xyz.poeschl.pathseeker.exceptions.InvalidConfigKeyException
 import xyz.poeschl.pathseeker.exceptions.InvalidHeightMapException
 import xyz.poeschl.pathseeker.models.settings.SaveSettingDto
@@ -43,12 +44,14 @@ class ConfigRestController(private val configService: ConfigService, private val
     return configService.saveSetting(setting)
   }
 
-  @PostMapping("/map/heightmap", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-  fun newHeightMap(@RequestParam("heightmap") heightMapFile: MultipartFile) {
+  @PostMapping("/map/heightmap", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun newHeightMap(@RequestParam("heightmap") heightMapFile: MultipartFile): MapGenerationResult {
     if (heightMapFile.contentType != MediaType.IMAGE_PNG_VALUE) {
       throw InvalidHeightMapException("Only png files are supported for heightmaps")
     }
     val name = heightMapFile.originalFilename?.substringBeforeLast("/")?.substringBeforeLast(".") ?: "unknown"
-    mapService.newMapFromHeightMap(name, heightMapFile.inputStream)
+    val happenedErrors = mapService.newMapFromHeightMap(name, heightMapFile.inputStream)
+
+    return MapGenerationResult(happenedErrors)
   }
 }

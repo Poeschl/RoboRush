@@ -10,7 +10,10 @@ import kotlin.random.Random
 data class Color(val r: Int, val g: Int, val b: Int) {
   companion object {
     fun randomColor(): Color = Color(Random.nextInt(255), Random.nextInt(255), Random.nextInt(255))
+    fun fromColorInt(color: Int): Color = Color((color and 0xff0000) shr 16, (color and 0xff00) shr 8, color and 0xff)
   }
+
+  fun isGrey() = r == g && g == b
 }
 
 @Converter(autoApply = true)
