@@ -1,19 +1,23 @@
 # PathSeeker Maps
 
 This folder contains the default maps which are available on the first start.
-They are generated with a height map generator called [wgen](https://github.com/jice-nospam/wgen) and modified with Photoshop to include tile data (described below).
+They are generated with a height map generator called [wgen](https://github.com/jice-nospam/wgen) and modified with Photoshop (or any other picture editor) to place spawn area pixels and the single target position pixel (described below).
 
-## Generate my own map
+## Generate your own map
 
-PathSeeker recognizes every grayscale image as a height map and calculates the heights from it.
-Make sure the height values are all grey, because we have some special methods to also get the start area and target tile.
-For all `grey` values 0 is the deepest possible height and 255 the peak height.
-As `grey` all rgb color values of a pixel are expected to have the same value.
+PathSeeker recognizes grayscale images as height maps.
+Each pixel will be interpreted as a distinct tile.
+Make sure the color values are equal for each pixel - notable exceptions are described below.
+`Gray` values may range from 0 (for deep valleys) to 255 (for mountain peaks).
+As mentioned above, `gray` pixels are expected to share the same value for each color channel.
 
-To declare the __start area__ the `green` value of a pixel needs to be higher as `red` and `blue`.
-Both, `red` and `blue`, still specify the height of the tile.
+To declare the __spawn area__ the `green` value of a pixel needs to be higher as `red` and `blue`.
+Both, `red` and `blue`, still specify the height of the pixel.
 
 To set the __single target position__ the `red` value of the pixel needs to be higher as `green` and `blue`.
-The height is specified by the two equal color values.
+The height is specified by the remaining colors.
+
+> [!WARNING]
+> Neither __spawn area__ nor the __single target position__ can be placed at height 255!
 
 After creating your heightmap it can be uploaded on the config page, which can be accessed as admin user.
