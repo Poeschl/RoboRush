@@ -22,6 +22,11 @@ repos:
     hooks:
       - id: prettier
         types_or: [css, scss, javascript, vue, ts, yaml, html, json]
+  - repo: https://github.com/shssoichiro/oxipng
+    rev: v9.0.0
+    hooks:
+      - id: oxipng
+        args: ["-o", "4", "--strip", "safe", "--alpha"]
   - repo: local
     hooks:
       - id: yaml-extension-check
