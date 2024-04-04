@@ -54,9 +54,9 @@ class MapHandler {
    */
   private fun createHeightMap(size: Size, heights: List<Int>, startPositions: List<Position>, target: Position): Array<Array<Tile>> {
     val rows = mutableListOf<List<Tile>>()
-    for (x in 0..<size.width) {
-      val column = mutableListOf<Tile>()
-      for (y in 0..<size.height) {
+    for (y in 0..<size.height) {
+      val row = mutableListOf<Tile>()
+      for (x in 0..<size.width) {
         val pos = Position(x, y)
 
         val type =
@@ -68,9 +68,9 @@ class MapHandler {
             TileType.DEFAULT_TILE
           }
 
-        column.add(Tile(pos, heights[(y * size.width) + x], type))
+        row.add(Tile(pos, heights[(y * size.width) + x], type))
       }
-      rows.add(column)
+      rows.add(row)
     }
 
     val rowArray =
@@ -86,7 +86,7 @@ class MapHandler {
   }
 
   fun getTileAtPosition(position: Position): Tile {
-    return currentMap.mapData[position.x][position.y]
+    return currentMap.mapData[position.y][position.x]
   }
 
   fun getFuelCost(oldPosition: Position, newPosition: Position): Int {
@@ -102,11 +102,11 @@ class MapHandler {
   fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
     var usedFuel = 0.0
     val list = mutableListOf<Tile>()
-    for (x in (position.x - distance)..position.x + distance) {
-      for (y in (position.y - distance)..position.y + distance) {
+    for (y in (position.y - distance)..position.y + distance) {
+      for (x in (position.x - distance)..position.x + distance) {
         val checked = Position(x, y)
         if (isPositionValid(checked) && checked.getDistanceTo(position) <= distance) {
-          list.add(currentMap.mapData[x][y])
+          list.add(currentMap.mapData[y][x])
         }
         usedFuel += TILE_SCAN_COST
       }

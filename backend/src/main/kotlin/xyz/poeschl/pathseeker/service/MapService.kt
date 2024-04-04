@@ -2,7 +2,7 @@ package xyz.poeschl.pathseeker.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import xyz.poeschl.pathseeker.exceptions.NoStartingPositions
+import xyz.poeschl.pathseeker.exceptions.NoStartingPosition
 import xyz.poeschl.pathseeker.exceptions.NoTargetPosition
 import xyz.poeschl.pathseeker.exceptions.UnknownTileType
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
@@ -10,6 +10,7 @@ import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.models.Map
 import java.io.InputStream
 import javax.imageio.ImageIO
+import kotlin.time.measureTime
 
 @Service
 class MapService(private val gameHandler: GameHandler) {
@@ -27,16 +28,19 @@ class MapService(private val gameHandler: GameHandler) {
    *
    * @return A list of detected errors as string list. All of those errors are somehow escaped, but the map might not be ideal.
    */
-  fun newMapFromHeightMap(name: String, heightMapFile: InputStream): List<String> {
-    LOGGER.info("Process new height map '{}'", name)
+  fun createNewMapFromHeightMap(heightMapFile: InputStream): InternalMapGenResult {
+    LOGGER.info("Create new map from height map image")
 
-    val resultPair = convertHeightImageToMap(heightMapFile)
-    LOGGER.info(resultPair.first.toString())
+    val result: InternalMapGenResult
+    val generationDuration = measureTime {
+      result = convertHeightImageToMap(heightMapFile)
+    }
 
-    return resultPair.second
+    LOGGER.info("Created map in ${generationDuration.inWholeMilliseconds} ms")
+    return result
   }
 
-  private fun convertHeightImageToMap(heightMapFile: InputStream): Pair<Map, List<String>> {
+  private fun convertHeightImageToMap(heightMapFile: InputStream): InternalMapGenResult {
     val image = ImageIO.read(heightMapFile.buffered())
 
     val startingPositions = mutableListOf<Position>()
@@ -44,33 +48,33 @@ class MapService(private val gameHandler: GameHandler) {
     val rows = mutableListOf<List<Tile>>()
     val errors = mutableListOf<String>()
 
-    for (x in 0..<image.width) {
-      val column = mutableListOf<Tile>()
-      for (y in 0..<image.height) {
+    for (y in 0..<image.height) {
+      val row = mutableListOf<Tile>()
+      for (x in 0..<image.width) {
         val pos = Position(x, y)
         val pixelColor = Color.fromColorInt(image.getRGB(x, y))
 
-        var tileData: Pair<Int, TileType>
+        var tileData: TileData
         try {
           tileData = getTileData(pixelColor)
         } catch (ex: UnknownTileType) {
           LOGGER.warn("Unknown tile type detected at ({},{}) with color {}. Inserting default!", pos.x, pos.y, pixelColor.toString())
-          errors.add("Unknown tile type detected at (%d,%d) with color (%d, %d, &d).".format(pos.x, pos.y, pixelColor.r, pixelColor.g, pixelColor.b))
-          tileData = Pair(0, TileType.DEFAULT_TILE)
+          errors.add("Unknown tile type detected at (%d,%d) with color (%d, %d, %d).".format(pos.x, pos.y, pixelColor.r, pixelColor.g, pixelColor.b))
+          tileData = TileData(0, TileType.DEFAULT_TILE)
         }
 
-        when (tileData.second) {
-          TileType.DEFAULT_TILE -> column.add(Tile(pos, tileData.first, tileData.second))
+        when (tileData.type) {
+          TileType.DEFAULT_TILE -> row.add(Tile(pos, tileData.height, tileData.type))
 
           TileType.START_TILE -> {
-            column.add(Tile(pos, tileData.first, tileData.second))
+            row.add(Tile(pos, tileData.height, tileData.type))
             startingPositions.add(pos)
             LOGGER.debug("Detected start point at ({},{})", pos.x, pos.y)
           }
 
           TileType.TARGET_TILE -> {
             if (targetPosition == null) {
-              column.add(Tile(pos, tileData.first, tileData.second))
+              row.add(Tile(pos, tileData.height, tileData.type))
               targetPosition = pos
               LOGGER.debug("Detected target point at ({},{})", pos.x, pos.y)
             } else {
@@ -79,12 +83,12 @@ class MapService(private val gameHandler: GameHandler) {
           }
         }
       }
-      rows.add(column)
+      rows.add(row)
     }
 
     if (startingPositions.isEmpty()) {
       LOGGER.warn("No starting position detected")
-      throw NoStartingPositions("At least one starting position is required")
+      throw NoStartingPosition("At least one starting position is required")
     }
 
     if (targetPosition == null) {
@@ -97,21 +101,25 @@ class MapService(private val gameHandler: GameHandler) {
         rows[it].toTypedArray()
       }
 
-    return Pair(Map(Size(image.width, image.height), mapData, startingPositions, targetPosition), errors)
+    return InternalMapGenResult(Map(Size(image.width, image.height), mapData, startingPositions, targetPosition), errors)
   }
 
-  private fun getTileData(color: Color): Pair<Int, TileType> = if (color.isGrey()) {
-    val height = color.r
-    Pair(height, TileType.DEFAULT_TILE)
-  } else if (color.g > color.r && color.r == color.b) {
-    // starting points
-    val height = color.r
-    Pair(height, TileType.START_TILE)
-  } else if (color.r > color.g && color.g == color.b) {
-    // target points
-    val height = color.g
-    Pair(height, TileType.TARGET_TILE)
-  } else {
-    throw UnknownTileType("Unknown tile type detected")
+  private fun getTileData(color: Color): TileData {
+    return if (color.isGrey()) {
+      val height = color.r
+      TileData(height, TileType.DEFAULT_TILE)
+    } else if (color.g > color.r && color.r == color.b) {
+      // starting points
+      val height = color.r
+      TileData(height, TileType.START_TILE)
+    } else if (color.r > color.g && color.g == color.b) {
+      // target points
+      val height = color.g
+      TileData(height, TileType.TARGET_TILE)
+    } else {
+      throw UnknownTileType("Unknown tile type detected")
+    }
   }
+
+  private data class TileData(val height: Int, val type: TileType)
 }

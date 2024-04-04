@@ -97,21 +97,21 @@ class MapHandlerTest {
   @Test
   fun getTilesInDistance() {
     // WHEN
-    // 1 2 3
-    // 4 5 6
-    // 7 8 9
-    mapHandler.createNewPresetMap(Size(3, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9), Position(0, 0))
+    // 1  2  3  4
+    // 5  6  7  8
+    // 9 10 11 12
+    mapHandler.createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0))
 
     // THEN
-    val scans = mapHandler.getTilesInDistance(Position(1, 1), 1)
+    val scans = mapHandler.getTilesInDistance(Position(2, 1), 1)
 
     // VERIFY
     assertThat(scans.first).contains(
-      Tile(Position(1, 0), 2),
-      Tile(Position(0, 1), 4),
-      Tile(Position(1, 1), 5),
-      Tile(Position(2, 1), 6),
-      Tile(Position(1, 2), 8)
+      Tile(Position(2, 0), 3),
+      Tile(Position(1, 1), 6),
+      Tile(Position(2, 1), 7),
+      Tile(Position(3, 1), 8),
+      Tile(Position(2, 2), 11)
     )
     // Calculation is roundUp ((3 * 3) * 0,15)
     assertThat(scans.second).isEqualTo(ceil((3 * 3) * 0.15).toInt())

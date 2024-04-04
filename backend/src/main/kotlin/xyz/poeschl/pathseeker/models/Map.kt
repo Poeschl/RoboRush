@@ -63,3 +63,5 @@ enum class TileType {
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Size(val width: Int, val height: Int)
+
+data class InternalMapGenResult(val map: Map, val errors: List<String>)
