@@ -5,7 +5,9 @@
     </div>
     <div class="control">
       <a class="button" :class="{ 'is-success': copied }" @click="copyToClipboard">
-        <FontAwesomeIcon icon="fa-regular fa-copy" />
+        <div class="icon">
+          <FontAwesomeIcon icon="fa-regular fa-copy" />
+        </div>
       </a>
     </div>
   </div>
