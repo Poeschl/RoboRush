@@ -45,11 +45,10 @@ class MapService(private val gameHandler: GameHandler) {
 
     val startingPositions = mutableListOf<Position>()
     var targetPosition: Position? = null
-    val rows = mutableListOf<List<Tile>>()
+    val tiles = mutableListOf<Tile>()
     val errors = mutableListOf<String>()
 
     for (y in 0..<image.height) {
-      val row = mutableListOf<Tile>()
       for (x in 0..<image.width) {
         val pos = Position(x, y)
         val pixelColor = Color.fromColorInt(image.getRGB(x, y))
@@ -64,17 +63,17 @@ class MapService(private val gameHandler: GameHandler) {
         }
 
         when (tileData.type) {
-          TileType.DEFAULT_TILE -> row.add(Tile(pos, tileData.height, tileData.type))
+          TileType.DEFAULT_TILE -> tiles.add(Tile(pos, tileData.height, tileData.type))
 
           TileType.START_TILE -> {
-            row.add(Tile(pos, tileData.height, tileData.type))
+            tiles.add(Tile(pos, tileData.height, tileData.type))
             startingPositions.add(pos)
             LOGGER.debug("Detected start point at ({},{})", pos.x, pos.y)
           }
 
           TileType.TARGET_TILE -> {
             if (targetPosition == null) {
-              row.add(Tile(pos, tileData.height, tileData.type))
+              tiles.add(Tile(pos, tileData.height, tileData.type))
               targetPosition = pos
               LOGGER.debug("Detected target point at ({},{})", pos.x, pos.y)
             } else {
@@ -83,7 +82,6 @@ class MapService(private val gameHandler: GameHandler) {
           }
         }
       }
-      rows.add(row)
     }
 
     if (startingPositions.isEmpty()) {
@@ -96,10 +94,7 @@ class MapService(private val gameHandler: GameHandler) {
       throw NoTargetPosition("At least one target position is required")
     }
 
-    val mapData =
-      Array(rows.size) {
-        rows[it].toTypedArray()
-      }
+    val mapData = Array(tiles.size) { tiles[it] }
 
     return InternalMapGenResult(Map(Size(image.width, image.height), mapData, startingPositions, targetPosition), errors)
   }

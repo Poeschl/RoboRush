@@ -39,7 +39,9 @@ class GameLogicBuilder {
     fun `$Map`() = MapBuilder()
       .withSize(a(`$Size`()))
       .withPossibleStartPositions(listWithOne(`$Position`()))
-      .withMapData(arrayOf(arrayOf(a(`$Tile`()))))
+      .withMapData(arrayOf(a(`$Tile`())))
+      .withTargetPosition(a(`$Position`()))
+      .withPossibleStartPositions(listWithOne(`$Position`()))
 
     fun `$Tile`() = TileBuilder()
       .withPosition(a(`$Position`()))

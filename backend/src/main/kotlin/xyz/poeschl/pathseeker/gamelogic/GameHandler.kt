@@ -88,7 +88,8 @@ class GameHandler(
   }
 
   fun prepareNewGame() {
-    mapHandler.createNewRandomMap(Size(16, 8))
+    val map = mapHandler.createNewRandomMap(Size(16, 8))
+    mapHandler.loadNewMap(map)
     robotHandler.clearActiveRobots()
   }
 

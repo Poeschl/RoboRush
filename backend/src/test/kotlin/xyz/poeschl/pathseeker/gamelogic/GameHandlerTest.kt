@@ -22,6 +22,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
@@ -242,12 +243,15 @@ class GameHandlerTest {
   @Test
   fun prepareNewGame() {
     // WHEN
+    val map = a(`$Map`())
+
+    every { mapHandler.createNewRandomMap(Size(16, 8)) } returns map
 
     // THEN
     gameHandler.prepareNewGame()
 
     // VERIFY
-    verify { mapHandler.createNewRandomMap(Size(16, 8)) }
+    verify { mapHandler.loadNewMap(map) }
     verify { robotHandler.clearActiveRobots() }
   }
 

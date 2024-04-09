@@ -5,7 +5,7 @@ import xyz.poeschl.pathseeker.configuration.Builder
 import kotlin.math.abs
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
-data class Map(val size: Size, val mapData: Array<Array<Tile>>, val possibleStartPositions: List<Position>, val targetPosition: Position) {
+data class Map(val size: Size, val mapData: Array<Tile>, val possibleStartPositions: List<Position>, val targetPosition: Position) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false

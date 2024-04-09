@@ -34,7 +34,7 @@ class MapHandlerTest {
   @MethodSource("positionSource")
   fun isPositionValid(position: Position, isValid: Boolean) {
     // WHEN
-    mapHandler.createNewRandomMap(Size(2, 2))
+    mapHandler.loadNewMap(mapHandler.createNewRandomMap(Size(2, 2)))
 
     // THEN
     val valid = mapHandler.isPositionValid(position)
@@ -49,7 +49,8 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0), Position(1, 1))
+    val map = mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0), Position(1, 1))
+    mapHandler.loadNewMap(map)
 
     // THEN
     val tile1 = mapHandler.getTileAtPosition(Position(0, 0))
@@ -70,7 +71,8 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    val map = mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    mapHandler.loadNewMap(map)
 
     // THEN
     val fuel = mapHandler.getFuelCost(Position(0, 0), Position(0, 1))
@@ -100,7 +102,8 @@ class MapHandlerTest {
     // 1  2  3  4
     // 5  6  7  8
     // 9 10 11 12
-    mapHandler.createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0))
+    val map = mapHandler.createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
+    mapHandler.loadNewMap(map)
 
     // THEN
     val scans = mapHandler.getTilesInDistance(Position(2, 1), 1)
@@ -120,10 +123,15 @@ class MapHandlerTest {
   @Test
   fun getTilesInDistance_bigger() {
     // WHEN
-    // 1 2 3
-    // 4 5 6
-    // 7 8 9
-    mapHandler.createNewRandomMap(Size(7, 7))
+    //  1  2  3  4  5  6  7
+    //  8  9 10 11 12 13 14
+    // 15 16 17 18 19 20 21
+    // 22 23 24 25 26 27 28
+    // 29 30 31 32 33 34 35
+    // 36 37 38 39 40 41 42
+    // 43 44 45 46 47 48 49
+    val map = mapHandler.createNewRandomMap(Size(7, 7))
+    mapHandler.loadNewMap(map)
 
     // THEN
     val scans = mapHandler.getTilesInDistance(Position(2, 2), 2)
@@ -131,5 +139,25 @@ class MapHandlerTest {
     // VERIFY
     // Calculation is roundUp ((5 * 5) * 0,15)
     assertThat(scans.second).isEqualTo(ceil((5 * 5) * 0.15).toInt())
+  }
+
+  @Test
+  fun loadNewMap() {
+    // WHEN
+    // 1  2  3  4
+    // 5  6  7  8
+    // 9 10 11 12
+    val map = mapHandler.createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
+
+    // THEN
+    mapHandler.loadNewMap(map)
+
+    // VERIFY
+    assertThat(mapHandler.getStartPositions()).containsOnly(Position(0, 0))
+    assertThat(mapHandler.getTargetPosition()).isEqualTo(Position(3, 2))
+
+    assertThat(mapHandler.getTileAtPosition(Position(0, 0))).isEqualTo(Tile(Position(0, 0), 1, TileType.START_TILE))
+    assertThat(mapHandler.getTileAtPosition(Position(1, 1))).isEqualTo(Tile(Position(1, 1), 6))
+    assertThat(mapHandler.getTileAtPosition(Position(3, 2))).isEqualTo(Tile(Position(3, 2), 12, TileType.TARGET_TILE))
   }
 }

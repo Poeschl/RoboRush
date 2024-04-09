@@ -49,8 +49,10 @@ class MapServiceTest {
     assertThat(genResult.map.possibleStartPositions).containsOnly(Position(0, 0))
     assertThat(genResult.map.mapData).isEqualTo(
       arrayOf(
-        arrayOf(Tile(Position(0, 0), 128, TileType.START_TILE), Tile(Position(1, 0), 128, TileType.DEFAULT_TILE)),
-        arrayOf(Tile(Position(0, 1), 200, TileType.DEFAULT_TILE), Tile(Position(1, 1), 128, TileType.TARGET_TILE))
+        Tile(Position(0, 0), 128, TileType.START_TILE),
+        Tile(Position(1, 0), 128, TileType.DEFAULT_TILE),
+        Tile(Position(0, 1), 200, TileType.DEFAULT_TILE),
+        Tile(Position(1, 1), 128, TileType.TARGET_TILE)
       )
     )
   }
@@ -71,8 +73,10 @@ class MapServiceTest {
     assertThat(genResult.map.possibleStartPositions).containsOnly(Position(0, 0))
     assertThat(genResult.map.mapData).isEqualTo(
       arrayOf(
-        arrayOf(Tile(Position(0, 0), 128, TileType.START_TILE), Tile(Position(1, 0), 0, TileType.DEFAULT_TILE)),
-        arrayOf(Tile(Position(0, 1), 0, TileType.DEFAULT_TILE), Tile(Position(1, 1), 128, TileType.TARGET_TILE))
+        Tile(Position(0, 0), 128, TileType.START_TILE),
+        Tile(Position(1, 0), 0, TileType.DEFAULT_TILE),
+        Tile(Position(0, 1), 0, TileType.DEFAULT_TILE),
+        Tile(Position(1, 1), 128, TileType.TARGET_TILE)
       )
     )
   }
