@@ -50,6 +50,10 @@ This software will get no versioning and lives on the bloody main branch.
 
 ## Development
 
+### Documentation
+
+The basics will be here in this README, but there are more diagrams and documents in the `docs` and `maps` folder.
+
 ### Requirements
 
 Have a [Java 21 LTS](https://adoptium.net/de/temurin/releases/?package=jdk&version=21), [node 20](https://nodejs.org/en/download/) and
@@ -70,6 +74,13 @@ For this set the environment variable `TESTCONTAINERS_RYUK_DISABLED` to `true`.
 For development there is a little script in the project root named `start_dev_env.(sh|bat)` (according to your OS).
 Execute this first, before you do anything else.
 
+#### Coding Styles
+
+To comply to the coding style, there are some [pre-commit](https://pre-commit.com/) rules.
+Those should be automatically executed before every git commit.
+To make this happen automatically, make sure to have `pre-commit` installed on your machine (`pip install pre-commit`)
+and set up your git hooks (`pre-commit install` | from project root).
+
 #### Run via Intellij
 
 Navigate to the `Application.kt` file and click on the green play button beside the main method. The backend is now running.
@@ -86,10 +97,3 @@ Then run `./gradlew backend:bootRun` (from project root) (or execute it through 
 For the frontend install all packages with `npm install --dev` and run the VUE app with `npm run dev` (from the `frontend` folder).
 
 Now the application can be reached by http://localhost:8888 and http://localhost:8888/api/swagger-ui..
-
-#### Coding Styles
-
-To comply to the coding style, there are some [pre-commit](https://pre-commit.com/) rules.
-Those should be automatically executed before every git commit.
-To make this happen automatically, make sure to have `pre-commit` installed on your machine (`pip install pre-commit`)
-and set up your git hooks (`pre-commit install` | from project root).
