@@ -50,8 +50,8 @@ class ConfigRestController(private val configService: ConfigService, private val
       throw InvalidHeightMapException("Only png files are supported for heightmaps")
     }
     val name = heightMapFile.originalFilename?.substringBeforeLast("/")?.substringBeforeLast(".") ?: "unknown"
-    val mapGenResult = mapService.createNewMapFromHeightMap(heightMapFile.inputStream)
-    // TODO: Store map via service
+    val mapGenResult = mapService.createNewMapFromHeightMap(name, heightMapFile.inputStream)
+    mapService.saveNewMap(mapGenResult.map)
 
     return MapGenerationResult(mapGenResult.errors)
   }

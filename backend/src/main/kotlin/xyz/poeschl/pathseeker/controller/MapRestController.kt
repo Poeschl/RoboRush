@@ -5,7 +5,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import xyz.poeschl.pathseeker.models.Tile
+import xyz.poeschl.pathseeker.repositories.Tile
 import xyz.poeschl.pathseeker.service.MapService
 import xyz.poeschl.pathseeker.service.RobotService
 

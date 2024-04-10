@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.ActiveRobot
-import xyz.poeschl.pathseeker.models.Tile
+import xyz.poeschl.pathseeker.repositories.Tile
 
 class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<Tile>> {
 

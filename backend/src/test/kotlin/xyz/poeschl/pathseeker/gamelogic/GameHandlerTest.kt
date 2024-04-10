@@ -15,6 +15,7 @@ import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.models.settings.BooleanSetting
 import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.repositories.Tile
 import xyz.poeschl.pathseeker.service.ConfigService
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
@@ -97,7 +98,7 @@ class GameHandlerTest {
   @Test
   fun getTilesInDistance() {
     // WHEN
-    val tiles = listOf(Tile(Position(0, 1), 1))
+    val tiles = listOf(Tile(null, Position(0, 1), 1))
     val position = Position(1, 2)
     val distance = 3
     every { mapHandler.getTilesInDistance(position, distance) } returns Pair(tiles, 23)

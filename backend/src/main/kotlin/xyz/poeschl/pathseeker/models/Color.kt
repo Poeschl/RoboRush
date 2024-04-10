@@ -13,7 +13,8 @@ data class Color(val r: Int, val g: Int, val b: Int) {
     fun fromColorInt(color: Int): Color = Color((color and 0xff0000) shr 16, (color and 0xff00) shr 8, color and 0xff)
   }
 
-  fun isGrey() = r == g && g == b
+  // Allow a little pixel color delta
+  fun isGrey() = (r == g || r == g - 1 || r == g + 1) && (g == b || g == b - 1 || g == b + 1) && (b == r || b == r - 1 || b == r + 1)
 }
 
 @Converter(autoApply = true)

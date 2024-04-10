@@ -34,6 +34,7 @@ logging:
     xyz.poeschl.pathseeker: debug
     # org.springframework.messaging.simp.broker: DEBUG # Set this to debug to see Websocket messages
     # org.springframework.security.messaging.web.socket: DEBUG # More websocket security output
+    # org.hibernate.SQL: debug # Show sql statements
 
 ---
 # This is a second config section which gets activated when the "test" spring profile is active

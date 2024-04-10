@@ -7,13 +7,15 @@ import xyz.poeschl.pathseeker.exceptions.NoTargetPosition
 import xyz.poeschl.pathseeker.exceptions.UnknownTileType
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.*
-import xyz.poeschl.pathseeker.models.Map
+import xyz.poeschl.pathseeker.repositories.Map
+import xyz.poeschl.pathseeker.repositories.MapRepository
+import xyz.poeschl.pathseeker.repositories.Tile
 import java.io.InputStream
 import javax.imageio.ImageIO
 import kotlin.time.measureTime
 
 @Service
-class MapService(private val gameHandler: GameHandler) {
+class MapService(private val gameHandler: GameHandler, private val mapRepository: MapRepository) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapService::class.java)
@@ -23,24 +25,34 @@ class MapService(private val gameHandler: GameHandler) {
     return gameHandler.getHeightMap()
   }
 
+  fun saveNewMap(map: Map): Map {
+    val saved: Map
+    val saveDuration = measureTime {
+      saved = mapRepository.save(map)
+    }
+
+    LOGGER.info("Saved map '{}' ({}x{}) in {} ms", map.mapName, map.size.width, map.size.height, saveDuration.inWholeMilliseconds)
+    return saved
+  }
+
   /**
    * Generates a new map object from the given height map image and returns all detected recoverable errors as result.
    *
    * @return A list of detected errors as string list. All of those errors are somehow escaped, but the map might not be ideal.
    */
-  fun createNewMapFromHeightMap(heightMapFile: InputStream): InternalMapGenResult {
+  fun createNewMapFromHeightMap(mapName: String, heightMapFile: InputStream): InternalMapGenResult {
     LOGGER.info("Create new map from height map image")
 
     val result: InternalMapGenResult
     val generationDuration = measureTime {
-      result = convertHeightImageToMap(heightMapFile)
+      result = convertHeightImageToMap(mapName, heightMapFile)
     }
 
-    LOGGER.info("Created map in ${generationDuration.inWholeMilliseconds} ms")
+    LOGGER.info("Created map '{}' ({}x{}) in {} ms", result.map.mapName, result.map.size.width, result.map.size.height, generationDuration.inWholeMilliseconds)
     return result
   }
 
-  private fun convertHeightImageToMap(heightMapFile: InputStream): InternalMapGenResult {
+  private fun convertHeightImageToMap(mapName: String, heightMapFile: InputStream): InternalMapGenResult {
     val image = ImageIO.read(heightMapFile.buffered())
 
     val startingPositions = mutableListOf<Position>()
@@ -63,17 +75,17 @@ class MapService(private val gameHandler: GameHandler) {
         }
 
         when (tileData.type) {
-          TileType.DEFAULT_TILE -> tiles.add(Tile(pos, tileData.height, tileData.type))
+          TileType.DEFAULT_TILE -> tiles.add(Tile(null, pos, tileData.height, tileData.type))
 
           TileType.START_TILE -> {
-            tiles.add(Tile(pos, tileData.height, tileData.type))
+            tiles.add(Tile(null, pos, tileData.height, tileData.type))
             startingPositions.add(pos)
             LOGGER.debug("Detected start point at ({},{})", pos.x, pos.y)
           }
 
           TileType.TARGET_TILE -> {
             if (targetPosition == null) {
-              tiles.add(Tile(pos, tileData.height, tileData.type))
+              tiles.add(Tile(null, pos, tileData.height, tileData.type))
               targetPosition = pos
               LOGGER.debug("Detected target point at ({},{})", pos.x, pos.y)
             } else {
@@ -94,9 +106,11 @@ class MapService(private val gameHandler: GameHandler) {
       throw NoTargetPosition("At least one target position is required")
     }
 
-    val mapData = Array(tiles.size) { tiles[it] }
+    val map = Map(null, mapName, Size(image.width, image.height), startingPositions, targetPosition)
+    // Add all tiles to map for the db relations
+    tiles.forEach { map.addTile(it) }
 
-    return InternalMapGenResult(Map(Size(image.width, image.height), mapData, startingPositions, targetPosition), errors)
+    return InternalMapGenResult(map, errors)
   }
 
   private fun getTileData(color: Color): TileData {

@@ -4,11 +4,14 @@ import org.junit.jupiter.api.Disabled
 import xyz.poeschl.pathseeker.configuration.Builder
 import xyz.poeschl.pathseeker.gamelogic.GameState
 import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.repositories.MapBuilder
 import xyz.poeschl.pathseeker.repositories.RobotBuilder
+import xyz.poeschl.pathseeker.repositories.TileBuilder
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Id`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
+import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$String`
 import xyz.poeschl.pathseeker.test.utils.builder.SecurityBuilder.Companion.`$User`
 
 @Disabled("Marking this file as a test class, to allow a relaxed linting")
@@ -37,13 +40,15 @@ class GameLogicBuilder {
       .withB(a(`$Int`(0, 255)))
 
     fun `$Map`() = MapBuilder()
+      .withId(null)
+      .withMapName(a(`$String`()))
       .withSize(a(`$Size`()))
       .withPossibleStartPositions(listWithOne(`$Position`()))
-      .withMapData(arrayOf(a(`$Tile`())))
       .withTargetPosition(a(`$Position`()))
       .withPossibleStartPositions(listWithOne(`$Position`()))
 
     fun `$Tile`() = TileBuilder()
+      .withId(null)
       .withPosition(a(`$Position`()))
       .withHeight(a(`$Int`()))
       .withType(TileType.DEFAULT_TILE)

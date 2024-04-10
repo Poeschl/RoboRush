@@ -9,6 +9,7 @@ import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.repositories.Tile
 import xyz.poeschl.pathseeker.service.ConfigService
 
 @GameLogic

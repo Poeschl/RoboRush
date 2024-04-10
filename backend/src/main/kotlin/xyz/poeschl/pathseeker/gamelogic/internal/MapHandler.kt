@@ -3,7 +3,8 @@ package xyz.poeschl.pathseeker.gamelogic.internal
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.models.*
-import xyz.poeschl.pathseeker.models.Map
+import xyz.poeschl.pathseeker.repositories.Map
+import xyz.poeschl.pathseeker.repositories.Tile
 import java.util.stream.IntStream
 import kotlin.math.ceil
 import kotlin.random.Random
@@ -11,7 +12,7 @@ import kotlin.streams.toList
 
 @GameLogic
 class MapHandler {
-  private var currentMap = Map(size = Size(0, 0), emptyArray(), listOf(), Position(0, 0))
+  private var currentMap = Map(0, "init", Size(0, 0), listOf(), Position(0, 0))
 
   // Use a 2D array for faster tile data access
   private var currentMapTiles = arrayOf(emptyArray<Tile>())
@@ -23,7 +24,7 @@ class MapHandler {
   }
 
   fun getHeightMap(): List<Tile> {
-    return currentMap.mapData.clone().asList()
+    return currentMap.mapData
   }
 
   fun getStartPositions(): List<Position> {
@@ -51,12 +52,16 @@ class MapHandler {
       .map { Random.nextInt(0, 8) }.toList()
     val startPositions = listOf(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1))
     val targetPosition = Position(size.width - 2, size.height - 2)
-    return Map(size, createHeightMap(size, randomHeights, startPositions, targetPosition), startPositions, targetPosition)
+    val map = Map(null, "gen", size, startPositions, targetPosition)
+    createHeightMap(size, randomHeights, startPositions, targetPosition).forEach { map.addTile(it) }
+    return map
   }
 
   fun createNewPresetMap(size: Size, heights: List<Int>, start: Position, target: Position = Position(size.width - 1, size.height - 1)): Map {
     LOGGER.info("Create static map with heights ${heights.joinToString(", ")}")
-    return Map(size, createHeightMap(size, heights, listOf(start), target), listOf(start), target)
+    val map = Map(null, "gen", size, listOf(start), target)
+    createHeightMap(size, heights, listOf(start), target).forEach { map.addTile(it) }
+    return map
   }
 
   /**
@@ -65,7 +70,7 @@ class MapHandler {
    * @param size The map size
    * @param heights The heights of the map as list. It continues horizontally.
    */
-  private fun createHeightMap(size: Size, heights: List<Int>, startPositions: List<Position>, target: Position): Array<Tile> {
+  private fun createHeightMap(size: Size, heights: List<Int>, startPositions: List<Position>, target: Position): List<Tile> {
     val tiles = mutableListOf<Tile>()
     for (y in 0..<size.height) {
       for (x in 0..<size.width) {
@@ -80,11 +85,11 @@ class MapHandler {
             TileType.DEFAULT_TILE
           }
 
-        tiles.add(Tile(pos, heights[(y * size.width) + x], type))
+        tiles.add(Tile(null, pos, heights[(y * size.width) + x], type))
       }
     }
 
-    return Array(tiles.size) { tiles[it] }
+    return tiles
   }
 
   fun isPositionValid(position: Position): Boolean {

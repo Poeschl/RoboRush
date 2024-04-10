@@ -1,36 +1,11 @@
 package xyz.poeschl.pathseeker.models
 
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 import net.karneim.pojobuilder.GeneratePojoBuilder
 import xyz.poeschl.pathseeker.configuration.Builder
+import xyz.poeschl.pathseeker.repositories.Map
 import kotlin.math.abs
-
-@GeneratePojoBuilder(withBuilderInterface = Builder::class)
-data class Map(val size: Size, val mapData: Array<Tile>, val possibleStartPositions: List<Position>, val targetPosition: Position) {
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as Map
-
-    if (size != other.size) return false
-    if (!mapData.contentDeepEquals(other.mapData)) return false
-    if (possibleStartPositions != other.possibleStartPositions) return false
-    if (targetPosition != other.targetPosition) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = size.hashCode()
-    result = 31 * result + mapData.contentDeepHashCode()
-    result = 31 * result + possibleStartPositions.hashCode()
-    result = 31 * result + targetPosition.hashCode()
-    return result
-  }
-}
-
-@GeneratePojoBuilder(withBuilderInterface = Builder::class)
-data class Tile(val position: Position, val height: Int = 0, val type: TileType = TileType.DEFAULT_TILE)
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Position(val x: Int, val y: Int) {
@@ -55,6 +30,33 @@ data class Position(val x: Int, val y: Int) {
   }
 }
 
+@Converter(autoApply = true)
+class PositionConverter : AttributeConverter<Position, String> {
+
+  override fun convertToDatabaseColumn(attribute: Position): String {
+    return "${attribute.x},${attribute.y}"
+  }
+
+  override fun convertToEntityAttribute(dbData: String): Position {
+    val split = dbData.split(",").map { it.toInt() }
+    return Position(split[0], split[1])
+  }
+}
+
+@Converter(autoApply = true)
+class PositionListConverter : AttributeConverter<List<Position>, String> {
+
+  private val positionConverter = PositionConverter()
+
+  override fun convertToDatabaseColumn(attribute: List<Position>): String {
+    return attribute.map(positionConverter::convertToDatabaseColumn).joinToString("|")
+  }
+
+  override fun convertToEntityAttribute(dbData: String): List<Position> {
+    return dbData.split("|").map(positionConverter::convertToEntityAttribute)
+  }
+}
+
 enum class TileType {
   DEFAULT_TILE,
   START_TILE,
@@ -63,5 +65,17 @@ enum class TileType {
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Size(val width: Int, val height: Int)
+
+@Converter(autoApply = true)
+class SizeConverter : AttributeConverter<Size, String> {
+  override fun convertToDatabaseColumn(attribute: Size): String {
+    return "${attribute.width}x${attribute.height}"
+  }
+
+  override fun convertToEntityAttribute(dbData: String): Size {
+    val split = dbData.split("x").map { it.toInt() }
+    return Size(split[0], split[1])
+  }
+}
 
 data class InternalMapGenResult(val map: Map, val errors: List<String>)

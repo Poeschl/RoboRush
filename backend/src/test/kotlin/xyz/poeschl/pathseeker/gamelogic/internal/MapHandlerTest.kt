@@ -7,8 +7,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.models.Size
-import xyz.poeschl.pathseeker.models.Tile
 import xyz.poeschl.pathseeker.models.TileType
+import xyz.poeschl.pathseeker.repositories.Tile
 import java.util.stream.Stream
 import kotlin.math.ceil
 
@@ -59,10 +59,10 @@ class MapHandlerTest {
     val tile4 = mapHandler.getTileAtPosition(Position(1, 1))
 
     // VERIFY
-    assertThat(tile1).isEqualTo(Tile(Position(0, 0), 1, TileType.START_TILE))
-    assertThat(tile2).isEqualTo(Tile(Position(1, 0), 2))
-    assertThat(tile3).isEqualTo(Tile(Position(0, 1), 3))
-    assertThat(tile4).isEqualTo(Tile(Position(1, 1), 4, TileType.TARGET_TILE))
+    assertThat(tile1).isEqualTo(Tile(null, Position(0, 0), 1, TileType.START_TILE))
+    assertThat(tile2).isEqualTo(Tile(null, Position(1, 0), 2))
+    assertThat(tile3).isEqualTo(Tile(null, Position(0, 1), 3))
+    assertThat(tile4).isEqualTo(Tile(null, Position(1, 1), 4, TileType.TARGET_TILE))
   }
 
   @Test
@@ -87,7 +87,8 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    val map = mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    mapHandler.loadNewMap(map)
 
     // THEN
     val fuel = mapHandler.getFuelCost(Position(1, 1), Position(1, 0))
@@ -110,11 +111,11 @@ class MapHandlerTest {
 
     // VERIFY
     assertThat(scans.first).contains(
-      Tile(Position(2, 0), 3),
-      Tile(Position(1, 1), 6),
-      Tile(Position(2, 1), 7),
-      Tile(Position(3, 1), 8),
-      Tile(Position(2, 2), 11)
+      Tile(null, Position(2, 0), 3),
+      Tile(null, Position(1, 1), 6),
+      Tile(null, Position(2, 1), 7),
+      Tile(null, Position(3, 1), 8),
+      Tile(null, Position(2, 2), 11)
     )
     // Calculation is roundUp ((3 * 3) * 0,15)
     assertThat(scans.second).isEqualTo(ceil((3 * 3) * 0.15).toInt())
@@ -156,8 +157,8 @@ class MapHandlerTest {
     assertThat(mapHandler.getStartPositions()).containsOnly(Position(0, 0))
     assertThat(mapHandler.getTargetPosition()).isEqualTo(Position(3, 2))
 
-    assertThat(mapHandler.getTileAtPosition(Position(0, 0))).isEqualTo(Tile(Position(0, 0), 1, TileType.START_TILE))
-    assertThat(mapHandler.getTileAtPosition(Position(1, 1))).isEqualTo(Tile(Position(1, 1), 6))
-    assertThat(mapHandler.getTileAtPosition(Position(3, 2))).isEqualTo(Tile(Position(3, 2), 12, TileType.TARGET_TILE))
+    assertThat(mapHandler.getTileAtPosition(Position(0, 0))).isEqualTo(Tile(null, Position(0, 0), 1, TileType.START_TILE))
+    assertThat(mapHandler.getTileAtPosition(Position(1, 1))).isEqualTo(Tile(null, Position(1, 1), 6))
+    assertThat(mapHandler.getTileAtPosition(Position(3, 2))).isEqualTo(Tile(null, Position(3, 2), 12, TileType.TARGET_TILE))
   }
 }
