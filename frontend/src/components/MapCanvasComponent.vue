@@ -157,9 +157,8 @@ canvas {
 }
 
 .map-container {
-  max-height: 50rem;
-  max-width: 100%;
   display: grid;
-  overflow: auto;
+  width: fit-content;
+  height: fit-content;
 }
 </style>

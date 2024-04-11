@@ -21,7 +21,7 @@
       </div>
       <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
         <div>Preview</div>
-        <button class="button mr-1" title="Preview map">
+        <button class="button mr-1" title="Preview map" @click="openPreview(map)">
           <div class="icon">
             <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
           </div>
@@ -54,12 +54,14 @@
       </div>
     </div>
   </div>
+  <HeightMapPreviewModal :map-data="previewData" v-if="previewOpen" @close="previewOpen = false" />
 </template>
 
 <script setup lang="ts">
 import { useConfigStore } from "@/stores/ConfigStore";
 import { computed, ref } from "vue";
 import type { PlaygroundMap } from "@/models/Map";
+import HeightMapPreviewModal from "@/components/HeightMapPreviewModal.vue";
 
 const configStore = useConfigStore();
 
@@ -67,6 +69,8 @@ const loading = computed<boolean>(() => configStore.availableMaps.maps.length ==
 const maps = computed<PlaygroundMap[]>(() => configStore.availableMaps.maps);
 const processing = ref<{ active: number | undefined; delete: number | undefined }>({ active: undefined, delete: undefined });
 const activeMaps = computed<PlaygroundMap[]>(() => maps.value.filter((map) => map.active));
+const previewOpen = ref<boolean>(false);
+const previewData = ref<PlaygroundMap>(activeMaps.value[0]);
 
 const removeMap = (map: PlaygroundMap) => {
   processing.value.delete = map.id;
@@ -80,6 +84,11 @@ const toggleMapActive = (map: PlaygroundMap) => {
   configStore.setMapActive(map.id, !map.active).finally(() => {
     processing.value.active = undefined;
   });
+};
+
+const openPreview = (map: PlaygroundMap) => {
+  previewData.value = map;
+  previewOpen.value = true;
 };
 </script>
 

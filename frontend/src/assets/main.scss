@@ -52,3 +52,10 @@
 @forward "bulma/sass/layout/section";
 
 @forward "bulma/sass/themes";
+
+// Manual css overwrites
+
+.modal-card-head {
+  --bulma-shadow: none;
+  --bulma-modal-card-head-background-color: var(--bulma-modal-card-foot-background-color);
+}
