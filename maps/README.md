@@ -13,6 +13,7 @@ As mentioned above, `gray` pixels are expected to share the same value for each 
 
 To declare the __spawn area__ the `green` value of a pixel needs to be higher as `red` and `blue`.
 Both, `red` and `blue`, still specify the height of the pixel.
+The amount of spawn pixels determines also the max player count for a map.
 
 To set the __single target position__ the `red` value of the pixel needs to be higher as `green` and `blue`.
 The height is specified by the remaining colors.

@@ -1,6 +1,6 @@
 <template>
   <div class="is-flex is-justify-content-center mb-5">
-    <FullMapCanvas :robot-data="robots" :map-data="heightMap" />
+    <MapCanvasComponent :robot-data="robots" :map-data="heightMap" />
   </div>
   <div class="columns is-multiline is-fullwidth is-justify-content-center data-columns">
     <div class="column">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import FullMapCanvas from "@/components/FullMapCanvas.vue";
+import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
 import type { Tile } from "@/models/Map";
 import { computed } from "vue";
 import type { PublicRobot } from "@/models/Robot";

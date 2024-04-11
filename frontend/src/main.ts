@@ -19,11 +19,14 @@ import {
   faGasPump,
   faHourglassHalf,
   faLocationDot,
+  faMagnifyingGlass,
   faPlay,
   faRobot,
   faRotate,
   faRoute,
   faSatelliteDish,
+  faSquareCheck,
+  faTrash,
   faUpload,
   faUserPlus,
   faUserTie,
@@ -31,7 +34,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import { faCopy, faUser } from "@fortawesome/free-regular-svg-icons";
+import { faCopy, faSquare, faUser } from "@fortawesome/free-regular-svg-icons";
 import { useLogging } from "@/config/logging";
 import { Env } from "@/Env";
 
@@ -62,6 +65,10 @@ library.add(
   faCheck,
   faUpload,
   faHourglassHalf,
+  faTrash,
+  faSquare,
+  faSquareCheck,
+  faMagnifyingGlass,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

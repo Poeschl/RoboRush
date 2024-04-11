@@ -1,12 +1,49 @@
 <template>
   <div class="box" v-for="map in maps">
-    {{ map.mapName }}
+    <div class="columns">
+      <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+        <div>Active</div>
+        <button class="button" title="Toggle active for map">
+          <div class="icon">
+            <FontAwesomeIcon icon="fa-solid fa-square-check" class="fa-xl" v-if="map.active" />
+            <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
+          </div>
+        </button>
+      </div>
+      <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+        <div>Preview</div>
+        <button class="button mr-1" title="Preview map">
+          <div class="icon">
+            <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
+          </div>
+        </button>
+      </div>
+      <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+        <div>Name</div>
+        <div class="is-size-5">{{ map.mapName }}</div>
+      </div>
+      <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+        <div>Size</div>
+        <div class="is-size-5">{{ map.size.width }} x {{ map.size.height }}</div>
+      </div>
+      <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+        <div>Max player</div>
+        <div class="is-size-5">{{ map.possibleStartPositions.length }}</div>
+      </div>
+      <div class="column is-1 is-flex is-align-items-center is-justify-content-end">
+        <button class="button is-text remove" title="Remove map">
+          <div class="icon">
+            <FontAwesomeIcon icon="fa-solid fa-trash" />
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useConfigStore } from "@/stores/ConfigStore";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import type { PlaygroundMap } from "@/models/Map";
 
 const configStore = useConfigStore();
@@ -15,4 +52,11 @@ const loading = computed<boolean>(() => configStore.availableMaps.maps.length ==
 const maps = computed<PlaygroundMap[]>(() => configStore.availableMaps.maps);
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@use "bulma/sass/utilities/initial-variables";
+
+.button.remove:hover {
+  color: initial-variables.$black;
+  background-color: initial-variables.$red;
+}
+</style>
