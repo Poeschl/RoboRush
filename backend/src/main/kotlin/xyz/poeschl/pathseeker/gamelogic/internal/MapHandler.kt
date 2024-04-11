@@ -5,7 +5,6 @@ import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.models.Map
 import java.util.stream.IntStream
-import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.random.Random
 import kotlin.streams.toList
@@ -91,7 +90,8 @@ class MapHandler {
   }
 
   fun getFuelCost(oldPosition: Position, newPosition: Position): Int {
-    return STATIC_FUEL_COST + abs(getTileAtPosition(oldPosition).height - getTileAtPosition(newPosition).height)
+    // Rolling down a hill cost no extra fuel
+    return STATIC_FUEL_COST + (getTileAtPosition(newPosition).height - getTileAtPosition(oldPosition).height).coerceAtLeast(0)
   }
 
   /**

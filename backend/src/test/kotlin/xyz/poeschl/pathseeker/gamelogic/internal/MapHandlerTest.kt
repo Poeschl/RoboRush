@@ -76,7 +76,22 @@ class MapHandlerTest {
     val fuel = mapHandler.getFuelCost(Position(0, 0), Position(0, 1))
 
     // VERIFY
-    assertThat(fuel).isEqualTo(3) // (3-1) + 1
+    assertThat(fuel).isEqualTo(3) // max((3-1),0) + 1
+  }
+
+  @Test
+  fun getFuelCost_freeRolling() {
+    // WHEN
+    // Map:
+    // 1 2
+    // 3 4
+    mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+
+    // THEN
+    val fuel = mapHandler.getFuelCost(Position(1, 1), Position(1, 0))
+
+    // VERIFY
+    assertThat(fuel).isEqualTo(1) // max((2-4), 0) + 1
   }
 
   @Test
