@@ -54,7 +54,7 @@
       </div>
     </div>
   </div>
-  <HeightMapPreviewModal :map-data="previewData" v-if="previewOpen" @close="previewOpen = false" />
+  <HeightMapPreviewModal :map="previewMap" v-if="previewOpen" @close="previewOpen = false" />
 </template>
 
 <script setup lang="ts">
@@ -70,7 +70,7 @@ const maps = computed<PlaygroundMap[]>(() => configStore.availableMaps.maps);
 const processing = ref<{ active: number | undefined; delete: number | undefined }>({ active: undefined, delete: undefined });
 const activeMaps = computed<PlaygroundMap[]>(() => maps.value.filter((map) => map.active));
 const previewOpen = ref<boolean>(false);
-const previewData = ref<PlaygroundMap>(activeMaps.value[0]);
+const previewMap = ref<PlaygroundMap>(activeMaps.value[0]);
 
 const removeMap = (map: PlaygroundMap) => {
   processing.value.delete = map.id;
@@ -87,7 +87,7 @@ const toggleMapActive = (map: PlaygroundMap) => {
 };
 
 const openPreview = (map: PlaygroundMap) => {
-  previewData.value = map;
+  previewMap.value = map;
   previewOpen.value = true;
 };
 </script>

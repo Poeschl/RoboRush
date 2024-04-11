@@ -3,13 +3,13 @@
     <template #header>
       <h4 class="modal-card-title is-size-4">
         <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
-        Map Preview
+        Map Preview - {{ map.mapName }}
       </h4>
     </template>
 
     <template #content>
       <div class="is-flex is-justify-content-center">
-        <MapCanvasComponent :map-data="mapData.mapData" :robot-data="[]" />
+        <MapCanvasComponent :map-data="map.mapData" :robot-data="[]" />
       </div>
     </template>
     <template #footer>
@@ -24,7 +24,7 @@ import type { PlaygroundMap } from "@/models/Map";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
 
 defineProps<{
-  mapData: PlaygroundMap;
+  map: PlaygroundMap;
 }>();
 
 defineEmits<{

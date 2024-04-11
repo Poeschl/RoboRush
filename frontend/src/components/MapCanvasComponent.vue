@@ -14,9 +14,9 @@ import log from "loglevel";
 
 const cellSize = 16;
 const cellBorder = 1;
-const maxHeightColorEnlighten = 150;
+const maxHeightColorEnlighten = 250;
 const mapBorderColor = new Color(0, 0, 0);
-const mapColor = new Color(100, 190, 71);
+const mapColor = new Color(10, 60, 1);
 const targetTileBorderColor = new Color(0, 130, 255);
 const startTileBorderColor = new Color(210, 110, 0);
 const specialTileBorderWidth = 4;
