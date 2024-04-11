@@ -36,7 +36,24 @@ class MapService(private val gameHandler: GameHandler, private val mapRepository
   }
 
   fun getAllMaps(): List<Map> {
-    return mapRepository.findAll()
+    return mapRepository.findAllByOrderById()
+  }
+
+  fun getMap(id: Long): Map? {
+    return mapRepository.findById(id).orElse(null)
+  }
+
+  fun setMapActive(map: Map, active: Boolean): Map {
+    map.active = active
+    return mapRepository.save(map)
+  }
+
+  fun deleteMap(map: Map) {
+    val deleteMap = measureTime {
+      mapRepository.delete(map)
+    }
+
+    LOGGER.info("Deleted map '{}' ({}x{}) in {} ms", map.mapName, map.size.width, map.size.height, deleteMap.inWholeMilliseconds)
   }
 
   /**

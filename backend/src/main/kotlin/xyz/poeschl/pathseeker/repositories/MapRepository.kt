@@ -10,7 +10,9 @@ import xyz.poeschl.pathseeker.models.Size
 
 @Repository
 interface MapRepository : CrudRepository<Map, Long> {
-  override fun findAll(): List<Map>
+  fun findAllByOrderById(): List<Map>
+
+  fun findAllByActiveIsTrueOrderById(): List<Map>
 }
 
 @Entity
@@ -24,7 +26,7 @@ data class Map(
   @Column var active: Boolean = false
 ) {
 
-  @OneToMany(mappedBy = "map", cascade = [CascadeType.PERSIST])
+  @OneToMany(mappedBy = "map", cascade = [CascadeType.ALL])
   val mapData: List<Tile> = mutableListOf()
 
   fun addTile(tile: Tile) {

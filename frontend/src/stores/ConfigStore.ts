@@ -30,5 +30,18 @@ export const useConfigStore = defineStore("configStore", () => {
     return configService.uploadNewHeightmap(file);
   };
 
-  return { currentConfig, availableMaps, updateConfig, save, uploadNewHeightmap };
+  const setMapActive = (mapId: number, active: boolean): Promise<void> => {
+    return configService.setMapActive(mapId, active).then((newMap) => {
+      const index = availableMaps.value.maps.findIndex((map) => map.id == mapId);
+      availableMaps.value.maps[index] = newMap;
+    });
+  };
+
+  const removeMap = (mapId: number): Promise<void> => {
+    return configService.removeMap(mapId).then(() => {
+      availableMaps.value.maps = availableMaps.value.maps.filter((it) => it.id != mapId);
+    });
+  };
+
+  return { currentConfig, availableMaps, updateConfig, save, uploadNewHeightmap, setMapActive, removeMap };
 });

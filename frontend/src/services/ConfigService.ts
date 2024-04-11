@@ -29,5 +29,13 @@ export default function useConfigService() {
     return axiosWithAuth.get(`${baseConfigUrl}/map`).then((response) => response.data);
   };
 
-  return { getAllSettings, saveSetting, uploadNewHeightmap, getAvailableMaps };
+  const setMapActive = (mapId: number, active: boolean): Promise<PlaygroundMap> => {
+    return axiosWithAuth.post(`${baseConfigUrl}/map/${mapId}/active`, { active: active }).then((response) => response.data);
+  };
+
+  const removeMap = (mapId: number): Promise<void> => {
+    return axiosWithAuth.delete(`${baseConfigUrl}/map/${mapId}`);
+  };
+
+  return { getAllSettings, saveSetting, uploadNewHeightmap, getAvailableMaps, setMapActive, removeMap };
 }

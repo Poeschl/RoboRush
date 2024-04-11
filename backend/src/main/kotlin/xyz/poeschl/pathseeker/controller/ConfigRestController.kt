@@ -7,9 +7,11 @@ import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import xyz.poeschl.pathseeker.controller.restmodels.MapActiveDto
 import xyz.poeschl.pathseeker.controller.restmodels.MapGenerationResult
 import xyz.poeschl.pathseeker.exceptions.InvalidConfigKeyException
 import xyz.poeschl.pathseeker.exceptions.InvalidHeightMapException
+import xyz.poeschl.pathseeker.exceptions.MapNotFound
 import xyz.poeschl.pathseeker.models.settings.SaveSettingDto
 import xyz.poeschl.pathseeker.models.settings.Setting
 import xyz.poeschl.pathseeker.models.settings.SettingKey
@@ -60,5 +62,27 @@ class ConfigRestController(private val configService: ConfigService, private val
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getMaps(): List<Map> {
     return mapService.getAllMaps()
+  }
+
+  @PostMapping("/map/{id}/active", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun setMapActive(@PathVariable id: Long, @RequestBody activeDto: MapActiveDto): Map {
+    val map = mapService.getMap(id)
+
+    if (map != null) {
+      return mapService.setMapActive(map, activeDto.active)
+    } else {
+      throw MapNotFound("No matching map found for setting active")
+    }
+  }
+
+  @DeleteMapping("/map/{id}")
+  fun setMapActive(@PathVariable id: Long) {
+    val map = mapService.getMap(id)
+
+    if (map != null) {
+      return mapService.deleteMap(map)
+    } else {
+      throw MapNotFound("No matching map found for deletion")
+    }
   }
 }

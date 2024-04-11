@@ -1,4 +1,5 @@
 export interface PlaygroundMap {
+  id: number;
   mapName: string;
   size: Size;
   possibleStartPositions: Position[];
