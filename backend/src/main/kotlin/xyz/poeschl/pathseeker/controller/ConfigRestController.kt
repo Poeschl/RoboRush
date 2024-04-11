@@ -13,6 +13,7 @@ import xyz.poeschl.pathseeker.exceptions.InvalidHeightMapException
 import xyz.poeschl.pathseeker.models.settings.SaveSettingDto
 import xyz.poeschl.pathseeker.models.settings.Setting
 import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.repositories.Map
 import xyz.poeschl.pathseeker.security.repository.User
 import xyz.poeschl.pathseeker.service.ConfigService
 import xyz.poeschl.pathseeker.service.MapService
@@ -51,8 +52,13 @@ class ConfigRestController(private val configService: ConfigService, private val
     }
     val name = heightMapFile.originalFilename?.substringBeforeLast("/")?.substringBeforeLast(".") ?: "unknown"
     val mapGenResult = mapService.createNewMapFromHeightMap(name, heightMapFile.inputStream)
-    mapService.saveNewMap(mapGenResult.map)
+    mapService.saveMap(mapGenResult.map)
 
     return MapGenerationResult(mapGenResult.errors)
+  }
+
+  @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getMaps(): List<Map> {
+    return mapService.getAllMaps()
   }
 }

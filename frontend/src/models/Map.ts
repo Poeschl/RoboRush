@@ -1,3 +1,17 @@
+export interface PlaygroundMap {
+  mapName: string;
+  size: Size;
+  possibleStartPositions: Position[];
+  targetPosition: Position;
+  active: boolean;
+  mapData: Tile[];
+}
+
+export interface Size {
+  width: number;
+  height: number;
+}
+
 export interface Tile {
   position: Position;
   height: number;

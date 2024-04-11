@@ -14,7 +14,9 @@
   <div class="section">
     <div class="title">Map Editor</div>
     <div class="columns">
-      <div class="column"></div>
+      <div class="column">
+        <HeightMapList />
+      </div>
       <div class="column is-one-third">
         <div class="box">
           <HeightMapUploadComponent />
@@ -32,6 +34,7 @@ import { SettingType } from "@/models/Config";
 import ConfigDurationSettingComponent from "@/components/ConfigDurationSettingComponent.vue";
 import ConfigBooleanSettingComponent from "@/components/ConfigBooleanSettingComponent.vue";
 import HeightMapUploadComponent from "@/components/HeightMapUploadComponent.vue";
+import HeightMapList from "@/components/HeightMapList.vue";
 
 const configStore = useConfigStore();
 

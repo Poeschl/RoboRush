@@ -2,15 +2,21 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import useConfigService from "@/services/ConfigService";
+import type { PlaygroundMap } from "@/models/Map";
 
 const configService = useConfigService();
 
 export const useConfigStore = defineStore("configStore", () => {
   const currentConfig = ref<Map<string, Setting>>(new Map());
+  const availableMaps = ref<{ maps: PlaygroundMap[] }>({ maps: [] });
 
   const updateConfig = () => {
     configService.getAllSettings().then((response) => {
       currentConfig.value = new Map(response.map((setting) => [setting.key, setting]));
+    });
+
+    configService.getAvailableMaps().then((response) => {
+      availableMaps.value.maps = response;
     });
   };
 
@@ -24,5 +30,5 @@ export const useConfigStore = defineStore("configStore", () => {
     return configService.uploadNewHeightmap(file);
   };
 
-  return { currentConfig, updateConfig, save, uploadNewHeightmap };
+  return { currentConfig, availableMaps, updateConfig, save, uploadNewHeightmap };
 });

@@ -1,6 +1,7 @@
 import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import axiosWithAuth from "@/config/axiosWithAuth";
 import type { AxiosResponse } from "axios";
+import type { PlaygroundMap } from "@/models/Map";
 
 export default function useConfigService() {
   const baseConfigUrl = "/api/config";
@@ -24,5 +25,9 @@ export default function useConfigService() {
       .then((data: AxiosResponse<MapGenerationResult>) => data.data);
   };
 
-  return { getAllSettings, saveSetting, uploadNewHeightmap };
+  const getAvailableMaps = (): Promise<PlaygroundMap[]> => {
+    return axiosWithAuth.get(`${baseConfigUrl}/map`).then((response) => response.data);
+  };
+
+  return { getAllSettings, saveSetting, uploadNewHeightmap, getAvailableMaps };
 }

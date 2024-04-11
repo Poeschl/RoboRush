@@ -25,7 +25,7 @@ class MapService(private val gameHandler: GameHandler, private val mapRepository
     return gameHandler.getHeightMap()
   }
 
-  fun saveNewMap(map: Map): Map {
+  fun saveMap(map: Map): Map {
     val saved: Map
     val saveDuration = measureTime {
       saved = mapRepository.save(map)
@@ -33,6 +33,10 @@ class MapService(private val gameHandler: GameHandler, private val mapRepository
 
     LOGGER.info("Saved map '{}' ({}x{}) in {} ms", map.mapName, map.size.width, map.size.height, saveDuration.inWholeMilliseconds)
     return saved
+  }
+
+  fun getAllMaps(): List<Map> {
+    return mapRepository.findAll()
   }
 
   /**

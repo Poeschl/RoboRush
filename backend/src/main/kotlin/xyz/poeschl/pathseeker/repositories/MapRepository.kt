@@ -9,7 +9,9 @@ import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.models.Size
 
 @Repository
-interface MapRepository : CrudRepository<Map, Long>
+interface MapRepository : CrudRepository<Map, Long> {
+  override fun findAll(): List<Map>
+}
 
 @Entity
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
@@ -24,8 +26,6 @@ data class Map(
 
   @OneToMany(mappedBy = "map", cascade = [CascadeType.PERSIST])
   val mapData: List<Tile> = mutableListOf()
-
-  fun playerCount() = possibleStartPositions.size
 
   fun addTile(tile: Tile) {
     tile.map = this
