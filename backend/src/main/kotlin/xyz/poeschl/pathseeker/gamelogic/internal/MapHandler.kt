@@ -5,10 +5,7 @@ import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.repositories.Map
 import xyz.poeschl.pathseeker.repositories.Tile
-import java.util.stream.IntStream
 import kotlin.math.ceil
-import kotlin.random.Random
-import kotlin.streams.toList
 
 @GameLogic
 class MapHandler {
@@ -38,58 +35,11 @@ class MapHandler {
   fun loadNewMap(map: Map) {
     currentMap = map
 
-    currentMapTiles = Array(currentMap.size.height) { y ->
-      Array(currentMap.size.width) { x ->
+    currentMapTiles = Array(map.size.height) { y ->
+      Array(map.size.width) { x ->
         map.mapData.first { it.position == Position(x, y) }
       }
     }
-  }
-
-  fun createNewRandomMap(size: Size): Map {
-    LOGGER.info("Create new random map ({}x{})", size.width, size.height)
-
-    val randomHeights = IntStream.range(0, size.width * size.height)
-      .map { Random.nextInt(0, 8) }.toList()
-    val startPositions = listOf(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1))
-    val targetPosition = Position(size.width - 2, size.height - 2)
-    val map = Map(null, "gen", size, startPositions, targetPosition)
-    createHeightMap(size, randomHeights, startPositions, targetPosition).forEach { map.addTile(it) }
-    return map
-  }
-
-  fun createNewPresetMap(size: Size, heights: List<Int>, start: Position, target: Position = Position(size.width - 1, size.height - 1)): Map {
-    LOGGER.info("Create static map with heights ${heights.joinToString(", ")}")
-    val map = Map(null, "gen", size, listOf(start), target)
-    createHeightMap(size, heights, listOf(start), target).forEach { map.addTile(it) }
-    return map
-  }
-
-  /**
-   * Creates a new map with the heights given as a list.
-   *
-   * @param size The map size
-   * @param heights The heights of the map as list. It continues horizontally.
-   */
-  private fun createHeightMap(size: Size, heights: List<Int>, startPositions: List<Position>, target: Position): List<Tile> {
-    val tiles = mutableListOf<Tile>()
-    for (y in 0..<size.height) {
-      for (x in 0..<size.width) {
-        val pos = Position(x, y)
-
-        val type =
-          if (target == pos) {
-            TileType.TARGET_TILE
-          } else if (startPositions.contains(pos)) {
-            TileType.START_TILE
-          } else {
-            TileType.DEFAULT_TILE
-          }
-
-        tiles.add(Tile(null, pos, heights[(y * size.width) + x], type))
-      }
-    }
-
-    return tiles
   }
 
   fun isPositionValid(position: Position): Boolean {

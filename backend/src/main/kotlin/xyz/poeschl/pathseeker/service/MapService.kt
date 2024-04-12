@@ -1,11 +1,12 @@
 package xyz.poeschl.pathseeker.service
 
+import jakarta.transaction.Transactional
+import org.hibernate.Hibernate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import xyz.poeschl.pathseeker.exceptions.NoStartingPosition
 import xyz.poeschl.pathseeker.exceptions.NoTargetPosition
 import xyz.poeschl.pathseeker.exceptions.UnknownTileType
-import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.repositories.Map
 import xyz.poeschl.pathseeker.repositories.MapRepository
@@ -15,14 +16,10 @@ import javax.imageio.ImageIO
 import kotlin.time.measureTime
 
 @Service
-class MapService(private val gameHandler: GameHandler, private val mapRepository: MapRepository) {
+class MapService(private val mapRepository: MapRepository) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapService::class.java)
-  }
-
-  fun getHeightMap(): List<Tile> {
-    return gameHandler.getHeightMap()
   }
 
   fun saveMap(map: Map): Map {
@@ -41,6 +38,13 @@ class MapService(private val gameHandler: GameHandler, private val mapRepository
 
   fun getMap(id: Long): Map? {
     return mapRepository.findById(id).orElse(null)
+  }
+
+  @Transactional
+  fun getNextChallengeMap(): Map {
+    val map = mapRepository.findAllByActiveIsTrueOrderById().random()
+    Hibernate.initialize(map.mapData)
+    return map
   }
 
   fun setMapActive(map: Map, active: Boolean): Map {

@@ -9,12 +9,10 @@ import { useGameService } from "@/services/GameService";
 import type { Game } from "@/models/Game";
 import { GameState } from "@/models/Game";
 import useRobotService from "@/services/RobotService";
-import useMapService from "@/services/MapService";
 import log from "loglevel";
 import type { AxiosError } from "axios";
 import type { Error } from "@/models/Game";
 
-const mapService = useMapService();
 const robotService = useRobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
@@ -37,8 +35,8 @@ export const useGameStore = defineStore("gameStore", () => {
   });
 
   const updateMap = () => {
-    mapService
-      .getHeightMap()
+    gameService
+      .getMap()
       .then((response) => {
         // Clears whole array
         internalHeightMap.value.tiles = [];

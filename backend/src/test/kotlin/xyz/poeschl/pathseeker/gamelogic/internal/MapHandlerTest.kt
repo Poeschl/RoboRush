@@ -8,9 +8,13 @@ import org.junit.jupiter.params.provider.MethodSource
 import xyz.poeschl.pathseeker.models.Position
 import xyz.poeschl.pathseeker.models.Size
 import xyz.poeschl.pathseeker.models.TileType
+import xyz.poeschl.pathseeker.repositories.Map
 import xyz.poeschl.pathseeker.repositories.Tile
+import java.util.stream.IntStream
 import java.util.stream.Stream
 import kotlin.math.ceil
+import kotlin.random.Random
+import kotlin.streams.toList
 
 class MapHandlerTest {
 
@@ -34,7 +38,7 @@ class MapHandlerTest {
   @MethodSource("positionSource")
   fun isPositionValid(position: Position, isValid: Boolean) {
     // WHEN
-    mapHandler.loadNewMap(mapHandler.createNewRandomMap(Size(2, 2)))
+    mapHandler.loadNewMap(createNewRandomMap(Size(2, 2)))
 
     // THEN
     val valid = mapHandler.isPositionValid(position)
@@ -49,7 +53,7 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    val map = mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0), Position(1, 1))
+    val map = createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0), Position(1, 1))
     mapHandler.loadNewMap(map)
 
     // THEN
@@ -71,7 +75,7 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    val map = mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    val map = createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
     mapHandler.loadNewMap(map)
 
     // THEN
@@ -87,7 +91,7 @@ class MapHandlerTest {
     // Map:
     // 1 2
     // 3 4
-    val map = mapHandler.createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    val map = createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
     mapHandler.loadNewMap(map)
 
     // THEN
@@ -103,7 +107,7 @@ class MapHandlerTest {
     // 1  2  3  4
     // 5  6  7  8
     // 9 10 11 12
-    val map = mapHandler.createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
+    val map = createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
     mapHandler.loadNewMap(map)
 
     // THEN
@@ -131,7 +135,7 @@ class MapHandlerTest {
     // 29 30 31 32 33 34 35
     // 36 37 38 39 40 41 42
     // 43 44 45 46 47 48 49
-    val map = mapHandler.createNewRandomMap(Size(7, 7))
+    val map = createNewRandomMap(Size(7, 7))
     mapHandler.loadNewMap(map)
 
     // THEN
@@ -148,7 +152,7 @@ class MapHandlerTest {
     // 1  2  3  4
     // 5  6  7  8
     // 9 10 11 12
-    val map = mapHandler.createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
+    val map = createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
 
     // THEN
     mapHandler.loadNewMap(map)
@@ -160,5 +164,49 @@ class MapHandlerTest {
     assertThat(mapHandler.getTileAtPosition(Position(0, 0))).isEqualTo(Tile(null, Position(0, 0), 1, TileType.START_TILE))
     assertThat(mapHandler.getTileAtPosition(Position(1, 1))).isEqualTo(Tile(null, Position(1, 1), 6))
     assertThat(mapHandler.getTileAtPosition(Position(3, 2))).isEqualTo(Tile(null, Position(3, 2), 12, TileType.TARGET_TILE))
+  }
+
+  private fun createNewRandomMap(size: Size): Map {
+    val randomHeights = IntStream.range(0, size.width * size.height)
+      .map { Random.nextInt(0, 8) }.toList()
+    val startPositions = listOf(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1))
+    val targetPosition = Position(size.width - 2, size.height - 2)
+    val map = Map(null, "gen", size, startPositions, targetPosition)
+    createHeightMap(size, randomHeights, startPositions, targetPosition).forEach { map.addTile(it) }
+    return map
+  }
+
+  private fun createNewPresetMap(size: Size, heights: List<Int>, start: Position, target: Position = Position(size.width - 1, size.height - 1)): Map {
+    val map = Map(null, "gen", size, listOf(start), target)
+    createHeightMap(size, heights, listOf(start), target).forEach { map.addTile(it) }
+    return map
+  }
+
+  /**
+   * Creates a new map with the heights given as a list.
+   *
+   * @param size The map size
+   * @param heights The heights of the map as list. It continues horizontally.
+   */
+  private fun createHeightMap(size: Size, heights: List<Int>, startPositions: List<Position>, target: Position): List<Tile> {
+    val tiles = mutableListOf<Tile>()
+    for (y in 0..<size.height) {
+      for (x in 0..<size.width) {
+        val pos = Position(x, y)
+
+        val type =
+          if (target == pos) {
+            TileType.TARGET_TILE
+          } else if (startPositions.contains(pos)) {
+            TileType.START_TILE
+          } else {
+            TileType.DEFAULT_TILE
+          }
+
+        tiles.add(Tile(null, pos, heights[(y * size.width) + x], type))
+      }
+    }
+
+    return tiles
   }
 }

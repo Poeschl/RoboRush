@@ -27,7 +27,10 @@ export const useConfigStore = defineStore("configStore", () => {
   };
 
   const uploadNewHeightmap = (file: File): Promise<MapGenerationResult> => {
-    return configService.uploadNewHeightmap(file);
+    return configService.uploadNewHeightmap(file).then((result) => {
+      updateConfig();
+      return result;
+    });
   };
 
   const setMapActive = (mapId: number, active: boolean): Promise<void> => {
