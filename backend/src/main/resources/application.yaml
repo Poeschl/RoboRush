@@ -9,8 +9,12 @@ spring:
     open-in-view: true
     properties:
       hibernate:
+        order_inserts: true
+        order_updates: true
+        order_deletes: true
         jdbc:
           time_zone: UTC
+          batch_size: 100
   flyway:
     validate-migration-naming: true
   mvc:
