@@ -1,12 +1,13 @@
-insert into map (id, map_name, size, possible_start_positions, target_position, active)
-values (2, 'easy', '64x64',
+INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active)
+VALUES (2, 'easy', '64x64',
         '4,11|5,11|6,11|3,12|4,12|5,12|6,12|7,12|2,13|3,13|4,13|5,13|6,13|7,13|8,13|3,14|4,14|5,14|6,14|7,14|8,14|9,14|3,15|4,15|5,15|6,15|7,15|8,15|9,15|10,15|4,16|5,16|6,16|7,16|8,16|9,16|10,16|5,17|6,17|7,17|8,17|9,17|10,17|6,18|7,18|8,18|9,18|10,18|7,19|8,19|9,19|10,19',
         '57,43', false);
 
 ALTER SEQUENCE map_id_seq RESTART WITH 3;
 
-insert into tile (map_id, position, height, type)
-values (2, '0,0', 79, 'DEFAULT_TILE'),
+ALTER SEQUENCE tile_id_seq INCREMENT 1;
+INSERT INTO tile (map_id, position, height, type)
+VALUES (2, '0,0', 79, 'DEFAULT_TILE'),
        (2, '1,0', 75, 'DEFAULT_TILE'),
        (2, '2,0', 73, 'DEFAULT_TILE'),
        (2, '3,0', 71, 'DEFAULT_TILE'),
@@ -4102,3 +4103,5 @@ values (2, '0,0', 79, 'DEFAULT_TILE'),
        (2, '61,63', 84, 'DEFAULT_TILE'),
        (2, '62,63', 80, 'DEFAULT_TILE'),
        (2, '63,63', 77, 'DEFAULT_TILE');
+
+ALTER SEQUENCE tile_id_seq INCREMENT 100;

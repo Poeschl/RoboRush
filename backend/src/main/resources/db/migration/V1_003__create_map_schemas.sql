@@ -10,7 +10,7 @@ CREATE TABLE map
   PRIMARY KEY (id)
 );
 
-CREATE SEQUENCE tile_id_seq;
+CREATE SEQUENCE tile_id_seq INCREMENT 100;
 CREATE TABLE tile
 (
   id       BIGINT UNIQUE DEFAULT nextval('tile_id_seq'::regclass) NOT NULL,
@@ -23,5 +23,3 @@ CREATE TABLE tile
 );
 
 CREATE INDEX index_tile_user_id ON tile (map_id);
-
--- TODO: Add example maps

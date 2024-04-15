@@ -1,10 +1,12 @@
-insert into map (id, map_name, size, possible_start_positions, target_position, active)
-values  (1, 'icon_map', '32x32', '4,11|5,11|6,11|7,11|8,11|9,11|10,11|4,12|5,12|6,12|7,12|8,12|9,12|10,12', '27,5', true);
+INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active)
+VALUES  (1, 'icon_map', '32x32', '4,11|5,11|6,11|7,11|8,11|9,11|10,11|4,12|5,12|6,12|7,12|8,12|9,12|10,12', '27,5', true);
 
 ALTER SEQUENCE map_id_seq RESTART WITH 2;
 
-insert into tile (map_id, position, height, type)
-values  (1, '0,0', 59, 'DEFAULT_TILE'),
+
+ALTER SEQUENCE tile_id_seq INCREMENT 1;
+INSERT INTO tile (map_id, position, height, type)
+VALUES  (1, '0,0', 59, 'DEFAULT_TILE'),
         (1, '1,0', 59, 'DEFAULT_TILE'),
         (1, '2,0', 59, 'DEFAULT_TILE'),
         (1, '3,0', 59, 'DEFAULT_TILE'),
@@ -1028,3 +1030,5 @@ values  (1, '0,0', 59, 'DEFAULT_TILE'),
         (1, '29,31', 59, 'DEFAULT_TILE'),
         (1, '30,31', 59, 'DEFAULT_TILE'),
         (1, '31,31', 59, 'DEFAULT_TILE');
+
+ALTER SEQUENCE tile_id_seq INCREMENT 100;
