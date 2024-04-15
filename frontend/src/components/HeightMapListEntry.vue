@@ -1,0 +1,93 @@
+<template>
+  <div class="columns">
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Active</div>
+      <button
+        class="button"
+        title="Toggle active for map"
+        @click="toggleMapActive(map)"
+        :class="{ 'is-loading': processing.active }"
+        :disabled="map.active && unselectable"
+      >
+        <div class="icon">
+          <FontAwesomeIcon icon="fa-solid fa-square-check" class="fa-xl" v-if="map.active" />
+          <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
+        </div>
+      </button>
+    </div>
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Preview</div>
+      <button class="button mr-1" title="Preview map" @click="openPreview(map)">
+        <div class="icon">
+          <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
+        </div>
+      </button>
+    </div>
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Name</div>
+      <div class="is-size-5">{{ map.mapName }}</div>
+    </div>
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Size</div>
+      <div class="is-size-5">{{ map.size.width }} x {{ map.size.height }}</div>
+    </div>
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Max player</div>
+      <div class="is-size-5">{{ map.possibleStartPositions.length }}</div>
+    </div>
+    <div class="column is-1 is-flex is-align-items-center is-justify-content-end">
+      <button class="button is-text remove" title="Remove map" v-if="removable" :class="{ 'is-loading': processing.delete }" @click="removeMap(map)">
+        <div class="icon">
+          <FontAwesomeIcon icon="fa-solid fa-trash" />
+        </div>
+      </button>
+    </div>
+  </div>
+  <HeightMapPreviewModal :map="map" v-if="previewOpen" @close="previewOpen = false" />
+</template>
+
+<script setup lang="ts">
+import { useConfigStore } from "@/stores/ConfigStore";
+import { ref } from "vue";
+import type { PlaygroundMap } from "@/models/Map";
+import HeightMapPreviewModal from "@/components/HeightMapPreviewModal.vue";
+
+const configStore = useConfigStore();
+
+const processing = ref<{ active: boolean; delete: boolean }>({ active: false, delete: false });
+const previewOpen = ref<boolean>(false);
+
+defineProps<{
+  map: PlaygroundMap;
+  removable: boolean;
+  unselectable: boolean;
+}>();
+
+const removeMap = (map: PlaygroundMap) => {
+  processing.value.delete = true;
+  configStore.removeMap(map.id).finally(() => {
+    processing.value.delete = false;
+  });
+};
+
+const toggleMapActive = (map: PlaygroundMap) => {
+  processing.value.active = true;
+  configStore.setMapActive(map.id, !map.active).finally(() => {
+    processing.value.active = false;
+  });
+};
+
+const openPreview = (map: PlaygroundMap) => {
+  previewOpen.value = true;
+};
+</script>
+
+<style scoped lang="scss">
+@use "bulma/sass/utilities/initial-variables";
+@use "bulma/sass/utilities/derived-variables";
+
+.button.remove:hover {
+  color: initial-variables.$black-ter;
+  background-color: derived-variables.$danger;
+}
+</style>
