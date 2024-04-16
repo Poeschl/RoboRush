@@ -1,7 +1,7 @@
-INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active)
+INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active, max_robot_fuel)
 VALUES (2, 'easy', '64x64',
         '4,11|5,11|6,11|3,12|4,12|5,12|6,12|7,12|2,13|3,13|4,13|5,13|6,13|7,13|8,13|3,14|4,14|5,14|6,14|7,14|8,14|9,14|3,15|4,15|5,15|6,15|7,15|8,15|9,15|10,15|4,16|5,16|6,16|7,16|8,16|9,16|10,16|5,17|6,17|7,17|8,17|9,17|10,17|6,18|7,18|8,18|9,18|10,18|7,19|8,19|9,19|10,19',
-        '57,43', false);
+        '57,43', false, 300);
 
 ALTER SEQUENCE map_id_seq RESTART WITH 3;
 

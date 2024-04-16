@@ -171,13 +171,13 @@ class MapHandlerTest {
       .map { Random.nextInt(0, 8) }.toList()
     val startPositions = listOf(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1))
     val targetPosition = Position(size.width - 2, size.height - 2)
-    val map = Map(null, "gen", size, startPositions, targetPosition)
+    val map = Map(null, "gen", size, startPositions, targetPosition, 100)
     createHeightMap(size, randomHeights, startPositions, targetPosition).forEach { map.addTile(it) }
     return map
   }
 
   private fun createNewPresetMap(size: Size, heights: List<Int>, start: Position, target: Position = Position(size.width - 1, size.height - 1)): Map {
-    val map = Map(null, "gen", size, listOf(start), target)
+    val map = Map(null, "gen", size, listOf(start), target, 100)
     createHeightMap(size, heights, listOf(start), target).forEach { map.addTile(it) }
     return map
   }

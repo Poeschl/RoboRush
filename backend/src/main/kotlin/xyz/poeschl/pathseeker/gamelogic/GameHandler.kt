@@ -106,6 +106,7 @@ class GameHandler(
     }
     LOGGER.info("Loaded map '{}' in {} ms", map.mapName, loadDuration.inWholeMilliseconds)
 
+    robotHandler.setRobotMaxFuel(map.maxRobotFuel)
     robotHandler.clearActiveRobots()
   }
 

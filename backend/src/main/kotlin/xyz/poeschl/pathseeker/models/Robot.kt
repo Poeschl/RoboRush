@@ -19,7 +19,10 @@ data class ActiveRobot(
   var position: Position,
   @Schema(anyOf = [MoveAction::class, ScanAction::class, WaitAction::class]) var nextAction: RobotAction<*>? = null,
   var lastResult: Any? = null
-)
+) {
+
+  val maxFuel = fuel
+}
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class PublicRobot(val id: Long, val color: Color, var position: Position)

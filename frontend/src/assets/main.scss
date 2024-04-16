@@ -55,7 +55,8 @@
 
 // Manual css overwrites
 
-.modal-card-head {
+.modal-card {
   --bulma-shadow: none;
   --bulma-modal-card-head-background-color: var(--bulma-modal-card-foot-background-color);
+  --bulma-modal-card-head-padding: 1.25rem;
 }

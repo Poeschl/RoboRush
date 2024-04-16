@@ -149,6 +149,20 @@ class RobotHandlerTest {
   }
 
   @Test
+  fun setRobotMaxFuel() {
+    // WHEN
+    val maxFuel = 1234
+
+    // THEN
+    robotHandler.setRobotMaxFuel(maxFuel)
+
+    // VERIFY
+    val newRobot = createSingleActiveRobot()
+    assertThat(newRobot.fuel).isEqualTo(maxFuel)
+    assertThat(newRobot.maxFuel).isEqualTo(maxFuel)
+  }
+
+  @Test
   fun setNextMove() {
     // WHEN
     val robot = createSingleActiveRobot()

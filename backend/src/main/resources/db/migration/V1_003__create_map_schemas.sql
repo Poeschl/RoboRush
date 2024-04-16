@@ -7,6 +7,7 @@ CREATE TABLE map
   possible_start_positions TEXT                                                  NOT NULL,
   target_position          VARCHAR(9)                                            NOT NULL,
   active                   BOOLEAN       DEFAULT FALSE                           NOT NULL,
+  max_robot_fuel           INTEGER                                               NOT NULL,
   PRIMARY KEY (id)
 );
 

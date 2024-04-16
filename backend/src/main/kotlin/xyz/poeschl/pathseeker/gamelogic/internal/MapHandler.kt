@@ -9,7 +9,7 @@ import kotlin.math.ceil
 
 @GameLogic
 class MapHandler {
-  private var currentMap = Map(0, "init", Size(0, 0), listOf(), Position(0, 0))
+  private var currentMap = Map(0, "init", Size(0, 0), listOf(), Position(0, 0), 0)
 
   // Use a 2D array for faster tile data access
   private var currentMapTiles = arrayOf(emptyArray<Tile>())

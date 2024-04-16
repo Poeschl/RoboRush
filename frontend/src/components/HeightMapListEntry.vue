@@ -1,9 +1,8 @@
 <template>
   <div class="columns">
-    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
-      <div>Active</div>
+    <div class="column is-2 is-flex is-align-items-center is-justify-content-start">
       <button
-        class="button"
+        class="button mr-1"
         title="Toggle active for map"
         @click="toggleMapActive(map)"
         :class="{ 'is-loading': processing.active }"
@@ -14,10 +13,7 @@
           <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
         </div>
       </button>
-    </div>
-    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
-      <div>Preview</div>
-      <button class="button mr-1" title="Preview map" @click="openPreview(map)">
+      <button class="button" title="Preview map" @click="openPreview(map)">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
         </div>
@@ -35,7 +31,16 @@
       <div>Max player</div>
       <div class="is-size-5">{{ map.possibleStartPositions.length }}</div>
     </div>
-    <div class="column is-1 is-flex is-align-items-center is-justify-content-end">
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Robot fuel</div>
+      <div class="is-size-5">{{ map.maxRobotFuel }}</div>
+    </div>
+    <div class="column is-2 is-flex is-align-items-center is-justify-content-end">
+      <button class="button is-text mr-1" title="Edit map attributes">
+        <div class="icon">
+          <FontAwesomeIcon icon="fa-solid fa-edit" />
+        </div>
+      </button>
       <button class="button is-text remove" title="Remove map" v-if="removable" :class="{ 'is-loading': processing.delete }" @click="removeMap(map)">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-trash" />

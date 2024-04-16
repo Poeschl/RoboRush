@@ -23,6 +23,7 @@ data class Map(
   @Column val size: Size,
   @Column val possibleStartPositions: List<Position>,
   @Column val targetPosition: Position,
+  @Column var maxRobotFuel: Int,
   @Column var active: Boolean = false
 ) {
 

@@ -5,6 +5,7 @@ export interface PlaygroundMap {
   possibleStartPositions: Position[];
   targetPosition: Position;
   active: boolean;
+  maxRobotFuel: number;
   mapData: Tile[];
 }
 
