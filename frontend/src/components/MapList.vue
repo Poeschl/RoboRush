@@ -3,7 +3,7 @@
     <progress class="progress is-medium"></progress>
   </div>
   <div class="box" v-else v-for="map in maps">
-    <HeightMapListEntry :map="map" :removable="maps.length > 1" :unselectable="activeMaps.length <= 1" />
+    <MapListEntry :map="map" :removable="maps.length > 1" :unselectable="activeMaps.length <= 1" />
   </div>
 </template>
 
@@ -11,7 +11,7 @@
 import { useConfigStore } from "@/stores/ConfigStore";
 import { computed } from "vue";
 import type { PlaygroundMap } from "@/models/Map";
-import HeightMapListEntry from "@/components/HeightMapListEntry.vue";
+import MapListEntry from "@/components/MapListEntry.vue";
 
 const configStore = useConfigStore();
 

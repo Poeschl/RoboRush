@@ -20,10 +20,11 @@
 
 <script setup lang="ts">
 import BaseModal from "@/components/templates/BaseModal.vue";
-import type { PlaygroundMap } from "@/models/Map";
+import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
+import { ref } from "vue";
 
-defineProps<{
+const props = defineProps<{
   map: PlaygroundMap;
 }>();
 

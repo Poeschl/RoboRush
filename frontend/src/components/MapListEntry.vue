@@ -13,7 +13,7 @@
           <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
         </div>
       </button>
-      <button class="button" title="Preview map" @click="openPreview(map)">
+      <button class="button" title="Preview map" @click="openPreview">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
         </div>
@@ -36,7 +36,7 @@
       <div class="is-size-5">{{ map.maxRobotFuel }}</div>
     </div>
     <div class="column is-2 is-flex is-align-items-center is-justify-content-end">
-      <button class="button is-text mr-1" title="Edit map attributes">
+      <button class="button is-text mr-1" title="Edit map attributes" @click="openEdit">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-edit" />
         </div>
@@ -48,19 +48,22 @@
       </button>
     </div>
   </div>
-  <HeightMapPreviewModal :map="map" v-if="previewOpen" @close="previewOpen = false" />
+  <MapPreviewModal :map="map" v-if="previewOpen" @close="previewOpen = false" />
+  <MapEditModal :map="map" v-if="editOpen" @close="editOpen = false" />
 </template>
 
 <script setup lang="ts">
 import { useConfigStore } from "@/stores/ConfigStore";
 import { ref } from "vue";
 import type { PlaygroundMap } from "@/models/Map";
-import HeightMapPreviewModal from "@/components/HeightMapPreviewModal.vue";
+import MapPreviewModal from "@/components/MapPreviewModal.vue";
+import MapEditModal from "@/components/MapEditModal.vue";
 
 const configStore = useConfigStore();
 
 const processing = ref<{ active: boolean; delete: boolean }>({ active: false, delete: false });
 const previewOpen = ref<boolean>(false);
+const editOpen = ref<boolean>(false);
 
 defineProps<{
   map: PlaygroundMap;
@@ -82,8 +85,12 @@ const toggleMapActive = (map: PlaygroundMap) => {
   });
 };
 
-const openPreview = (map: PlaygroundMap) => {
+const openPreview = () => {
   previewOpen.value = true;
+};
+
+const openEdit = () => {
+  editOpen.value = true;
 };
 </script>
 

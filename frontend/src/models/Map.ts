@@ -9,6 +9,12 @@ export interface PlaygroundMap {
   mapData: Tile[];
 }
 
+export interface PlaygroundMapAttributes {
+  id: number;
+  mapName: string;
+  maxRobotFuel: number;
+}
+
 export interface Size {
   width: number;
   height: number;
