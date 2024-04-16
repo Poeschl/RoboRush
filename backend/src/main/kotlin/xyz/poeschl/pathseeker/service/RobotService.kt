@@ -5,6 +5,7 @@ import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
+import xyz.poeschl.pathseeker.gamelogic.actions.WaitAction
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.PublicRobot
@@ -46,10 +47,14 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
   }
 
   fun scheduleScan(robotId: Long, distance: Int) {
-    return gameHandler.nextActionForRobot(robotId, ScanAction(distance))
+    gameHandler.nextActionForRobot(robotId, ScanAction(distance))
   }
 
   fun scheduleMove(robotId: Long, direction: Direction) {
-    return gameHandler.nextActionForRobot(robotId, MoveAction(direction))
+    gameHandler.nextActionForRobot(robotId, MoveAction(direction))
+  }
+
+  fun scheduleWait(robotId: Long) {
+    gameHandler.nextActionForRobot(robotId, WaitAction())
   }
 }

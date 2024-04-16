@@ -16,7 +16,8 @@ import xyz.poeschl.pathseeker.models.ActiveRobot
 )
 @JsonSubTypes(
   Type(value = MoveAction::class, name = "move"),
-  Type(value = ScanAction::class, name = "scan")
+  Type(value = ScanAction::class, name = "scan"),
+  Type(value = WaitAction::class, name = "wait")
 )
 interface RobotAction<T> {
 

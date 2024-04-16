@@ -23,7 +23,14 @@
                     </div>
                   </button>
                 </div>
-                <div class="column is-offset-one-third is-one-third">
+                <div class="column is-one-third">
+                  <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightWait }" @click="wait()" title="Wait the next turn">
+                    <div class="icon">
+                      <FontAwesomeIcon icon="fa-solid fa-hourglass-half" class="fa-lg" />
+                    </div>
+                  </button>
+                </div>
+                <div class="column is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightRight }" @click="move('EAST')">
                     <div class="icon">
                       <FontAwesomeIcon icon="fa-solid fa-caret-right" class="fa-2x" />
@@ -66,6 +73,7 @@
               <p class="mb-1">Set action:</p>
               <p v-if="robot?.nextAction?.type == 'move'">Move {{ (robot?.nextAction as Move).direction }}</p>
               <p v-if="robot?.nextAction?.type == 'scan'">Scan with distance {{ (robot?.nextAction as Scan).distance }}</p>
+              <p v-if="robot?.nextAction?.type == 'wait'">Wait the next turn</p>
             </div>
             <div>
               <p class="mb-1">Last result:</p>
@@ -119,6 +127,7 @@ const highlightRight = computed<boolean>(() => isMovementInDirection(robot.value
 const highlightDown = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "SOUTH"));
 const highlightLeft = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "WEST"));
 const highlightScan = computed<boolean>(() => isScan(robot.value?.nextAction));
+const highlightWait = computed<boolean>(() => isWait(robot.value?.nextAction));
 
 const isMovementInDirection = (action: Action | undefined, direction: string) => {
   return action?.type == "move" && (action as Move).direction == direction;
@@ -126,6 +135,10 @@ const isMovementInDirection = (action: Action | undefined, direction: string) =>
 
 const isScan = (action: Action | undefined) => {
   return action?.type == "scan";
+};
+
+const isWait = (action: Action | undefined) => {
+  return action?.type == "wait";
 };
 
 const participateInGame = () => {
@@ -138,6 +151,10 @@ const move = (direction: string) => {
 
 const scan = () => {
   handleControlInput(gameStore.scanAroundRobot(scanNumber.value));
+};
+
+const wait = () => {
+  handleControlInput(gameStore.waitThatRobot());
 };
 
 const handleControlInput = (promise: Promise<void>) => {
@@ -170,6 +187,7 @@ const handleControlInput = (promise: Promise<void>) => {
     }
   }
 }
+
 .is-scan-action .button.is-selected {
   .icon {
     color: custom-variables.$primary;

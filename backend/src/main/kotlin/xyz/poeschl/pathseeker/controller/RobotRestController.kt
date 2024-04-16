@@ -87,4 +87,17 @@ class RobotRestController(private val robotService: RobotService) {
       robotService.scheduleMove(it, move.direction)
     }
   }
+
+  @Operation(
+    summary = "Tell your robot to wait for the time of the next round. Can only be called during the 'waiting for input' phase.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/wait")
+  fun wait(auth: Authentication) {
+    LOGGER.debug("Wait the next move")
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleWait(it)
+    }
+  }
 }

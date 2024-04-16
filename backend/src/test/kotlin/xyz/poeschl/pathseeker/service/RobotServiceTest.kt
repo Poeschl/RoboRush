@@ -8,6 +8,7 @@ import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
+import xyz.poeschl.pathseeker.gamelogic.actions.WaitAction
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.repositories.RobotRepository
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
@@ -174,6 +175,20 @@ class RobotServiceTest {
     // VERIFY
     verify {
       gameHandler.nextActionForRobot(robotId, MoveAction(direction))
+    }
+  }
+
+  @Test
+  fun scheduleWait() {
+    // WHEN
+    val robotId = 1L
+
+    // THEN
+    robotService.scheduleWait(robotId)
+
+    // VERIFY
+    verify {
+      gameHandler.nextActionForRobot(robotId, WaitAction())
     }
   }
 }

@@ -17,6 +17,7 @@ import {
   faCheck,
   faClipboard,
   faGasPump,
+  faHourglassHalf,
   faLocationDot,
   faPlay,
   faRobot,
@@ -58,6 +59,7 @@ library.add(
   faChalkboard,
   faArrowRotateLeft,
   faCheck,
+  faHourglassHalf,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
