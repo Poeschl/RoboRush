@@ -21,7 +21,7 @@
             class="input"
             type="number"
             step="1"
-            placeholder="Robot fuel on this map"
+            placeholder="Max robot fuel on this map"
             min="1"
             v-model="mapAttributes.maxRobotFuel"
             :class="{ 'is-danger': mapAttributes.maxRobotFuel < 10 }"
@@ -40,6 +40,7 @@
 import BaseModal from "@/components/templates/BaseModal.vue";
 import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
 import { ref } from "vue";
+import { useConfigStore } from "@/stores/ConfigStore";
 
 const props = defineProps<{
   map: PlaygroundMap;
@@ -54,11 +55,12 @@ const saving = ref<boolean>(false);
 
 const save = () => {
   saving.value = true;
-  //TODO: make save
-  setTimeout(() => {
-    saving.value = false;
-    emit("close");
-  }, 1000);
+  useConfigStore()
+    .setMapAttributes(mapAttributes.value)
+    .then(() => {
+      saving.value = false;
+      emit("close");
+    });
 };
 </script>
 

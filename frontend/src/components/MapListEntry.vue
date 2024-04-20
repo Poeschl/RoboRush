@@ -2,7 +2,7 @@
   <div class="columns">
     <div class="column is-2 is-flex is-align-items-center is-justify-content-start">
       <button
-        class="button mr-1"
+        class="button is-text mr-1"
         title="Toggle active for map"
         @click="toggleMapActive(map)"
         :class="{ 'is-loading': processing.active }"
@@ -13,7 +13,7 @@
           <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
         </div>
       </button>
-      <button class="button" title="Preview map" @click="openPreview">
+      <button class="button is-text" title="Preview map" @click="openPreview">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
         </div>
@@ -32,7 +32,7 @@
       <div class="is-size-5">{{ map.possibleStartPositions.length }}</div>
     </div>
     <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
-      <div>Robot fuel</div>
+      <div>Max robot fuel</div>
       <div class="is-size-5">{{ map.maxRobotFuel }}</div>
     </div>
     <div class="column is-2 is-flex is-align-items-center is-justify-content-end">

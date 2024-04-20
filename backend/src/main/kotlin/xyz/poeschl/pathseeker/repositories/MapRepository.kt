@@ -19,7 +19,7 @@ interface MapRepository : CrudRepository<Map, Long> {
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class Map(
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(insertable = false) val id: Long?,
-  @Column val mapName: String,
+  @Column var mapName: String,
   @Column val size: Size,
   @Column val possibleStartPositions: List<Position>,
   @Column val targetPosition: Position,

@@ -1,7 +1,7 @@
 import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import axiosWithAuth from "@/config/axiosWithAuth";
 import type { AxiosResponse } from "axios";
-import type { PlaygroundMap } from "@/models/Map";
+import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
 
 export default function useConfigService() {
   const baseConfigUrl = "/api/config";
@@ -33,9 +33,15 @@ export default function useConfigService() {
     return axiosWithAuth.post(`${baseConfigUrl}/map/${mapId}/active`, { active: active }).then((response) => response.data);
   };
 
+  const setMapAttributes = (mapId: number, attributes: PlaygroundMapAttributes): Promise<PlaygroundMap> => {
+    return axiosWithAuth
+      .post(`${baseConfigUrl}/map/${mapId}`, { mapName: attributes.mapName, maxRobotFuel: attributes.maxRobotFuel })
+      .then((response) => response.data);
+  };
+
   const removeMap = (mapId: number): Promise<void> => {
     return axiosWithAuth.delete(`${baseConfigUrl}/map/${mapId}`);
   };
 
-  return { getAllSettings, saveSetting, uploadNewHeightmap, getAvailableMaps, setMapActive, removeMap };
+  return { getAllSettings, saveSetting, uploadNewHeightmap, getAvailableMaps, setMapActive, removeMap, setMapAttributes };
 }

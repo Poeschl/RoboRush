@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import useConfigService from "@/services/ConfigService";
-import type { PlaygroundMap } from "@/models/Map";
+import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
 
 const configService = useConfigService();
 
@@ -34,9 +34,16 @@ export const useConfigStore = defineStore("configStore", () => {
   };
 
   const setMapActive = (mapId: number, active: boolean): Promise<void> => {
-    return configService.setMapActive(mapId, active).then((newMap) => {
+    return configService.setMapActive(mapId, active).then((changedMap) => {
       const index = availableMaps.value.maps.findIndex((map) => map.id == mapId);
-      availableMaps.value.maps[index] = newMap;
+      availableMaps.value.maps[index] = changedMap;
+    });
+  };
+
+  const setMapAttributes = (attributes: PlaygroundMapAttributes): Promise<void> => {
+    return configService.setMapAttributes(attributes.id, attributes).then((changedMap) => {
+      const index = availableMaps.value.maps.findIndex((map) => map.id == attributes.id);
+      availableMaps.value.maps[index] = changedMap;
     });
   };
 
@@ -46,5 +53,5 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
-  return { currentConfig, availableMaps, updateConfig, save, uploadNewHeightmap, setMapActive, removeMap };
+  return { currentConfig, availableMaps, updateConfig, save, uploadNewHeightmap, setMapActive, removeMap, setMapAttributes };
 });

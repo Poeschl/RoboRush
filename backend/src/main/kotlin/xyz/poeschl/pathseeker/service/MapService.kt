@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional
 import org.hibernate.Hibernate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import xyz.poeschl.pathseeker.controller.restmodels.MapAttributeSaveDto
 import xyz.poeschl.pathseeker.exceptions.NoStartingPosition
 import xyz.poeschl.pathseeker.exceptions.NoTargetPosition
 import xyz.poeschl.pathseeker.exceptions.UnknownTileType
@@ -50,6 +51,12 @@ class MapService(private val mapRepository: MapRepository) {
 
   fun setMapActive(map: Map, active: Boolean): Map {
     map.active = active
+    return mapRepository.save(map)
+  }
+
+  fun setMapAttributes(map: Map, attributes: MapAttributeSaveDto): Map {
+    map.mapName = attributes.mapName
+    map.maxRobotFuel = attributes.maxRobotFuel
     return mapRepository.save(map)
   }
 

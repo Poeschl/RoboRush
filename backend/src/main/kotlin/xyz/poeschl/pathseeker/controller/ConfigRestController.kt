@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import xyz.poeschl.pathseeker.controller.restmodels.MapActiveDto
+import xyz.poeschl.pathseeker.controller.restmodels.MapAttributeSaveDto
 import xyz.poeschl.pathseeker.controller.restmodels.MapGenerationResult
 import xyz.poeschl.pathseeker.exceptions.InvalidConfigKeyException
 import xyz.poeschl.pathseeker.exceptions.InvalidHeightMapException
@@ -75,8 +76,19 @@ class ConfigRestController(private val configService: ConfigService, private val
     }
   }
 
+  @PostMapping("/map/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun setMapAttributes(@PathVariable id: Long, @RequestBody attributes: MapAttributeSaveDto): Map {
+    val map = mapService.getMap(id)
+
+    if (map != null) {
+      return mapService.setMapAttributes(map, attributes)
+    } else {
+      throw MapNotFound("No matching map found for given id.")
+    }
+  }
+
   @DeleteMapping("/map/{id}")
-  fun setMapActive(@PathVariable id: Long) {
+  fun removeMap(@PathVariable id: Long) {
     val map = mapService.getMap(id)
 
     if (map != null) {
