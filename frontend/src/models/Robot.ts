@@ -1,6 +1,5 @@
 import type { Position } from "@/models/Map";
 import Color from "@/models/Color";
-import { createRenderer } from "vue";
 
 export interface PublicRobot {
   id: number;
@@ -20,6 +19,8 @@ export interface Scan extends Action {
   distance: number;
 }
 
+export interface Wait extends Action {}
+
 export interface ActiveRobot {
   id: number;
   color: Color;
@@ -37,6 +38,8 @@ export function correctTypesFromJson(activeBot: ActiveRobot): ActiveRobot {
     correctRobot.nextAction = correctRobot.nextAction as Scan;
   } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "move") {
     correctRobot.nextAction = correctRobot.nextAction as Move;
+  } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "wait") {
+    correctRobot.nextAction = correctRobot.nextAction as Wait;
   } else {
     correctRobot.nextAction = undefined;
   }

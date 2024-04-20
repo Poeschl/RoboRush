@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.exceptions.InsufficientFuelException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.Position
@@ -12,7 +11,7 @@ import xyz.poeschl.pathseeker.models.Position
 class MoveAction @JsonCreator constructor(val direction: Direction) : RobotAction<Position> {
 
   companion object {
-    private val LOGGER = LoggerFactory.getLogger(RobotHandler::class.java)
+    private val LOGGER = LoggerFactory.getLogger(MoveAction::class.java)
   }
 
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
