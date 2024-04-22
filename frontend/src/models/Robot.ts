@@ -21,6 +21,8 @@ export interface Scan extends Action {
 
 export interface Wait extends Action {}
 
+export interface Refuel extends Action {}
+
 export interface ActiveRobot {
   id: number;
   color: Color;
@@ -41,6 +43,8 @@ export function correctTypesFromJson(activeBot: ActiveRobot): ActiveRobot {
     correctRobot.nextAction = correctRobot.nextAction as Move;
   } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "wait") {
     correctRobot.nextAction = correctRobot.nextAction as Wait;
+  } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "refuel") {
+    correctRobot.nextAction = correctRobot.nextAction as Refuel;
   } else {
     correctRobot.nextAction = undefined;
   }

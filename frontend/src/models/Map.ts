@@ -35,4 +35,5 @@ export enum TileType {
   DEFAULT_TILE = "DEFAULT_TILE",
   START_TILE = "START_TILE",
   TARGET_TILE = "TARGET_TILE",
+  FUEL_TILE = "FUEL_TILE",
 }

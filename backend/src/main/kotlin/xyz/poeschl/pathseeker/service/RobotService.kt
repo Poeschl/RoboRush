@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
+import xyz.poeschl.pathseeker.gamelogic.actions.RefuelAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.gamelogic.actions.WaitAction
 import xyz.poeschl.pathseeker.models.ActiveRobot
@@ -56,5 +57,9 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
 
   fun scheduleWait(robotId: Long) {
     gameHandler.nextActionForRobot(robotId, WaitAction())
+  }
+
+  fun scheduleRefuel(robotId: Long) {
+    gameHandler.nextActionForRobot(robotId, RefuelAction())
   }
 }

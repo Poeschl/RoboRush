@@ -17,7 +17,8 @@ import xyz.poeschl.pathseeker.models.ActiveRobot
 @JsonSubTypes(
   Type(value = MoveAction::class, name = "move"),
   Type(value = ScanAction::class, name = "scan"),
-  Type(value = WaitAction::class, name = "wait")
+  Type(value = WaitAction::class, name = "wait"),
+  Type(value = RefuelAction::class, name = "refuel")
 )
 interface RobotAction<T> {
 
@@ -25,14 +26,14 @@ interface RobotAction<T> {
    * This method will check if the current action is allowed to execute.
    * If the action is not possible not an execution needs to be thrown!
    */
-  abstract fun check(robot: ActiveRobot, gameHandler: GameHandler)
+  fun check(robot: ActiveRobot, gameHandler: GameHandler)
 
   /***
    * Calling this method will execute the stored action immediately.
    * @return Any result of the executed action.
    */
-  abstract fun action(robot: ActiveRobot, gameHandler: GameHandler): T
+  fun action(robot: ActiveRobot, gameHandler: GameHandler): T
 
-  abstract override fun equals(other: Any?): Boolean
-  abstract override fun hashCode(): Int
+  override fun equals(other: Any?): Boolean
+  override fun hashCode(): Int
 }

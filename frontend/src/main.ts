@@ -71,6 +71,7 @@ library.add(
   faSquareCheck,
   faMagnifyingGlass,
   faEdit,
+  faGasPump,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

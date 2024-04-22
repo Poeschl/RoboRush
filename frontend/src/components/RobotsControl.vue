@@ -50,21 +50,32 @@
             </div>
           </div>
           <div class="column">
-            <div class="field has-addons is-scan-action">
-              <div class="control is-flex-grow-1">
-                <input
-                  class="input"
-                  type="number"
-                  min="0"
-                  :disabled="!controlsEnabled"
-                  placeholder="Scan distance"
-                  @input="(event) => (scanNumber = parseInt((event.target as HTMLInputElement)?.value))"
-                />
+            <div class="columns additional-actions is-variable is-2 is-justify-content-space-between">
+              <div class="column is-two-thirds">
+                <div class="field has-addons is-scan-action">
+                  <div class="control">
+                    <input
+                      class="input"
+                      type="number"
+                      min="0"
+                      :disabled="!controlsEnabled"
+                      placeholder="Scan distance"
+                      @input="(event) => (scanNumber = parseInt((event.target as HTMLInputElement)?.value))"
+                    />
+                  </div>
+                  <div class="control">
+                    <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }" @click="scan">
+                      <div class="icon">
+                        <FontAwesomeIcon icon="fa-solid fa-satellite-dish" class="fa-xl" />
+                      </div>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div class="control">
-                <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }" @click="scan">
+              <div class="column">
+                <button class="button" :disabled="!controlsEnabled || !refuelPossible" :class="{ 'is-selected': highlightRefuel }" @click="refuel()">
                   <div class="icon">
-                    <FontAwesomeIcon icon="fa-solid fa-satellite-dish" class="fa-xl" />
+                    <FontAwesomeIcon icon="fa-solid fa-gas-pump" class="fa-lg" />
                   </div>
                 </button>
               </div>
@@ -74,6 +85,7 @@
               <p v-if="robot?.nextAction?.type == 'move'">Move {{ (robot?.nextAction as Move).direction }}</p>
               <p v-if="robot?.nextAction?.type == 'scan'">Scan with distance {{ (robot?.nextAction as Scan).distance }}</p>
               <p v-if="robot?.nextAction?.type == 'wait'">Wait the next turn</p>
+              <p v-if="robot?.nextAction?.type == 'refuel'">Refuel the robot</p>
             </div>
             <div>
               <p class="mb-1">Last result:</p>
@@ -111,6 +123,7 @@ import type { Action, Move, Scan } from "@/models/Robot";
 import Toast from "@/components/Toast.vue";
 import { ToastType } from "@/models/ToastType";
 import { AxiosError } from "axios";
+import { TileType } from "@/models/Map";
 
 const userStore = useUserStore();
 const gameStore = useGameStore();
@@ -121,24 +134,22 @@ const scanNumber = ref<number>(0);
 const robot = computed(() => gameStore.userRobot);
 const controlsEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_ACTION);
 const participationEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_PLAYERS);
+const refuelPossible = computed<boolean>(() => gameStore.heightMap.find((tile) => tile.position == robot.value?.position)?.type == TileType.FUEL_TILE);
 
 const highlightUp = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "NORTH"));
 const highlightRight = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "EAST"));
 const highlightDown = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "SOUTH"));
 const highlightLeft = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "WEST"));
-const highlightScan = computed<boolean>(() => isScan(robot.value?.nextAction));
-const highlightWait = computed<boolean>(() => isWait(robot.value?.nextAction));
+const highlightScan = computed<boolean>(() => isType(robot.value?.nextAction, "scan"));
+const highlightWait = computed<boolean>(() => isType(robot.value?.nextAction, "wait"));
+const highlightRefuel = computed<boolean>(() => isType(robot.value?.nextAction, "refuel"));
 
 const isMovementInDirection = (action: Action | undefined, direction: string) => {
   return action?.type == "move" && (action as Move).direction == direction;
 };
 
-const isScan = (action: Action | undefined) => {
-  return action?.type == "scan";
-};
-
-const isWait = (action: Action | undefined) => {
-  return action?.type == "wait";
+const isType = (action: Action | undefined, type: string) => {
+  return action?.type == type;
 };
 
 const participateInGame = () => {
@@ -155,6 +166,10 @@ const scan = () => {
 
 const wait = () => {
   handleControlInput(gameStore.waitThatRobot());
+};
+
+const refuel = () => {
+  handleControlInput(gameStore.refuelRobot());
 };
 
 const handleControlInput = (promise: Promise<void>) => {
@@ -181,6 +196,10 @@ const handleControlInput = (promise: Promise<void>) => {
   --bulma-column-gap: 0;
   --bulma-block-spacing: 0;
 
+  .columns {
+    justify-content: flex-start;
+  }
+
   .button.is-selected {
     .icon {
       color: custom-variables.$primary;
@@ -191,6 +210,12 @@ const handleControlInput = (promise: Promise<void>) => {
 .is-scan-action .button.is-selected {
   .icon {
     color: custom-variables.$primary;
+  }
+}
+
+.additional-actions {
+  .column {
+    flex-grow: 0;
   }
 }
 </style>

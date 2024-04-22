@@ -113,6 +113,10 @@ export const useGameStore = defineStore("gameStore", () => {
     return robotService.waitOnRobot();
   };
 
+  const refuelRobot = (): Promise<void> => {
+    return robotService.refuelRobot();
+  };
+
   return {
     heightMap,
     robots,
@@ -128,5 +132,6 @@ export const useGameStore = defineStore("gameStore", () => {
     scanAroundRobot,
     userRobotActive,
     waitThatRobot,
+    refuelRobot,
   };
 });

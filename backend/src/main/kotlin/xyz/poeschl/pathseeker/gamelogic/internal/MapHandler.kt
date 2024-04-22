@@ -32,6 +32,10 @@ class MapHandler {
     return currentMap.targetPosition
   }
 
+  fun getRobotMaxFuel(): Int {
+    return currentMap.maxRobotFuel
+  }
+
   fun loadNewMap(map: Map) {
     currentMap = map
 

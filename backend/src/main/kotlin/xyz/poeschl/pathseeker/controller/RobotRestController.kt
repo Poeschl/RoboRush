@@ -100,4 +100,17 @@ class RobotRestController(private val robotService: RobotService) {
       robotService.scheduleWait(it)
     }
   }
+
+  @Operation(
+    summary = "Refuel your robot, if its standing on a fuel tile. Can only be called during the 'waiting for input' phase and while standing on a fuel tile.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/refuel")
+  fun refuel(auth: Authentication) {
+    LOGGER.debug("Refuel robot")
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleRefuel(it)
+    }
+  }
 }

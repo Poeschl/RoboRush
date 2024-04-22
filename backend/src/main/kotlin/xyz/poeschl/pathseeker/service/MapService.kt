@@ -109,6 +109,7 @@ class MapService(private val mapRepository: MapRepository) {
 
         when (tileData.type) {
           TileType.DEFAULT_TILE -> tiles.add(Tile(null, pos, tileData.height, tileData.type))
+          TileType.FUEL_TILE -> tiles.add(Tile(null, pos, tileData.height, tileData.type))
 
           TileType.START_TILE -> {
             tiles.add(Tile(null, pos, tileData.height, tileData.type))
@@ -147,19 +148,31 @@ class MapService(private val mapRepository: MapRepository) {
   }
 
   private fun getTileData(color: Color): TileData {
-    return if (color.isGrey()) {
-      val height = color.r
-      TileData(height, TileType.DEFAULT_TILE)
-    } else if (color.g > color.r && color.r == color.b) {
-      // starting points
-      val height = color.r
-      TileData(height, TileType.START_TILE)
-    } else if (color.r > color.g && color.g == color.b) {
-      // target points
-      val height = color.g
-      TileData(height, TileType.TARGET_TILE)
-    } else {
-      throw UnknownTileType("Unknown tile type detected")
+    return when {
+      color.isGrey() -> {
+        val height = color.r
+        TileData(height, TileType.DEFAULT_TILE)
+      }
+
+      color.g > color.r && color.r == color.b -> {
+        // starting points
+        val height = color.r
+        TileData(height, TileType.START_TILE)
+      }
+
+      color.r > color.g && color.g == color.b -> {
+        // target points
+        val height = color.g
+        TileData(height, TileType.TARGET_TILE)
+      }
+
+      color.b > color.r && color.g == color.r -> {
+        val height = color.r
+        TileData(height, TileType.FUEL_TILE)
+      }
+      else -> {
+        throw UnknownTileType("Unknown tile type detected")
+      }
     }
   }
 

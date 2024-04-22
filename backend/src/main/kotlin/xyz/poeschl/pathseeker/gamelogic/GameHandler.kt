@@ -34,6 +34,10 @@ class GameHandler(
     return mapHandler.getHeightMap()
   }
 
+  fun getTileAtPosition(position: Position): Tile {
+    return mapHandler.getTileAtPosition(position)
+  }
+
   /**
    * Will check the position for a valid movement.
    * For an incorrect movement exceptions are thrown.
@@ -115,5 +119,9 @@ class GameHandler(
       gameStateMachine.getCurrentState(),
       if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null
     )
+  }
+
+  fun getRobotMaxFuel(): Int {
+    return mapHandler.getRobotMaxFuel()
   }
 }

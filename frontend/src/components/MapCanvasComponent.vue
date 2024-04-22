@@ -19,6 +19,7 @@ const mapColor = new Color(10, 60, 1);
 const robotCircleColor = new Color(30, 30, 30);
 const targetTileBorderColor = new Color(0, 130, 255);
 const startTileBorderColor = new Color(210, 110, 0);
+const fuelTileBorderColor = new Color(210, 0, 130);
 const specialTileBorderWidth = 4;
 
 const props = defineProps<{
@@ -90,6 +91,8 @@ const drawMap = () => {
         drawTileBorder(drawContext, targetTileBorderColor);
       } else if (tile.type == TileType.START_TILE) {
         drawTileBorder(drawContext, startTileBorderColor);
+      } else if (tile.type == TileType.FUEL_TILE) {
+        drawTileBorder(drawContext, fuelTileBorderColor);
       }
 
       drawContext.restore();
