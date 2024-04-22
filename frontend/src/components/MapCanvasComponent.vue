@@ -72,21 +72,19 @@ const drawMap = () => {
     updateCanvasSize(props.mapData);
 
     const maxHeight = Math.max(...props.mapData.map((t) => t.height));
-    const steps = maxHeight / maxHeightColorEnlighten;
-    let mapHeightSteps = Math.ceil(steps);
-    if (steps < 1) {
-      mapHeightSteps = Math.ceil(1 / steps);
-    }
-    log.debug("Max height: ", maxHeight, "Step size: ", mapHeightSteps);
+    const minHeight = Math.min(...props.mapData.map((t) => t.height));
+
+    log.debug("Max height: ", maxHeight, "Min height: ", minHeight);
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
     for (const index in props.mapData) {
       const tile: Tile = props.mapData[index];
-      // log.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
-      drawTile(drawContext, mapColor.enlighten(tile.height * mapHeightSteps));
+
+      const heightInPercentage = (tile.height - minHeight) / (maxHeight - minHeight);
+      drawTile(drawContext, mapColor.enlightenWithPercentage(heightInPercentage));
 
       if (tile.type == TileType.TARGET_TILE) {
         drawTileBorder(drawContext, targetTileBorderColor);
