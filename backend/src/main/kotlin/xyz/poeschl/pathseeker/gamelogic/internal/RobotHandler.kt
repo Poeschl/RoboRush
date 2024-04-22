@@ -20,8 +20,9 @@ class RobotHandler(
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotHandler::class.java)
-    private const val DEFAULT_FUEL = 100
   }
+
+  private var initialRobotMaxFuel = 0
 
   private val activeRobots = mutableSetOf<ActiveRobot>()
 
@@ -36,7 +37,7 @@ class RobotHandler(
       if (robot.isPresent) {
         val realRobot = robot.get()
         if (isPositionCurrentFree(startPosition)) {
-          activeRobot = ActiveRobot(realRobot.id!!, realRobot.user, realRobot.color, DEFAULT_FUEL, startPosition)
+          activeRobot = ActiveRobot(realRobot.id!!, realRobot.user, realRobot.color, initialRobotMaxFuel, startPosition)
           activeRobots.add(activeRobot)
           LOGGER.info("Registered robot {}", robotId)
         } else {
@@ -45,6 +46,10 @@ class RobotHandler(
       }
     }
     return activeRobot
+  }
+
+  fun setRobotMaxFuel(maxFuel: Int) {
+    this.initialRobotMaxFuel = maxFuel
   }
 
   fun clearActiveRobots() {

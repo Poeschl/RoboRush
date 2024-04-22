@@ -3,15 +3,16 @@ package xyz.poeschl.pathseeker.gamelogic.internal
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.models.*
-import xyz.poeschl.pathseeker.models.Map
-import java.util.stream.IntStream
+import xyz.poeschl.pathseeker.repositories.Map
+import xyz.poeschl.pathseeker.repositories.Tile
 import kotlin.math.ceil
-import kotlin.random.Random
-import kotlin.streams.toList
 
 @GameLogic
 class MapHandler {
-  private var currentMap = Map(size = Size(0, 0), arrayOf(emptyArray()), listOf(), Position(0, 0))
+  private var currentMap = Map(0, "init", Size(0, 0), listOf(), Position(0, 0), 0)
+
+  // Use a 2D array for faster tile data access
+  private var currentMapTiles = arrayOf(emptyArray<Tile>())
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapHandler::class.java)
@@ -20,7 +21,7 @@ class MapHandler {
   }
 
   fun getHeightMap(): List<Tile> {
-    return currentMap.mapData.flatMap { it.toList() }
+    return currentMap.mapData
   }
 
   fun getStartPositions(): List<Position> {
@@ -31,54 +32,14 @@ class MapHandler {
     return currentMap.targetPosition
   }
 
-  fun createNewRandomMap(size: Size) {
-    LOGGER.info("Create new random map ({}x{})", size.width, size.height)
+  fun loadNewMap(map: Map) {
+    currentMap = map
 
-    val randomHeights = IntStream.range(0, size.width * size.height)
-      .map { Random.nextInt(0, 8) }.toList()
-    val startPositions = listOf(Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1))
-    val targetPosition = Position(size.width - 2, size.height - 2)
-    currentMap = Map(size, createHeightMap(size, randomHeights, startPositions, targetPosition), startPositions, targetPosition)
-  }
-
-  fun createNewPresetMap(size: Size, heights: List<Int>, start: Position, target: Position = Position(size.width - 1, size.height - 1)) {
-    LOGGER.info("Create static map with heights ${heights.joinToString(", ")}")
-    currentMap = Map(size, createHeightMap(size, heights, listOf(start), target), listOf(start), target)
-  }
-
-  /**
-   * Creates a new map with the heights given as a list.
-   *
-   * @param size The map size
-   * @param heights The heights of the map as list. It continues horizontally.
-   */
-  private fun createHeightMap(size: Size, heights: List<Int>, startPositions: List<Position>, target: Position): Array<Array<Tile>> {
-    val rows = mutableListOf<List<Tile>>()
-    for (x in 0..<size.width) {
-      val column = mutableListOf<Tile>()
-      for (y in 0..<size.height) {
-        val pos = Position(x, y)
-
-        val type =
-          if (target == pos) {
-            TileType.TARGET_TILE
-          } else if (startPositions.contains(pos)) {
-            TileType.START_TILE
-          } else {
-            TileType.DEFAULT_TILE
-          }
-
-        column.add(Tile(pos, heights[(y * size.width) + x], type))
+    currentMapTiles = Array(map.size.height) { y ->
+      Array(map.size.width) { x ->
+        map.mapData.first { it.position == Position(x, y) }
       }
-      rows.add(column)
     }
-
-    val rowArray =
-      Array(rows.size) {
-        rows[it].toTypedArray()
-      }
-
-    return rowArray
   }
 
   fun isPositionValid(position: Position): Boolean {
@@ -86,7 +47,7 @@ class MapHandler {
   }
 
   fun getTileAtPosition(position: Position): Tile {
-    return currentMap.mapData[position.x][position.y]
+    return currentMapTiles[position.y][position.x]
   }
 
   fun getFuelCost(oldPosition: Position, newPosition: Position): Int {
@@ -102,11 +63,11 @@ class MapHandler {
   fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
     var usedFuel = 0.0
     val list = mutableListOf<Tile>()
-    for (x in (position.x - distance)..position.x + distance) {
-      for (y in (position.y - distance)..position.y + distance) {
+    for (y in (position.y - distance)..position.y + distance) {
+      for (x in (position.x - distance)..position.x + distance) {
         val checked = Position(x, y)
         if (isPositionValid(checked) && checked.getDistanceTo(position) <= distance) {
-          list.add(currentMap.mapData[x][y])
+          list.add(currentMapTiles[y][x])
         }
         usedFuel += TILE_SCAN_COST
       }

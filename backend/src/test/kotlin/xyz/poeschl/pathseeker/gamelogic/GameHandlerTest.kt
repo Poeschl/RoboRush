@@ -15,13 +15,16 @@ import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.models.settings.BooleanSetting
 import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.repositories.Tile
 import xyz.poeschl.pathseeker.service.ConfigService
+import xyz.poeschl.pathseeker.service.MapService
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
+import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
@@ -33,8 +36,9 @@ class GameHandlerTest {
   private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
   private val gameStateMachine = mockk<GameStateMachine>(relaxUnitFun = true)
   private val configService = mockk<ConfigService>(relaxUnitFun = true)
+  private val mapService = mockk<MapService>(relaxUnitFun = true)
 
-  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService)
+  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService, mapService)
 
   @Test
   fun getHeightMap() {
@@ -96,7 +100,7 @@ class GameHandlerTest {
   @Test
   fun getTilesInDistance() {
     // WHEN
-    val tiles = listOf(Tile(Position(0, 1), 1))
+    val tiles = listOf(Tile(null, Position(0, 1), 1))
     val position = Position(1, 2)
     val distance = 3
     every { mapHandler.getTilesInDistance(position, distance) } returns Pair(tiles, 23)
@@ -242,12 +246,15 @@ class GameHandlerTest {
   @Test
   fun prepareNewGame() {
     // WHEN
+    val map = a(`$Map`())
+
+    every { mapService.getNextChallengeMap() } returns map
 
     // THEN
     gameHandler.prepareNewGame()
 
     // VERIFY
-    verify { mapHandler.createNewRandomMap(Size(16, 8)) }
+    verify { mapHandler.loadNewMap(map) }
     verify { robotHandler.clearActiveRobots() }
   }
 

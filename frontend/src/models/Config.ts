@@ -14,3 +14,7 @@ export interface SaveSetting {
   key: string;
   value: string;
 }
+
+export interface MapGenerationResult {
+  warnings: string[];
+}

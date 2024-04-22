@@ -1,5 +1,6 @@
 package xyz.poeschl.pathseeker.gamelogic
 
+import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
 import xyz.poeschl.pathseeker.controller.WebsocketController
 import xyz.poeschl.pathseeker.exceptions.PositionNotAllowedException
@@ -9,7 +10,11 @@ import xyz.poeschl.pathseeker.gamelogic.internal.MapHandler
 import xyz.poeschl.pathseeker.gamelogic.internal.RobotHandler
 import xyz.poeschl.pathseeker.models.*
 import xyz.poeschl.pathseeker.models.settings.SettingKey
+import xyz.poeschl.pathseeker.repositories.Map
+import xyz.poeschl.pathseeker.repositories.Tile
 import xyz.poeschl.pathseeker.service.ConfigService
+import xyz.poeschl.pathseeker.service.MapService
+import kotlin.time.measureTime
 
 @GameLogic
 class GameHandler(
@@ -17,8 +22,13 @@ class GameHandler(
   private val robotHandler: RobotHandler,
   private val websocketController: WebsocketController,
   private val gameStateMachine: GameStateMachine,
-  private val configService: ConfigService
+  private val configService: ConfigService,
+  private val mapService: MapService
 ) {
+
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(GameHandler::class.java)
+  }
 
   fun getHeightMap(): List<Tile> {
     return mapHandler.getHeightMap()
@@ -88,7 +98,15 @@ class GameHandler(
   }
 
   fun prepareNewGame() {
-    mapHandler.createNewRandomMap(Size(16, 8))
+    LOGGER.info("Load new map")
+    val map: Map
+    val loadDuration = measureTime {
+      map = mapService.getNextChallengeMap()
+      mapHandler.loadNewMap(map)
+    }
+    LOGGER.info("Loaded map '{}' in {} ms", map.mapName, loadDuration.inWholeMilliseconds)
+
+    robotHandler.setRobotMaxFuel(map.maxRobotFuel)
     robotHandler.clearActiveRobots()
   }
 

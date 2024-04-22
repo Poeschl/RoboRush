@@ -35,6 +35,7 @@
 @forward "bulma/sass/components/navbar";
 @forward "bulma/sass/elements/button";
 @forward "bulma/sass/elements/content";
+@forward "bulma/sass/elements/delete";
 @forward "bulma/sass/elements/icon";
 @forward "bulma/sass/elements/notification";
 @forward "bulma/sass/elements/progress";
@@ -51,3 +52,11 @@
 @forward "bulma/sass/layout/section";
 
 @forward "bulma/sass/themes";
+
+// Manual css overwrites
+
+.modal-card {
+  --bulma-shadow: none;
+  --bulma-modal-card-head-background-color: var(--bulma-modal-card-foot-background-color);
+  --bulma-modal-card-head-padding: 1.25rem;
+}

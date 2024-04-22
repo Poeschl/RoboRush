@@ -1,0 +1,41 @@
+<template>
+  <BaseModal>
+    <template #header>
+      <h4 class="modal-card-title is-size-4">
+        <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
+        Map Preview - {{ map.mapName }}
+      </h4>
+    </template>
+
+    <template #content>
+      <div class="is-flex is-justify-content-center">
+        <MapCanvasComponent :map-data="map.mapData" :robot-data="[]" />
+      </div>
+    </template>
+    <template #footer>
+      <button class="button" @click="$emit('close')">Close</button>
+    </template>
+  </BaseModal>
+</template>
+
+<script setup lang="ts">
+import BaseModal from "@/components/templates/BaseModal.vue";
+import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
+import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
+import { ref } from "vue";
+
+const props = defineProps<{
+  map: PlaygroundMap;
+}>();
+
+defineEmits<{
+  (e: "close"): void;
+}>();
+</script>
+
+<style scoped lang="scss">
+:deep(.modal-card) {
+  width: fit-content;
+  max-width: 90%;
+}
+</style>

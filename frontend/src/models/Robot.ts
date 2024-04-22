@@ -25,6 +25,7 @@ export interface ActiveRobot {
   id: number;
   color: Color;
   fuel: number;
+  maxFuel: number;
   position: Position;
   nextAction: Action | undefined;
   lastResult: string | undefined;

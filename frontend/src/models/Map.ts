@@ -1,3 +1,25 @@
+export interface PlaygroundMap {
+  id: number;
+  mapName: string;
+  size: Size;
+  possibleStartPositions: Position[];
+  targetPosition: Position;
+  active: boolean;
+  maxRobotFuel: number;
+  mapData: Tile[];
+}
+
+export interface PlaygroundMapAttributes {
+  id: number;
+  mapName: string;
+  maxRobotFuel: number;
+}
+
+export interface Size {
+  width: number;
+  height: number;
+}
+
 export interface Tile {
   position: Position;
   height: number;
