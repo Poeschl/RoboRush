@@ -14,9 +14,9 @@ import log from "loglevel";
 
 const cellSize = 16;
 const cellBorder = 1;
-const maxHeightColorEnlighten = 250;
 const mapBorderColor = new Color(0, 0, 0);
 const mapColor = new Color(10, 60, 1);
+const robotCircleColor = new Color(30, 30, 30);
 const targetTileBorderColor = new Color(0, 130, 255);
 const startTileBorderColor = new Color(210, 110, 0);
 const specialTileBorderWidth = 4;
@@ -143,6 +143,8 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.arc((cellSize + 2 * cellBorder) / 2, (cellSize + 2 * cellBorder) / 2, cellSize / 2 - cellBorder * 2, 0, 360);
   drawContext.fillStyle = color.toHex();
   drawContext.fill();
+  drawContext.fillStyle = robotCircleColor.toHex();
+  drawContext.stroke();
   drawContext.closePath();
 };
 </script>
