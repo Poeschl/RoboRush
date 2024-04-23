@@ -78,4 +78,8 @@ class MapHandler {
     }
     return Pair(list, ceil(usedFuel).toInt())
   }
+
+  fun isSolarChargePossible(): Boolean {
+    return currentMap.solarChargeEnabled
+  }
 }

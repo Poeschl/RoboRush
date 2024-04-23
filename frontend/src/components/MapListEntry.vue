@@ -1,6 +1,6 @@
 <template>
-  <div class="columns">
-    <div class="column is-2 is-flex is-align-items-center is-justify-content-start">
+  <div class="columns is-variable is-2">
+    <div class="column is-flex is-align-items-center is-justify-content-start">
       <button
         class="button is-text mr-1"
         title="Toggle active for map"
@@ -35,7 +35,15 @@
       <div>Max robot fuel</div>
       <div class="is-size-5">{{ map.maxRobotFuel }}</div>
     </div>
-    <div class="column is-2 is-flex is-align-items-center is-justify-content-end">
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <div>Solar charge</div>
+      <div class="icon">
+        <FontAwesomeIcon icon="fa-solid fa-square-check" class="fa-xl" v-if="map.solarChargeEnabled" />
+        <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
+      </div>
+    </div>
+
+    <div class="column is-flex is-align-items-center is-justify-content-end">
       <button class="button is-text mr-1" title="Edit map attributes" @click="openEdit">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-edit" />
@@ -101,5 +109,10 @@ const openEdit = () => {
 .button.remove:hover {
   color: initial-variables.$black-ter;
   background-color: derived-variables.$danger;
+}
+
+.column > div {
+  text-align: center;
+  margin-bottom: 0.2rem;
 }
 </style>

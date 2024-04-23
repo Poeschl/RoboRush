@@ -6,6 +6,7 @@ export interface PlaygroundMap {
   targetPosition: Position;
   active: boolean;
   maxRobotFuel: number;
+  solarChargeEnabled: boolean;
   mapData: Tile[];
 }
 
@@ -13,6 +14,7 @@ export interface PlaygroundMapAttributes {
   id: number;
   mapName: string;
   maxRobotFuel: number;
+  solarChargeEnabled: boolean;
 }
 
 export interface Size {

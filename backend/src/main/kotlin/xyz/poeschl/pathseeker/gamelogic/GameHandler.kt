@@ -116,8 +116,9 @@ class GameHandler(
 
   fun getPublicGameInfo(): Game {
     return Game(
-      gameStateMachine.getCurrentState(),
-      if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null
+      currentState = gameStateMachine.getCurrentState(),
+      targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
+      solarChargePossible = mapHandler.isSolarChargePossible()
     )
   }
 

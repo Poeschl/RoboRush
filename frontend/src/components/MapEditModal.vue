@@ -28,6 +28,17 @@
           />
         </div>
       </div>
+      <div class="field">
+        <span class="label">Is charging over solar power possible</span>
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="mapAttributes.solarChargeEnabled">
+              <option>true</option>
+              <option>false</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </template>
     <template #footer>
       <button class="button is-primary mr-2" @click="save" :class="{ 'is-loading': saving }">Save</button>
@@ -50,7 +61,12 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
-const mapAttributes = ref<PlaygroundMapAttributes>({ id: props.map.id, mapName: props.map.mapName, maxRobotFuel: props.map.maxRobotFuel });
+const mapAttributes = ref<PlaygroundMapAttributes>({
+  id: props.map.id,
+  mapName: props.map.mapName,
+  maxRobotFuel: props.map.maxRobotFuel,
+  solarChargeEnabled: props.map.solarChargeEnabled,
+});
 const saving = ref<boolean>(false);
 
 const save = () => {

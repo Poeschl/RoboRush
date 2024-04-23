@@ -21,7 +21,6 @@ class MapService(private val mapRepository: MapRepository) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapService::class.java)
-    private val DEFAULT_MAP_FUEL = 300
   }
 
   fun saveMap(map: Map): Map {
@@ -45,6 +44,7 @@ class MapService(private val mapRepository: MapRepository) {
   @Transactional
   fun getNextChallengeMap(): Map {
     val map = mapRepository.findAllByActiveIsTrueOrderById().random()
+    // We need something better than this!
     Hibernate.initialize(map.mapData)
     return map
   }
@@ -57,6 +57,7 @@ class MapService(private val mapRepository: MapRepository) {
   fun setMapAttributes(map: Map, attributes: MapAttributeSaveDto): Map {
     map.mapName = attributes.mapName
     map.maxRobotFuel = attributes.maxRobotFuel
+    map.solarChargeEnabled = attributes.solarChargeEnabled
     return mapRepository.save(map)
   }
 
@@ -140,7 +141,7 @@ class MapService(private val mapRepository: MapRepository) {
       throw NoTargetPosition("At least one target position is required")
     }
 
-    val map = Map(null, mapName, Size(image.width, image.height), startingPositions, targetPosition, DEFAULT_MAP_FUEL)
+    val map = Map(null, mapName, Size(image.width, image.height), startingPositions, targetPosition)
     // Add all tiles to map for the db relations
     tiles.forEach { map.addTile(it) }
 

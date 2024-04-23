@@ -1,5 +1,5 @@
-INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active, max_robot_fuel)
-VALUES  (1, 'icon_map', '32x32', '4,11|5,11|6,11|7,11|8,11|9,11|10,11|4,12|5,12|6,12|7,12|8,12|9,12|10,12', '27,5', true, 300);
+INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active, max_robot_fuel, solar_charge_enabled)
+VALUES  (1, 'icon_map', '32x32', '4,11|5,11|6,11|7,11|8,11|9,11|10,11|4,12|5,12|6,12|7,12|8,12|9,12|10,12', '27,5', true, 300, false);
 
 ALTER SEQUENCE map_id_seq RESTART WITH 2;
 

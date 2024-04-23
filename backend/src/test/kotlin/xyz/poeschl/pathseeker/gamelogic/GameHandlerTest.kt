@@ -27,6 +27,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Ga
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
+import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Boolean`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
 
 class GameHandlerTest {
@@ -263,8 +264,11 @@ class GameHandlerTest {
     // WHEN
     val state = a(`$GameState`())
     val target = a(`$Position`())
+    val chargingPossible = a(`$Boolean`())
+
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
+    every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
 
     // THEN
@@ -273,6 +277,7 @@ class GameHandlerTest {
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
     assertThat(game.targetPosition).isEqualTo(target)
+    assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
   }
 
   @Test
@@ -280,8 +285,11 @@ class GameHandlerTest {
     // WHEN
     val state = a(`$GameState`())
     val target = a(`$Position`())
+    val chargingPossible = a(`$Boolean`())
+
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
+    every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
 
     // THEN
@@ -290,6 +298,7 @@ class GameHandlerTest {
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
     assertThat(game.targetPosition).isNull()
+    assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
   }
 
   @Test

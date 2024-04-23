@@ -23,7 +23,8 @@ data class Map(
   @Column val size: Size,
   @Column val possibleStartPositions: List<Position>,
   @Column val targetPosition: Position,
-  @Column var maxRobotFuel: Int,
+  @Column var maxRobotFuel: Int = 300,
+  @Column var solarChargeEnabled: Boolean = false,
   @Column var active: Boolean = false
 ) {
 
@@ -47,6 +48,7 @@ data class Map(
     if (mapData != other.mapData) return false
     if (possibleStartPositions != other.possibleStartPositions) return false
     if (targetPosition != other.targetPosition) return false
+    if (solarChargeEnabled != other.solarChargeEnabled) return false
     if (active != other.active) return false
 
     return true
@@ -59,6 +61,7 @@ data class Map(
     result = 31 * result + mapData.hashCode()
     result = 31 * result + possibleStartPositions.hashCode()
     result = 31 * result + targetPosition.hashCode()
+    result = 31 * result + solarChargeEnabled.hashCode()
     result = 31 * result + active.hashCode()
     return result
   }
