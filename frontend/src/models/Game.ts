@@ -1,5 +1,6 @@
 export interface Game {
   currentState: GameState;
+  solarChargeEnabled: boolean;
 }
 
 export enum GameState {

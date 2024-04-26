@@ -18,7 +18,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const websocketService = useWebSocket();
   const gameService = useGameService();
 
-  const currentGame = ref<Game>({ currentState: GameState.ENDED });
+  const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargeEnabled: false });
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalMap = ref<PlaygroundMap>();
@@ -43,7 +43,8 @@ export const useGameStore = defineStore("gameStore", () => {
     gameService
       .getMap()
       .then((response) => {
-        // Clears whole array
+        // Clears whole object first
+        internalMap.value = undefined;
         internalMap.value = response;
       })
       .catch((reason) => {
@@ -122,7 +123,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const isSolarChargePossible = (): boolean => {
-    return internalMap.value?.solarChargeEnabled || false;
+    return currentGame.value.solarChargeEnabled;
   };
 
   const solarCharge = (): Promise<void> => {

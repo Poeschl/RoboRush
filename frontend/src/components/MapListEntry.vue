@@ -37,10 +37,7 @@
     </div>
     <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
       <div>Solar charge</div>
-      <div class="icon">
-        <FontAwesomeIcon icon="fa-solid fa-square-check" class="fa-xl" v-if="map.solarChargeEnabled" />
-        <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
-      </div>
+      <div class="is-size-5">{{ map.solarChargeRate * 100 }} %</div>
     </div>
 
     <div class="column is-flex is-align-items-center is-justify-content-end">

@@ -57,7 +57,14 @@ class MapService(private val mapRepository: MapRepository) {
   fun setMapAttributes(map: Map, attributes: MapAttributeSaveDto): Map {
     map.mapName = attributes.mapName
     map.maxRobotFuel = attributes.maxRobotFuel
-    map.solarChargeEnabled = attributes.solarChargeEnabled
+
+    map.solarChargeRate =
+      when {
+        attributes.solarChargeRate < 0 -> 0.0
+        attributes.solarChargeRate > 1 -> 1.0
+        else -> attributes.solarChargeRate
+      }
+
     return mapRepository.save(map)
   }
 
@@ -171,6 +178,7 @@ class MapService(private val mapRepository: MapRepository) {
         val height = color.r
         TileData(height, TileType.FUEL_TILE)
       }
+
       else -> {
         throw UnknownTileType("Unknown tile type detected")
       }

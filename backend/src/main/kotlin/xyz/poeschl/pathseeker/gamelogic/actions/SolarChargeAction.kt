@@ -1,17 +1,16 @@
 package xyz.poeschl.pathseeker.gamelogic.actions
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.exceptions.ActionDeniedByConfig
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.gamelogic.actions.RefuelAction.Companion.LOGGER
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import kotlin.math.floor
 
 class SolarChargeAction @JsonCreator constructor() : RobotAction<Int> {
 
   companion object {
-    // How much of the max fuel tank will be recharged by one solar charge turn.
-    const val SOLAR_CHARGE_PERCENTAGE = .02
+    val LOGGER = LoggerFactory.getLogger(SolarChargeAction::class.java)
   }
 
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
@@ -21,7 +20,7 @@ class SolarChargeAction @JsonCreator constructor() : RobotAction<Int> {
   }
 
   override fun action(robot: ActiveRobot, gameHandler: GameHandler): Int {
-    val addedFuel = floor(gameHandler.getRobotMaxFuel() * SOLAR_CHARGE_PERCENTAGE).toInt()
+    val addedFuel = floor(gameHandler.getRobotMaxFuel() * gameHandler.getSolarChargeRate()).toInt()
     robot.fuel = (robot.fuel + addedFuel).coerceAtMost(robot.maxFuel)
     LOGGER.debug("Solar charge robot {} to {}", robot.id, robot.fuel)
 

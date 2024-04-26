@@ -129,4 +129,8 @@ class GameHandler(
   fun isSolarChargePossible(): Boolean {
     return mapHandler.isSolarChargePossible()
   }
+
+  fun getSolarChargeRate(): Double {
+    return mapHandler.getSolarChargeRate()
+  }
 }

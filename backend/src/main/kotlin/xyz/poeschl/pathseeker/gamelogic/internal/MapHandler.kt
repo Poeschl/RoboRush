@@ -2,7 +2,8 @@ package xyz.poeschl.pathseeker.gamelogic.internal
 
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.Position
+import xyz.poeschl.pathseeker.models.Size
 import xyz.poeschl.pathseeker.repositories.Map
 import xyz.poeschl.pathseeker.repositories.Tile
 import kotlin.math.ceil
@@ -80,6 +81,10 @@ class MapHandler {
   }
 
   fun isSolarChargePossible(): Boolean {
-    return currentMap.solarChargeEnabled
+    return currentMap.solarChargeRate > 0
+  }
+
+  fun getSolarChargeRate(): Double {
+    return currentMap.solarChargeRate
   }
 }

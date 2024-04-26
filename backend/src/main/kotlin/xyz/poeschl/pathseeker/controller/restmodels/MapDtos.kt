@@ -4,4 +4,4 @@ data class MapGenerationResult(val warnings: List<String>)
 
 data class MapActiveDto(val active: Boolean)
 
-data class MapAttributeSaveDto(val mapName: String, val maxRobotFuel: Int, val solarChargeEnabled: Boolean)
+data class MapAttributeSaveDto(val mapName: String, val maxRobotFuel: Int, val solarChargeRate: Double)

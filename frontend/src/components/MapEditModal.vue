@@ -29,14 +29,18 @@
         </div>
       </div>
       <div class="field">
-        <span class="label">Is charging over solar power possible</span>
+        <span class="label">Amount of fuel for one solar recharge turn. (Percentage of a robots max fuel)</span>
         <div class="control">
-          <div class="select is-fullwidth">
-            <select v-model="mapAttributes.solarChargeEnabled">
-              <option>true</option>
-              <option>false</option>
-            </select>
-          </div>
+          <input
+            class="input"
+            type="number"
+            step="0.01"
+            placeholder="How much should one turn solar loading gain."
+            min="0"
+            max="1"
+            v-model="mapAttributes.solarChargeRate"
+            :class="{ 'is-danger': mapAttributes.solarChargeRate < 0 || mapAttributes.solarChargeRate > 1 }"
+          />
         </div>
       </div>
     </template>
@@ -65,7 +69,7 @@ const mapAttributes = ref<PlaygroundMapAttributes>({
   id: props.map.id,
   mapName: props.map.mapName,
   maxRobotFuel: props.map.maxRobotFuel,
-  solarChargeEnabled: props.map.solarChargeEnabled,
+  solarChargeRate: props.map.solarChargeRate,
 });
 const saving = ref<boolean>(false);
 
