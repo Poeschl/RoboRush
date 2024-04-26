@@ -9,8 +9,16 @@ export default class Color {
     this.b = b;
   }
 
-  enlighten(amount: number): Color {
-    return new Color(Math.min(this.r + amount, 255), Math.min(this.g + amount, 255), Math.min(this.b + amount, 255));
+  enlightenWithPercentage(percentage: number): Color {
+    const volumeRtoMax = 255 - this.r;
+    const volumeGtoMax = 255 - this.g;
+    const volumeBtoMax = 255 - this.b;
+
+    return new Color(
+      this.r + Math.floor(percentage * volumeRtoMax),
+      this.g + Math.floor(percentage * volumeGtoMax),
+      this.b + Math.floor(percentage * volumeBtoMax),
+    );
   }
 
   toHex() {

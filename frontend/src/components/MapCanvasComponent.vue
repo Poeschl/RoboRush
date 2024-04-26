@@ -14,9 +14,9 @@ import log from "loglevel";
 
 const cellSize = 16;
 const cellBorder = 1;
-const maxHeightColorEnlighten = 250;
 const mapBorderColor = new Color(0, 0, 0);
 const mapColor = new Color(10, 60, 1);
+const robotCircleColor = new Color(30, 30, 30);
 const targetTileBorderColor = new Color(0, 130, 255);
 const startTileBorderColor = new Color(210, 110, 0);
 const specialTileBorderWidth = 4;
@@ -72,21 +72,19 @@ const drawMap = () => {
     updateCanvasSize(props.mapData);
 
     const maxHeight = Math.max(...props.mapData.map((t) => t.height));
-    const steps = maxHeight / maxHeightColorEnlighten;
-    let mapHeightSteps = Math.ceil(steps);
-    if (steps < 1) {
-      mapHeightSteps = Math.ceil(1 / steps);
-    }
-    log.debug("Max height: ", maxHeight, "Step size: ", mapHeightSteps);
+    const minHeight = Math.min(...props.mapData.map((t) => t.height));
+
+    log.debug("Max height: ", maxHeight, "Min height: ", minHeight);
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
     for (const index in props.mapData) {
       const tile: Tile = props.mapData[index];
-      // log.debug(`Draw Tile ${JSON.stringify(tile.position)}`);
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
-      drawTile(drawContext, mapColor.enlighten(tile.height * mapHeightSteps));
+
+      const heightInPercentage = (tile.height - minHeight) / (maxHeight - minHeight);
+      drawTile(drawContext, mapColor.enlightenWithPercentage(heightInPercentage));
 
       if (tile.type == TileType.TARGET_TILE) {
         drawTileBorder(drawContext, targetTileBorderColor);
@@ -145,6 +143,8 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.arc((cellSize + 2 * cellBorder) / 2, (cellSize + 2 * cellBorder) / 2, cellSize / 2 - cellBorder * 2, 0, 360);
   drawContext.fillStyle = color.toHex();
   drawContext.fill();
+  drawContext.fillStyle = robotCircleColor.toHex();
+  drawContext.stroke();
   drawContext.closePath();
 };
 </script>
