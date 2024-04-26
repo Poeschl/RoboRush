@@ -26,6 +26,7 @@ import {
   faRotate,
   faRoute,
   faSatelliteDish,
+  faSolarPanel,
   faSquareCheck,
   faTrash,
   faUpload,
@@ -72,6 +73,7 @@ library.add(
   faMagnifyingGlass,
   faEdit,
   faGasPump,
+  faSolarPanel,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

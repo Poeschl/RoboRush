@@ -42,16 +42,20 @@ class GameHandlerTest {
   private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService, mapService)
 
   @Test
-  fun getHeightMap() {
+  fun getCurrentMap() {
     // WHEN
     val tiles = listWithOne(`$Tile`())
-    every { mapHandler.getHeightMap() } returns tiles
+    val map = a(`$Map`())
+    tiles.forEach { map.addTile(it) }
+
+    every { mapHandler.getCurrentMap() } returns map
 
     // THEN
-    val result = gameHandler.getHeightMap()
+    val result = gameHandler.getCurrentMap()
 
     // VERIFY
-    assertThat(result).isEqualTo(tiles)
+    assertThat(result).isEqualTo(map)
+    assertThat(result.mapData).containsAll(tiles)
   }
 
   @Test

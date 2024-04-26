@@ -46,5 +46,9 @@ export default function useRobotService() {
     return axiosWithAuth.post(`${baseRobotUrl}/action/refuel`);
   };
 
-  return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot, waitOnRobot, refuelRobot };
+  const solarChargeRobot = (): Promise<void> => {
+    return axiosWithAuth.post(`${baseRobotUrl}/action/solarCharge`);
+  };
+
+  return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot, waitOnRobot, refuelRobot, solarChargeRobot };
 }

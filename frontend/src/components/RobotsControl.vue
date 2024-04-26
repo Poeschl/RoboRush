@@ -73,19 +73,39 @@
                 </div>
               </div>
               <div class="column">
-                <button class="button" :disabled="!controlsEnabled || !refuelPossible" :class="{ 'is-selected': highlightRefuel }" @click="refuel()">
+                <button
+                  class="button"
+                  :disabled="!controlsEnabled || !refuelPossible"
+                  :class="{ 'is-selected': highlightRefuel }"
+                  @click="refuel()"
+                  title="Refuel your robot, if standing on a fuel tile"
+                >
                   <div class="icon">
                     <FontAwesomeIcon icon="fa-solid fa-gas-pump" class="fa-lg" />
                   </div>
                 </button>
               </div>
+              <div class="column">
+                <button
+                  class="button"
+                  :disabled="!controlsEnabled || !solarChargePossible"
+                  :class="{ 'is-selected': highlightSolarRecharge }"
+                  @click="solarRecharge()"
+                  title="Solar charge your robot"
+                >
+                  <div class="icon">
+                    <FontAwesomeIcon icon="fa-solid fa-solar-panel" class="fa-lg" />
+                  </div>
+                </button>
+              </div>
             </div>
             <div class="mb-3">
-              <p class="mb-1">Set action:</p>
+              <p class="mb-1">Action in next turn:</p>
               <p v-if="robot?.nextAction?.type == 'move'">Move {{ (robot?.nextAction as Move).direction }}</p>
               <p v-if="robot?.nextAction?.type == 'scan'">Scan with distance {{ (robot?.nextAction as Scan).distance }}</p>
               <p v-if="robot?.nextAction?.type == 'wait'">Wait the next turn</p>
               <p v-if="robot?.nextAction?.type == 'refuel'">Refuel the robot</p>
+              <p v-if="robot?.nextAction?.type == 'solarCharge'">Solar recharge</p>
             </div>
             <div>
               <p class="mb-1">Last result:</p>
@@ -135,6 +155,7 @@ const robot = computed(() => gameStore.userRobot);
 const controlsEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_ACTION);
 const participationEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_PLAYERS);
 const refuelPossible = computed<boolean>(() => gameStore.heightMap.find((tile) => tile.position == robot.value?.position)?.type == TileType.FUEL_TILE);
+const solarChargePossible = computed<boolean>(() => gameStore.isSolarChargePossible());
 
 const highlightUp = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "NORTH"));
 const highlightRight = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "EAST"));
@@ -143,6 +164,7 @@ const highlightLeft = computed<boolean>(() => isMovementInDirection(robot.value?
 const highlightScan = computed<boolean>(() => isType(robot.value?.nextAction, "scan"));
 const highlightWait = computed<boolean>(() => isType(robot.value?.nextAction, "wait"));
 const highlightRefuel = computed<boolean>(() => isType(robot.value?.nextAction, "refuel"));
+const highlightSolarRecharge = computed<boolean>(() => isType(robot.value?.nextAction, "solarCharge"));
 
 const isMovementInDirection = (action: Action | undefined, direction: string) => {
   return action?.type == "move" && (action as Move).direction == direction;
@@ -170,6 +192,10 @@ const wait = () => {
 
 const refuel = () => {
   handleControlInput(gameStore.refuelRobot());
+};
+
+const solarRecharge = () => {
+  handleControlInput(gameStore.solarCharge());
 };
 
 const handleControlInput = (promise: Promise<void>) => {

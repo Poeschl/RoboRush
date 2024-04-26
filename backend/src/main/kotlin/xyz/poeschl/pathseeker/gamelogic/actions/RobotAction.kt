@@ -18,7 +18,8 @@ import xyz.poeschl.pathseeker.models.ActiveRobot
   Type(value = MoveAction::class, name = "move"),
   Type(value = ScanAction::class, name = "scan"),
   Type(value = WaitAction::class, name = "wait"),
-  Type(value = RefuelAction::class, name = "refuel")
+  Type(value = RefuelAction::class, name = "refuel"),
+  Type(value = SolarChargeAction::class, name = "solarCharge")
 )
 interface RobotAction<T> {
 

@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RestController
 import xyz.poeschl.pathseeker.configuration.OpenApiConfig
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.models.Game
-import xyz.poeschl.pathseeker.repositories.Tile
+import xyz.poeschl.pathseeker.repositories.Map
 
 @RestController
 @RequestMapping("/game")
 class GameRestController(private val gameHandler: GameHandler) {
 
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getHeightMap(): List<Tile> {
-    return gameHandler.getHeightMap()
+  fun getMap(): Map {
+    return gameHandler.getCurrentMap()
   }
 
   @Operation(

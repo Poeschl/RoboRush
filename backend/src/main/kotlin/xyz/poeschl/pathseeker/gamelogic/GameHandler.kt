@@ -30,8 +30,8 @@ class GameHandler(
     private val LOGGER = LoggerFactory.getLogger(GameHandler::class.java)
   }
 
-  fun getHeightMap(): List<Tile> {
-    return mapHandler.getHeightMap()
+  fun getCurrentMap(): Map {
+    return mapHandler.getCurrentMap()
   }
 
   fun getTileAtPosition(position: Position): Tile {
@@ -124,5 +124,9 @@ class GameHandler(
 
   fun getRobotMaxFuel(): Int {
     return mapHandler.getRobotMaxFuel()
+  }
+
+  fun isSolarChargePossible(): Boolean {
+    return mapHandler.isSolarChargePossible()
   }
 }

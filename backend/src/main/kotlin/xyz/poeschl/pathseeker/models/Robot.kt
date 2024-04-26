@@ -14,7 +14,11 @@ data class ActiveRobot(
   val color: Color,
   var fuel: Int,
   var position: Position,
-  @Schema(anyOf = [MoveAction::class, ScanAction::class, WaitAction::class, RefuelAction::class]) var nextAction: RobotAction<*>? = null,
+  @Schema(
+    anyOf = [
+      MoveAction::class, ScanAction::class, WaitAction::class, RefuelAction::class, SolarChargeAction::class
+    ]
+  ) var nextAction: RobotAction<*>? = null,
   var lastResult: Any? = null
 ) {
 

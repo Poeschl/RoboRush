@@ -113,4 +113,20 @@ class RobotRestController(private val robotService: RobotService) {
       robotService.scheduleRefuel(it)
     }
   }
+
+  @Operation(
+    summary = """
+      Take the next turn and re-charge a little amount of fuel via solar power. This action is dependent on the map.
+      Can only be called during the 'waiting for input' phase.
+      """,
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/solarCharge")
+  fun solarCharge(auth: Authentication) {
+    LOGGER.debug("Solar charge robot")
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleSolarCharge(it)
+    }
+  }
 }

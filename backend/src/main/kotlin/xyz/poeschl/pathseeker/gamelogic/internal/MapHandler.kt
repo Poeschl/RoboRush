@@ -20,8 +20,8 @@ class MapHandler {
     private const val TILE_SCAN_COST = 0.15
   }
 
-  fun getHeightMap(): List<Tile> {
-    return currentMap.mapData
+  fun getCurrentMap(): Map {
+    return currentMap
   }
 
   fun getStartPositions(): List<Position> {

@@ -2,16 +2,15 @@ import { defineStore } from "pinia";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot } from "@/models/Robot";
-import type { Tile } from "@/models/Map";
+import type { PlaygroundMap, Tile } from "@/models/Map";
 import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
 import type { User } from "@/models/User";
 import { useGameService } from "@/services/GameService";
-import type { Game } from "@/models/Game";
+import type { Error, Game } from "@/models/Game";
 import { GameState } from "@/models/Game";
 import useRobotService from "@/services/RobotService";
 import log from "loglevel";
 import type { AxiosError } from "axios";
-import type { Error } from "@/models/Game";
 
 const robotService = useRobotService();
 
@@ -22,8 +21,14 @@ export const useGameStore = defineStore("gameStore", () => {
   const currentGame = ref<Game>({ currentState: GameState.ENDED });
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
-  const internalHeightMap: Ref<{ tiles: Tile[] }> = ref({ tiles: [] });
-  const heightMap = computed<Tile[]>(() => internalHeightMap.value.tiles);
+  const internalMap = ref<PlaygroundMap>();
+  const heightMap = computed<Tile[]>(() => {
+    if (internalMap.value != null) {
+      return internalMap.value.mapData;
+    } else {
+      return [];
+    }
+  });
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalRobots: Ref<{ robots: PublicRobot[] }> = ref({ robots: [] });
@@ -39,11 +44,10 @@ export const useGameStore = defineStore("gameStore", () => {
       .getMap()
       .then((response) => {
         // Clears whole array
-        internalHeightMap.value.tiles = [];
-        internalHeightMap.value.tiles = response;
+        internalMap.value = response;
       })
       .catch((reason) => {
-        log.error(`Could not get heightmap (${reason})`);
+        log.error(`Could not get map data (${reason})`);
       });
   };
 
@@ -117,6 +121,14 @@ export const useGameStore = defineStore("gameStore", () => {
     return robotService.refuelRobot();
   };
 
+  const isSolarChargePossible = (): boolean => {
+    return internalMap.value?.solarChargeEnabled || false;
+  };
+
+  const solarCharge = (): Promise<void> => {
+    return robotService.solarChargeRobot();
+  };
+
   return {
     heightMap,
     robots,
@@ -133,5 +145,7 @@ export const useGameStore = defineStore("gameStore", () => {
     userRobotActive,
     waitThatRobot,
     refuelRobot,
+    isSolarChargePossible,
+    solarCharge,
   };
 });

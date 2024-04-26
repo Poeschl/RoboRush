@@ -12,3 +12,5 @@ class PositionNotAllowedException(message: String) : ResponseStatusException(Htt
 class RobotNotActiveException(message: String) : ResponseStatusException(HttpStatus.NOT_FOUND, message)
 
 class WrongTileTypeException(message: String) : ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, message)
+
+class ActionDeniedByConfig(message: String) : ResponseStatusException(HttpStatus.PRECONDITION_FAILED, message)
