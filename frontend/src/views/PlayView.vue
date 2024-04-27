@@ -1,6 +1,6 @@
 <template>
   <div class="is-flex is-justify-content-center mb-5">
-    <MapCanvasComponent :robot-data="robots" :map-data="heightMap" />
+    <MapCanvasComponent :robots="robots" :map="currentMap" />
   </div>
   <div class="columns is-multiline is-fullwidth is-justify-content-center data-columns">
     <div class="column">
@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
-import type { Tile } from "@/models/Map";
+import type { PlaygroundMap } from "@/models/Map";
 import { computed } from "vue";
 import type { PublicRobot } from "@/models/Robot";
 import { useGameStore } from "@/stores/GameStore";
@@ -31,7 +31,7 @@ import RobotControl from "@/components/RobotsControl.vue";
 
 const gameStore = useGameStore();
 
-const heightMap = computed<Tile[]>(() => gameStore.heightMap);
+const currentMap = computed<PlaygroundMap | undefined>(() => gameStore.currentMap);
 const robots = computed<PublicRobot[]>(() => gameStore.robots);
 </script>
 
