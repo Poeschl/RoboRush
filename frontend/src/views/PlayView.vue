@@ -1,6 +1,6 @@
 <template>
   <div class="is-flex is-justify-content-center mb-5">
-    <MapCanvasComponent :robots="robots" :map="currentMap" />
+    <MapCanvasComponent :robots="robots" :map="currentMap" style="width: 600px" />
   </div>
   <div class="columns is-multiline is-fullwidth is-justify-content-center data-columns">
     <div class="column">

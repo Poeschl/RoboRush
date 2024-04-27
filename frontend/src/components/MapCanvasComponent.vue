@@ -149,16 +149,16 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
 };
 </script>
 
-<style scoped>
-canvas {
-  display: block;
-  grid-column-start: 1;
-  grid-row-start: 1;
-}
-
+<style scoped lang="scss">
 .map-container {
-  display: grid;
-  width: fit-content;
-  height: fit-content;
+  position: relative;
+  aspect-ratio: 1/1;
+  width: 100%;
+
+  canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
