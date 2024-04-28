@@ -154,7 +154,9 @@ const scanNumber = ref<number>(0);
 const robot = computed(() => gameStore.userRobot);
 const controlsEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_ACTION);
 const participationEnabled = computed<boolean>(() => gameStore.currentGame.currentState == GameState.WAIT_FOR_PLAYERS);
-const refuelPossible = computed<boolean>(() => gameStore.heightMap.find((tile) => tile.position == robot.value?.position)?.type == TileType.FUEL_TILE);
+const refuelPossible = computed<boolean>(
+  () => gameStore.currentMap?.mapData.find((tile) => tile.position == robot.value?.position)?.type == TileType.FUEL_TILE,
+);
 const solarChargePossible = computed<boolean>(() => gameStore.isSolarChargePossible());
 
 const highlightUp = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "NORTH"));

@@ -9,7 +9,7 @@
 
     <template #content>
       <div class="is-flex is-justify-content-center">
-        <MapCanvasComponent :map-data="map.mapData" :robot-data="[]" />
+        <MapCanvasComponent :map="map" :robots="[]" />
       </div>
     </template>
     <template #footer>

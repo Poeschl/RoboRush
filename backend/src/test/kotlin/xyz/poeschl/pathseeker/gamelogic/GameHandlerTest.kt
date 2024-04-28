@@ -220,7 +220,7 @@ class GameHandlerTest {
     val startPosition = Position(0, 2)
     val registeredRobot = a(`$ActiveRobot`())
     every { mapHandler.getStartPositions() } returns possibleStart
-    every { robotHandler.getFirstCurrentlyFreePosition(possibleStart) } returns startPosition
+    every { robotHandler.getACurrentlyFreePosition(possibleStart) } returns startPosition
     every { robotHandler.registerRobotForGame(1, startPosition) } returns registeredRobot
 
     // THEN
@@ -237,7 +237,7 @@ class GameHandlerTest {
     val possibleStart = listOf(Position(0, 0))
     val startPosition = Position(0, 2)
     every { mapHandler.getStartPositions() } returns possibleStart
-    every { robotHandler.getFirstCurrentlyFreePosition(possibleStart) } returns null
+    every { robotHandler.getACurrentlyFreePosition(possibleStart) } returns null
 
     // THEN
     assertThrows<PositionNotAllowedException> {

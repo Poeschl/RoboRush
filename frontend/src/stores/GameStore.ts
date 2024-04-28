@@ -20,15 +20,7 @@ export const useGameStore = defineStore("gameStore", () => {
 
   const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargeEnabled: false });
 
-  // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalMap = ref<PlaygroundMap>();
-  const heightMap = computed<Tile[]>(() => {
-    if (internalMap.value != null) {
-      return internalMap.value.mapData;
-    } else {
-      return [];
-    }
-  });
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalRobots: Ref<{ robots: PublicRobot[] }> = ref({ robots: [] });
@@ -97,7 +89,13 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const updateGameStateTo = (gameState: GameState) => {
+    const previousGameState = currentGame.value.currentState;
     currentGame.value.currentState = gameState;
+
+    if (previousGameState == GameState.PREPARE && gameState === GameState.WAIT_FOR_PLAYERS) {
+      // Update map data after game preparations
+      updateMap();
+    }
   };
 
   const registerRobotOnGame = (): Promise<void> => {
@@ -131,7 +129,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   return {
-    heightMap,
+    currentMap: internalMap,
     robots,
     userRobot,
     updateMap,

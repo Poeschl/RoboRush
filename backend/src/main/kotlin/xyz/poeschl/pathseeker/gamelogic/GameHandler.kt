@@ -88,7 +88,7 @@ class GameHandler(
 
   fun registerRobotForNextGame(robotId: Long) {
     val startPositions = mapHandler.getStartPositions()
-    val startPosition = robotHandler.getFirstCurrentlyFreePosition(startPositions)
+    val startPosition = robotHandler.getACurrentlyFreePosition(startPositions)
 
     if (startPosition != null) {
       val activeRobot = robotHandler.registerRobotForGame(robotId, startPosition)

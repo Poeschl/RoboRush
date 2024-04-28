@@ -94,9 +94,9 @@ class RobotHandler(
     return activeRobots.toSet()
   }
 
-  fun getFirstCurrentlyFreePosition(positions: List<Position>): Position? {
+  fun getACurrentlyFreePosition(positions: List<Position>): Position? {
     val occupiedPositions = activeRobots.map { it.position }
-    return positions.firstOrNull { !occupiedPositions.contains(it) }
+    return positions.filter { !occupiedPositions.contains(it) }.randomOrNull()
   }
 
   fun isPositionCurrentFree(position: Position): Boolean {

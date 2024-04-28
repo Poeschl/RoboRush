@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Position, type Tile, TileType } from "@/models/Map";
+import { type PlaygroundMap, type Tile, TileType } from "@/models/Map";
 import type { PublicRobot } from "@/models/Robot";
 import { computed, onMounted, ref, watch } from "vue";
 import Color from "@/models/Color";
@@ -23,8 +23,8 @@ const fuelTileBorderColor = new Color(210, 0, 130);
 const specialTileBorderWidth = 4;
 
 const props = defineProps<{
-  mapData: Tile[];
-  robotData: PublicRobot[];
+  map: PlaygroundMap | undefined;
+  robots: PublicRobot[];
 }>();
 
 const mapCanvas = ref<HTMLCanvasElement>();
@@ -33,29 +33,22 @@ const robotCanvas = ref<HTMLCanvasElement>();
 const robotDrawContext = computed(() => robotCanvas.value?.getContext("2d"));
 const mapWidth = ref<number>(800);
 const mapHeight = ref<number>(800);
+const heightMap = computed<Tile[]>(() => {
+  if (props.map != undefined) {
+    return props.map.mapData;
+  } else {
+    return [];
+  }
+});
 
 onMounted(() => {
   drawMap();
   drawRobots();
 });
 
-const updateCanvasSize = (data: Tile[]) => {
-  let maxX = 0;
-  let maxY = 0;
-  data
-    .map((tile) => tile.position)
-    .forEach((position: Position) => {
-      maxX = Math.max(maxX, position.x);
-      maxY = Math.max(maxY, position.y);
-    });
-  // Adjust to the zero-based map
-  maxX += 1;
-  maxY += 1;
-
-  // log.debug(`Max X: ${maxX} Max Y: ${maxY}`);
-
-  mapWidth.value = maxX * (cellSize + 2 * cellBorder);
-  mapHeight.value = maxY * (cellSize + 2 * cellBorder);
+const updateCanvasSize = (map: PlaygroundMap) => {
+  mapWidth.value = map.size.width * (cellSize + 2 * cellBorder);
+  mapHeight.value = map.size.height * (cellSize + 2 * cellBorder);
 
   if (mapCanvas.value && mapDrawContext.value && robotCanvas.value && robotDrawContext.value) {
     mapDrawContext.value.canvas.width = mapWidth.value;
@@ -66,21 +59,22 @@ const updateCanvasSize = (data: Tile[]) => {
 };
 
 const drawMap = () => {
-  if (mapCanvas.value && mapDrawContext.value) {
+  const tiles = heightMap.value;
+  if (mapCanvas.value && mapDrawContext.value && tiles.length > 0) {
     const drawContext = mapDrawContext.value;
     log.debug("Draw map");
 
-    updateCanvasSize(props.mapData);
+    updateCanvasSize(props.map!!);
 
-    const maxHeight = Math.max(...props.mapData.map((t) => t.height));
-    const minHeight = Math.min(...props.mapData.map((t) => t.height));
+    const maxHeight = Math.max(...tiles.map((t) => t.height));
+    const minHeight = Math.min(...tiles.map((t) => t.height));
 
     log.debug("Max height: ", maxHeight, "Min height: ", minHeight);
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in props.mapData) {
-      const tile: Tile = props.mapData[index];
+    for (const index in tiles) {
+      const tile: Tile = tiles[index];
       drawContext.save();
       drawContext.translate(tile.position.x * (cellSize + 2 * cellBorder), tile.position.y * (cellSize + 2 * cellBorder));
 
@@ -99,10 +93,13 @@ const drawMap = () => {
     }
   }
 };
-watch(props.mapData, () => {
-  drawMap();
-  drawRobots();
-});
+watch(
+  () => props.map,
+  () => {
+    drawMap();
+    drawRobots();
+  },
+);
 
 const drawRobots = () => {
   if (robotCanvas.value && robotDrawContext.value) {
@@ -111,8 +108,8 @@ const drawRobots = () => {
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in props.robotData) {
-      const robot = props.robotData[index];
+    for (const index in props.robots) {
+      const robot = props.robots[index];
       // log.debug(`Draw robot ${JSON.stringify(robot)}`);
       drawContext.save();
       drawContext.translate(robot.position.x * (cellSize + 2 * cellBorder), robot.position.y * (cellSize + 2 * cellBorder));
@@ -121,7 +118,7 @@ const drawRobots = () => {
     }
   }
 };
-watch(props.robotData, drawRobots);
+watch(props.robots, drawRobots);
 
 const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.fillStyle = mapBorderColor.toHex();
@@ -152,16 +149,16 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
 };
 </script>
 
-<style scoped>
-canvas {
-  display: block;
-  grid-column-start: 1;
-  grid-row-start: 1;
-}
-
+<style scoped lang="scss">
 .map-container {
-  display: grid;
-  width: fit-content;
-  height: fit-content;
+  position: relative;
+  aspect-ratio: 1/1;
+  width: 100%;
+
+  canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

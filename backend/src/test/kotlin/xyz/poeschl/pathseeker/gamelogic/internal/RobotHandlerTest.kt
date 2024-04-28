@@ -291,27 +291,27 @@ class RobotHandlerTest {
   }
 
   @Test
-  fun getFirstCurrentlyFreePosition() {
+  fun getACurrentlyFreePosition() {
     // WHEN
     val existingRobot = createSingleActiveRobot()
     val freePosition = Position(1, 2)
     val positionsToValidate = listOf(existingRobot.position, freePosition)
 
     // THEN
-    val result = robotHandler.getFirstCurrentlyFreePosition(positionsToValidate)
+    val result = robotHandler.getACurrentlyFreePosition(positionsToValidate)
 
     // VERIFY
     assertThat(result).isEqualTo(freePosition)
   }
 
   @Test
-  fun getFirstCurrentlyFreePosition_noneFound() {
+  fun getACurrentlyFreePosition_noneFound() {
     // WHEN
     val existingRobot = createSingleActiveRobot()
     val positionsToValidate = listOf(existingRobot.position)
 
     // THEN
-    val result = robotHandler.getFirstCurrentlyFreePosition(positionsToValidate)
+    val result = robotHandler.getACurrentlyFreePosition(positionsToValidate)
 
     // VERIFY
     assertThat(result).isNull()
