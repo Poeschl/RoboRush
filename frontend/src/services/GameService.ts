@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Game } from "@/models/Game";
-import type { Tile } from "@/models/Map";
+import type { PlaygroundMap, Tile } from "@/models/Map";
 
 export function useGameService() {
   const baseGameUrl = "/api/game";
@@ -9,7 +9,7 @@ export function useGameService() {
     return axios.get(`${baseGameUrl}`).then((response) => response.data);
   };
 
-  const getMap = (): Promise<Tile[]> => {
+  const getMap = (): Promise<PlaygroundMap> => {
     return axios.get(`${baseGameUrl}/map`).then((response) => response.data);
   };
 

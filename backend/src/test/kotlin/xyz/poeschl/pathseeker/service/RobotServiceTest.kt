@@ -7,6 +7,7 @@ import org.junit.jupiter.api.assertThrows
 import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
 import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
+import xyz.poeschl.pathseeker.gamelogic.actions.RefuelAction
 import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
 import xyz.poeschl.pathseeker.gamelogic.actions.WaitAction
 import xyz.poeschl.pathseeker.models.*
@@ -189,6 +190,20 @@ class RobotServiceTest {
     // VERIFY
     verify {
       gameHandler.nextActionForRobot(robotId, WaitAction())
+    }
+  }
+
+  @Test
+  fun scheduleRefuel() {
+    // WHEN
+    val robotId = 1L
+
+    // THEN
+    robotService.scheduleRefuel(robotId)
+
+    // VERIFY
+    verify {
+      gameHandler.nextActionForRobot(robotId, RefuelAction())
     }
   }
 }

@@ -27,6 +27,7 @@ import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Ga
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.pathseeker.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
+import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Boolean`
 import xyz.poeschl.pathseeker.test.utils.builder.NativeTypes.Companion.`$Int`
 
 class GameHandlerTest {
@@ -41,16 +42,20 @@ class GameHandlerTest {
   private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService, mapService)
 
   @Test
-  fun getHeightMap() {
+  fun getCurrentMap() {
     // WHEN
     val tiles = listWithOne(`$Tile`())
-    every { mapHandler.getHeightMap() } returns tiles
+    val map = a(`$Map`())
+    tiles.forEach { map.addTile(it) }
+
+    every { mapHandler.getCurrentMap() } returns map
 
     // THEN
-    val result = gameHandler.getHeightMap()
+    val result = gameHandler.getCurrentMap()
 
     // VERIFY
-    assertThat(result).isEqualTo(tiles)
+    assertThat(result).isEqualTo(map)
+    assertThat(result.mapData).containsAll(tiles)
   }
 
   @Test
@@ -263,8 +268,11 @@ class GameHandlerTest {
     // WHEN
     val state = a(`$GameState`())
     val target = a(`$Position`())
+    val chargingPossible = a(`$Boolean`())
+
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
+    every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
 
     // THEN
@@ -273,6 +281,7 @@ class GameHandlerTest {
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
     assertThat(game.targetPosition).isEqualTo(target)
+    assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
   }
 
   @Test
@@ -280,8 +289,11 @@ class GameHandlerTest {
     // WHEN
     val state = a(`$GameState`())
     val target = a(`$Position`())
+    val chargingPossible = a(`$Boolean`())
+
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
+    every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
 
     // THEN
@@ -290,6 +302,7 @@ class GameHandlerTest {
     // VERIFY
     assertThat(game.currentState).isEqualTo(state)
     assertThat(game.targetPosition).isNull()
+    assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
   }
 
   @Test

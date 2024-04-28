@@ -60,7 +60,8 @@ class PositionListConverter : AttributeConverter<List<Position>, String> {
 enum class TileType {
   DEFAULT_TILE,
   START_TILE,
-  TARGET_TILE
+  TARGET_TILE,
+  FUEL_TILE
 }
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)

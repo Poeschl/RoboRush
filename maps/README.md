@@ -18,6 +18,9 @@ The amount of spawn pixels determines also the max player count for a map.
 To set the __single target position__ the `red` value of the pixel needs to be higher as `green` and `blue`.
 The height is specified by the remaining colors.
 
+For tile which can be used to __refuel__ the robot the `blue` value of the pixel needs to be higher then `red` and `green`.
+The height is specified by the remaining colors.
+
 > [!WARNING]
 > Neither __spawn area__ nor the __single target position__ can be placed at height 255!
 

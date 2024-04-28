@@ -8,6 +8,7 @@ CREATE TABLE map
   target_position          VARCHAR(9)                                            NOT NULL,
   active                   BOOLEAN       DEFAULT FALSE                           NOT NULL,
   max_robot_fuel           INTEGER                                               NOT NULL,
+  solar_charge_rate        FLOAT                                                 NOT NULL,
   PRIMARY KEY (id)
 );
 

@@ -30,8 +30,12 @@ class GameHandler(
     private val LOGGER = LoggerFactory.getLogger(GameHandler::class.java)
   }
 
-  fun getHeightMap(): List<Tile> {
-    return mapHandler.getHeightMap()
+  fun getCurrentMap(): Map {
+    return mapHandler.getCurrentMap()
+  }
+
+  fun getTileAtPosition(position: Position): Tile {
+    return mapHandler.getTileAtPosition(position)
   }
 
   /**
@@ -112,8 +116,21 @@ class GameHandler(
 
   fun getPublicGameInfo(): Game {
     return Game(
-      gameStateMachine.getCurrentState(),
-      if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null
+      currentState = gameStateMachine.getCurrentState(),
+      targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
+      solarChargePossible = mapHandler.isSolarChargePossible()
     )
+  }
+
+  fun getRobotMaxFuel(): Int {
+    return mapHandler.getRobotMaxFuel()
+  }
+
+  fun isSolarChargePossible(): Boolean {
+    return mapHandler.isSolarChargePossible()
+  }
+
+  fun getSolarChargeRate(): Double {
+    return mapHandler.getSolarChargeRate()
   }
 }

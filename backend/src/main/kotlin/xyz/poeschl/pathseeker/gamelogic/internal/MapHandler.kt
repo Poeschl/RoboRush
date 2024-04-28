@@ -2,7 +2,8 @@ package xyz.poeschl.pathseeker.gamelogic.internal
 
 import org.slf4j.LoggerFactory
 import xyz.poeschl.pathseeker.configuration.GameLogic
-import xyz.poeschl.pathseeker.models.*
+import xyz.poeschl.pathseeker.models.Position
+import xyz.poeschl.pathseeker.models.Size
 import xyz.poeschl.pathseeker.repositories.Map
 import xyz.poeschl.pathseeker.repositories.Tile
 import kotlin.math.ceil
@@ -20,8 +21,8 @@ class MapHandler {
     private const val TILE_SCAN_COST = 0.15
   }
 
-  fun getHeightMap(): List<Tile> {
-    return currentMap.mapData
+  fun getCurrentMap(): Map {
+    return currentMap
   }
 
   fun getStartPositions(): List<Position> {
@@ -30,6 +31,10 @@ class MapHandler {
 
   fun getTargetPosition(): Position {
     return currentMap.targetPosition
+  }
+
+  fun getRobotMaxFuel(): Int {
+    return currentMap.maxRobotFuel
   }
 
   fun loadNewMap(map: Map) {
@@ -73,5 +78,13 @@ class MapHandler {
       }
     }
     return Pair(list, ceil(usedFuel).toInt())
+  }
+
+  fun isSolarChargePossible(): Boolean {
+    return currentMap.solarChargeRate > 0
+  }
+
+  fun getSolarChargeRate(): Double {
+    return currentMap.solarChargeRate
   }
 }

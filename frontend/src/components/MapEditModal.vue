@@ -28,6 +28,21 @@
           />
         </div>
       </div>
+      <div class="field">
+        <span class="label">Amount of fuel for one solar recharge turn. (Percentage of a robots max fuel)</span>
+        <div class="control">
+          <input
+            class="input"
+            type="number"
+            step="0.01"
+            placeholder="How much should one turn solar loading gain."
+            min="0"
+            max="1"
+            v-model="mapAttributes.solarChargeRate"
+            :class="{ 'is-danger': mapAttributes.solarChargeRate < 0 || mapAttributes.solarChargeRate > 1 }"
+          />
+        </div>
+      </div>
     </template>
     <template #footer>
       <button class="button is-primary mr-2" @click="save" :class="{ 'is-loading': saving }">Save</button>
@@ -50,7 +65,12 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
-const mapAttributes = ref<PlaygroundMapAttributes>({ id: props.map.id, mapName: props.map.mapName, maxRobotFuel: props.map.maxRobotFuel });
+const mapAttributes = ref<PlaygroundMapAttributes>({
+  id: props.map.id,
+  mapName: props.map.mapName,
+  maxRobotFuel: props.map.maxRobotFuel,
+  solarChargeRate: props.map.solarChargeRate,
+});
 const saving = ref<boolean>(false);
 
 const save = () => {

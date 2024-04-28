@@ -100,4 +100,33 @@ class RobotRestController(private val robotService: RobotService) {
       robotService.scheduleWait(it)
     }
   }
+
+  @Operation(
+    summary = "Refuel your robot, if its standing on a fuel tile. Can only be called during the 'waiting for input' phase and while standing on a fuel tile.",
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/refuel")
+  fun refuel(auth: Authentication) {
+    LOGGER.debug("Refuel robot")
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleRefuel(it)
+    }
+  }
+
+  @Operation(
+    summary = """
+      Take the next turn and re-charge a little amount of fuel via solar power. This action is dependent on the map.
+      Can only be called during the 'waiting for input' phase.
+      """,
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/solarCharge")
+  fun solarCharge(auth: Authentication) {
+    LOGGER.debug("Solar charge robot")
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleSolarCharge(it)
+    }
+  }
 }

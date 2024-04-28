@@ -6,6 +6,7 @@ export interface PlaygroundMap {
   targetPosition: Position;
   active: boolean;
   maxRobotFuel: number;
+  solarChargeRate: number;
   mapData: Tile[];
 }
 
@@ -13,6 +14,7 @@ export interface PlaygroundMapAttributes {
   id: number;
   mapName: string;
   maxRobotFuel: number;
+  solarChargeRate: number;
 }
 
 export interface Size {
@@ -35,4 +37,5 @@ export enum TileType {
   DEFAULT_TILE = "DEFAULT_TILE",
   START_TILE = "START_TILE",
   TARGET_TILE = "TARGET_TILE",
+  FUEL_TILE = "FUEL_TILE",
 }

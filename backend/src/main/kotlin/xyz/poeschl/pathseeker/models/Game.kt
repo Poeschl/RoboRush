@@ -5,4 +5,4 @@ import xyz.poeschl.pathseeker.configuration.Builder
 import xyz.poeschl.pathseeker.gamelogic.GameState
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
-data class Game(val currentState: GameState, val targetPosition: Position?)
+data class Game(val currentState: GameState, val targetPosition: Position?, val solarChargePossible: Boolean)

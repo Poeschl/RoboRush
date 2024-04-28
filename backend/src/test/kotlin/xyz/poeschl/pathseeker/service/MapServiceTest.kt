@@ -97,4 +97,26 @@ class MapServiceTest {
       .isInstanceOf(NoTargetPosition::class.java)
       .hasMessageContaining("one target position is required")
   }
+
+  @Test
+  fun newMapFromHeightMap_fuelTile() {
+    // WHEN
+    val inputImageStream = this::class.java.getResourceAsStream("/maps/with-fuel.png")!!
+    val name = a(`$String`("name"))
+
+    // THEN
+    val genResult = mapService.createNewMapFromHeightMap(name, inputImageStream)
+
+    // VERIFY
+    assertThat(genResult.errors).isEmpty()
+    assertThat(genResult.map.size).isEqualTo(Size(2, 2))
+    assertThat(genResult.map.mapData).isEqualTo(
+      listOf(
+        Tile(null, Position(0, 0), 128, TileType.START_TILE),
+        Tile(null, Position(1, 0), 128, TileType.FUEL_TILE),
+        Tile(null, Position(0, 1), 200, TileType.DEFAULT_TILE),
+        Tile(null, Position(1, 1), 128, TileType.TARGET_TILE)
+      )
+    )
+  }
 }

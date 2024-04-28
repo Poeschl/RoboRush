@@ -26,7 +26,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <progress class="progress fuel is-primary" :value="robot.fuel" max="100" :title="robot.fuel + ' / ' + robot.maxFuel" />
+              <progress class="progress fuel is-primary" :value="robot.fuel" :max="robot.maxFuel" :title="robot.fuel + ' / ' + robot.maxFuel" />
             </div>
           </div>
         </div>

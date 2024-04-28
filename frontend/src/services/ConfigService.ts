@@ -34,9 +34,7 @@ export default function useConfigService() {
   };
 
   const setMapAttributes = (mapId: number, attributes: PlaygroundMapAttributes): Promise<PlaygroundMap> => {
-    return axiosWithAuth
-      .post(`${baseConfigUrl}/map/${mapId}`, { mapName: attributes.mapName, maxRobotFuel: attributes.maxRobotFuel })
-      .then((response) => response.data);
+    return axiosWithAuth.post(`${baseConfigUrl}/map/${mapId}`, attributes).then((response) => response.data);
   };
 
   const removeMap = (mapId: number): Promise<void> => {

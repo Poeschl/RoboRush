@@ -3,9 +3,7 @@ package xyz.poeschl.pathseeker.service
 import org.springframework.stereotype.Service
 import xyz.poeschl.pathseeker.exceptions.RobotNotActiveException
 import xyz.poeschl.pathseeker.gamelogic.GameHandler
-import xyz.poeschl.pathseeker.gamelogic.actions.MoveAction
-import xyz.poeschl.pathseeker.gamelogic.actions.ScanAction
-import xyz.poeschl.pathseeker.gamelogic.actions.WaitAction
+import xyz.poeschl.pathseeker.gamelogic.actions.*
 import xyz.poeschl.pathseeker.models.ActiveRobot
 import xyz.poeschl.pathseeker.models.Direction
 import xyz.poeschl.pathseeker.models.PublicRobot
@@ -56,5 +54,13 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
 
   fun scheduleWait(robotId: Long) {
     gameHandler.nextActionForRobot(robotId, WaitAction())
+  }
+
+  fun scheduleRefuel(robotId: Long) {
+    gameHandler.nextActionForRobot(robotId, RefuelAction())
+  }
+
+  fun scheduleSolarCharge(robotId: Long) {
+    gameHandler.nextActionForRobot(robotId, SolarChargeAction())
   }
 }

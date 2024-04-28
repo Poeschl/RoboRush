@@ -1,5 +1,5 @@
-INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active, max_robot_fuel)
-VALUES  (1, 'icon_map', '32x32', '4,11|5,11|6,11|7,11|8,11|9,11|10,11|4,12|5,12|6,12|7,12|8,12|9,12|10,12', '27,5', true, 300);
+INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active, max_robot_fuel, solar_charge_rate)
+VALUES  (1, 'icon_map', '32x32', '4,11|5,11|6,11|7,11|8,11|9,11|10,11|4,12|5,12|6,12|7,12|8,12|9,12|10,12', '27,5', true, 300, 0.02);
 
 ALTER SEQUENCE map_id_seq RESTART WITH 2;
 
@@ -501,7 +501,7 @@ VALUES  (1, '0,0', 59, 'DEFAULT_TILE'),
         (1, '12,15', 212, 'DEFAULT_TILE'),
         (1, '13,15', 212, 'DEFAULT_TILE'),
         (1, '14,15', 59, 'DEFAULT_TILE'),
-        (1, '15,15', 212, 'DEFAULT_TILE'),
+        (1, '15,15', 212, 'FUEL_TILE'),
         (1, '16,15', 212, 'DEFAULT_TILE'),
         (1, '17,15', 212, 'DEFAULT_TILE'),
         (1, '18,15', 126, 'DEFAULT_TILE'),
@@ -809,7 +809,7 @@ VALUES  (1, '0,0', 59, 'DEFAULT_TILE'),
         (1, '0,25', 59, 'DEFAULT_TILE'),
         (1, '1,25', 159, 'DEFAULT_TILE'),
         (1, '2,25', 212, 'DEFAULT_TILE'),
-        (1, '3,25', 212, 'DEFAULT_TILE'),
+        (1, '3,25', 212, 'FUEL_TILE'),
         (1, '4,25', 212, 'DEFAULT_TILE'),
         (1, '5,25', 212, 'DEFAULT_TILE'),
         (1, '6,25', 212, 'DEFAULT_TILE'),
@@ -830,7 +830,7 @@ VALUES  (1, '0,0', 59, 'DEFAULT_TILE'),
         (1, '21,25', 212, 'DEFAULT_TILE'),
         (1, '22,25', 212, 'DEFAULT_TILE'),
         (1, '23,25', 212, 'DEFAULT_TILE'),
-        (1, '24,25', 212, 'DEFAULT_TILE'),
+        (1, '24,25', 212, 'FUEL_TILE'),
         (1, '25,25', 212, 'DEFAULT_TILE'),
         (1, '26,25', 212, 'DEFAULT_TILE'),
         (1, '27,25', 59, 'DEFAULT_TILE'),
