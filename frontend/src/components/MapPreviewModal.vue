@@ -1,5 +1,5 @@
 <template>
-  <BaseModal>
+  <BaseModalWithActions>
     <template #header>
       <h4 class="modal-card-title is-size-4">
         <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
@@ -12,17 +12,47 @@
         <MapCanvasComponent :map="map" :style="{ width: mapWidth }" />
       </div>
     </template>
+    <template #actions>
+      <div class="columns is-align-items-center">
+        <div class="column">
+          <button
+            class="button"
+            :class="{ 'is-info': pathDrawMode }"
+            @click="pathDrawMode = !pathDrawMode"
+            title="If active click on the map to draw a path from clicked tile to clicked tile. Attributes of the path are shown on the right"
+          >
+            <div class="icon mr-1">
+              <FontAwesomeIcon icon="fa-solid fa-square-check" class="fa-lg" v-if="pathDrawMode" />
+              <FontAwesomeIcon icon="fa-regular fa-square" class="fa-lg" v-else />
+            </div>
+            Draw Path
+          </button>
+        </div>
+        <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+          <div class="has-text-centered">Required fuel</div>
+          <div>{{ requiredFuel }}</div>
+        </div>
+        <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+          <div class="has-text-centered">Minimal turns</div>
+          <div>{{ minimalTurns }}</div>
+        </div>
+      </div>
+    </template>
     <template #footer>
       <button class="button" @click="$emit('close')">Close</button>
     </template>
-  </BaseModal>
+  </BaseModalWithActions>
 </template>
 
 <script setup lang="ts">
-import BaseModal from "@/components/templates/BaseModal.vue";
 import type { PlaygroundMap } from "@/models/Map";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import BaseModalWithActions from "@/components/templates/BaseModalWithActions.vue";
+
+const pathDrawMode = ref<boolean>(false);
+const requiredFuel = computed<number>(() => 123);
+const minimalTurns = computed<number>(() => 456);
 
 const props = defineProps<{
   map: PlaygroundMap;

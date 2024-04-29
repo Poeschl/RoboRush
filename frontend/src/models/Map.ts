@@ -39,3 +39,7 @@ export enum TileType {
   TARGET_TILE = "TARGET_TILE",
   FUEL_TILE = "FUEL_TILE",
 }
+
+export interface Path {
+  points: Position[];
+}
