@@ -76,7 +76,7 @@ export const useGameStore = defineStore("gameStore", () => {
 
   const updateRobot = (updatedRobot: PublicRobot) => {
     const index = internalRobots.value.robots.findIndex((robot: PublicRobot) => robot.id == updatedRobot.id);
-    log.debug(`Update robot with index ${index}`);
+    //log.debug(`Update robot with index ${index}`);
     internalRobots.value.robots[index] = updatedRobot;
   };
 

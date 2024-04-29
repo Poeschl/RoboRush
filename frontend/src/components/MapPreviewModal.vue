@@ -9,7 +9,7 @@
 
     <template #content>
       <div class="is-flex is-justify-content-center">
-        <MapCanvasComponent :map="map" :robots="[]" />
+        <MapCanvasComponent :map="map" :style="{ width: mapWidth }" />
       </div>
     </template>
     <template #footer>
@@ -20,9 +20,9 @@
 
 <script setup lang="ts">
 import BaseModal from "@/components/templates/BaseModal.vue";
-import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
+import type { PlaygroundMap } from "@/models/Map";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
-import { ref } from "vue";
+import { computed } from "vue";
 
 const props = defineProps<{
   map: PlaygroundMap;
@@ -31,6 +31,16 @@ const props = defineProps<{
 defineEmits<{
   (e: "close"): void;
 }>();
+
+const mapWidth = computed(() => {
+  if (props.map && props.map.size.width <= 50) {
+    return "40rem";
+  } else if (props.map.size.width < 100) {
+    return "70rem";
+  } else {
+    return "110rem";
+  }
+});
 </script>
 
 <style scoped lang="scss">

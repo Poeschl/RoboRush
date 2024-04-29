@@ -1,7 +1,7 @@
 <template>
   <div class="has-background-black map-container">
     <canvas id="worldmap" ref="mapCanvas" />
-    <canvas id="robots" ref="robotCanvas" />
+    <canvas id="robots" ref="robotCanvas" v-if="robots" />
   </div>
 </template>
 
@@ -24,7 +24,7 @@ const specialTileBorderWidth = 4;
 
 const props = defineProps<{
   map: PlaygroundMap | undefined;
-  robots: PublicRobot[];
+  robots?: PublicRobot[] | undefined;
 }>();
 
 const mapCanvas = ref<HTMLCanvasElement>();
@@ -42,19 +42,31 @@ const heightMap = computed<Tile[]>(() => {
 });
 
 onMounted(() => {
-  drawMap();
-  drawRobots();
+  redraw();
+  if (props.robots) {
+    watch(props.robots, drawRobots);
+  }
 });
 
-const updateCanvasSize = (map: PlaygroundMap) => {
-  mapWidth.value = map.size.width * (cellSize + 2 * cellBorder);
-  mapHeight.value = map.size.height * (cellSize + 2 * cellBorder);
+const redraw = () => {
+  updateCanvasSize();
+  drawMap();
+  drawRobots();
+};
 
-  if (mapCanvas.value && mapDrawContext.value && robotCanvas.value && robotDrawContext.value) {
-    mapDrawContext.value.canvas.width = mapWidth.value;
-    mapDrawContext.value.canvas.height = mapHeight.value;
-    robotDrawContext.value.canvas.width = mapWidth.value;
-    robotDrawContext.value.canvas.height = mapHeight.value;
+const updateCanvasSize = () => {
+  if (props.map) {
+    mapWidth.value = props.map.size.width * (cellSize + 2 * cellBorder);
+    mapHeight.value = props.map.size.height * (cellSize + 2 * cellBorder);
+
+    if (mapCanvas.value && mapDrawContext.value) {
+      mapDrawContext.value.canvas.width = mapWidth.value;
+      mapDrawContext.value.canvas.height = mapHeight.value;
+    }
+    if (robotCanvas.value && robotDrawContext.value) {
+      robotDrawContext.value.canvas.width = mapWidth.value;
+      robotDrawContext.value.canvas.height = mapHeight.value;
+    }
   }
 };
 
@@ -62,9 +74,7 @@ const drawMap = () => {
   const tiles = heightMap.value;
   if (mapCanvas.value && mapDrawContext.value && tiles.length > 0) {
     const drawContext = mapDrawContext.value;
-    log.debug("Draw map");
-
-    updateCanvasSize(props.map!!);
+    log.debug("Draw terrain");
 
     const maxHeight = Math.max(...tiles.map((t) => t.height));
     const minHeight = Math.min(...tiles.map((t) => t.height));
@@ -96,13 +106,12 @@ const drawMap = () => {
 watch(
   () => props.map,
   () => {
-    drawMap();
-    drawRobots();
+    redraw();
   },
 );
 
 const drawRobots = () => {
-  if (robotCanvas.value && robotDrawContext.value) {
+  if (robotCanvas.value && robotDrawContext.value && props.robots) {
     const drawContext = robotDrawContext.value;
     log.debug("Draw robots");
 
@@ -118,7 +127,6 @@ const drawRobots = () => {
     }
   }
 };
-watch(props.robots, drawRobots);
 
 const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.fillStyle = mapBorderColor.toHex();
@@ -153,7 +161,9 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
 .map-container {
   position: relative;
   aspect-ratio: 1/1;
-  width: 100%;
+  min-width: 600px;
+  width: auto;
+  height: auto;
 
   canvas {
     position: absolute;
