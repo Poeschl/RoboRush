@@ -9,7 +9,20 @@
 
     <template #content>
       <div class="is-flex is-justify-content-center">
-        <MapCanvasComponent :map="map" :style="{ width: mapWidth }" :drawable-path="pathDrawEnabled" @path-update="(path) => (drawnPath = path)" />
+        <MapCanvasComponent
+          :map="map"
+          :style="{ width: mapWidth }"
+          :drawable-path="pathDrawEnabled"
+          @path-update="(path) => (drawnPath = path)"
+          :path-to-display="{
+            points: [
+              { x: 1, y: 1 },
+              { x: 2, y: 1 },
+              { x: 2, y: 2 },
+              { x: 20, y: 20 },
+            ],
+          }"
+        />
       </div>
     </template>
     <template #actions>

@@ -2,6 +2,7 @@
   <div ref="container" class="has-background-white map-container">
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
+    <canvas id="displayPath" ref="displayPathCanvas" />
     <canvas id="path" ref="pathCanvas" @click="onPathCanvasClick" />
   </div>
 </template>
@@ -25,12 +26,14 @@ const targetTileBorderColor = new Color(0, 130, 255);
 const startTileBorderColor = new Color(210, 110, 0);
 const fuelTileBorderColor = new Color(210, 0, 130);
 const pathMarkerBorderColor = new Color(255, 30, 30);
+const displayPathMarkerBorderColor = new Color(125, 125, 125);
 
 const props = withDefaults(
   defineProps<{
     map: PlaygroundMap | undefined;
     robots?: PublicRobot[] | undefined;
     drawablePath: boolean;
+    pathToDisplay?: Path | undefined;
   }>(),
   {
     drawablePath: false,
@@ -42,6 +45,8 @@ const mapCanvas = ref<HTMLCanvasElement>();
 const mapDrawContext = computed(() => mapCanvas.value?.getContext("2d"));
 const robotCanvas = ref<HTMLCanvasElement>();
 const robotDrawContext = computed(() => robotCanvas.value?.getContext("2d"));
+const displayPathCanvas = ref<HTMLCanvasElement>();
+const displayPathDrawContext = computed(() => displayPathCanvas.value?.getContext("2d"));
 const pathCanvas = ref<HTMLCanvasElement>();
 const pathDrawContext = computed(() => pathCanvas.value?.getContext("2d"));
 
@@ -64,11 +69,17 @@ onMounted(() => {
   if (props.robots) {
     watch(props.robots, drawRobots);
   }
+  if (props.pathToDisplay) {
+    watch(props.pathToDisplay, drawDisplayPath);
+  }
   watch(
     () => props.drawablePath,
-    () => {
-      currentPath.value.points = [];
-      redraw();
+    (newValue) => {
+      if (newValue) {
+        currentPath.value.points = [];
+        emits("pathUpdate", currentPath.value);
+        redraw();
+      }
     },
   );
   watch(() => props.map, redraw);
@@ -121,8 +132,9 @@ const onPathCanvasClick = (event: MouseEvent) => {
 const redraw = () => {
   updateCanvasSize();
   drawMap();
-  drawPathMarkers();
   drawRobots();
+  drawDisplayPath();
+  drawPathMarkers();
 };
 
 const updateCanvasSize = () => {
@@ -141,6 +153,10 @@ const updateCanvasSize = () => {
     if (pathCanvas.value && pathDrawContext.value) {
       pathDrawContext.value.canvas.width = mapWidth.value;
       pathDrawContext.value.canvas.height = mapHeight.value;
+    }
+    if (displayPathCanvas.value && displayPathDrawContext.value) {
+      displayPathDrawContext.value.canvas.width = mapWidth.value;
+      displayPathDrawContext.value.canvas.height = mapHeight.value;
     }
   }
 };
@@ -225,32 +241,48 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.closePath();
 };
 
+const drawDisplayPath = () => {
+  if (displayPathCanvas.value && displayPathDrawContext.value && props.pathToDisplay) {
+    const drawContext = displayPathDrawContext.value;
+    log.debug("Draw display path markers");
+
+    drawPath(drawContext, props.pathToDisplay, displayPathMarkerBorderColor, false);
+  }
+};
+
 const drawPathMarkers = () => {
   if (pathCanvas.value && pathDrawContext.value && props.drawablePath) {
     const drawContext = pathDrawContext.value;
     log.debug("Draw path markers");
 
-    drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
+    drawPath(drawContext, currentPath.value, pathMarkerBorderColor, true);
+  }
+};
 
-    let previousMarker: Position | undefined = undefined;
-    for (const marker of currentPath.value.points) {
+const drawPath = (drawContext: CanvasRenderingContext2D, path: Path, color: Color, withDots: boolean) => {
+  drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
+
+  let previousMarker: Position | undefined = undefined;
+  for (const marker of path.points) {
+    if (withDots) {
       drawContext.save();
       const origin = pixelOriginOfPosition(marker);
       drawContext.translate(origin.x, origin.y);
-      drawPathMarker(drawContext, pathMarkerBorderColor);
+      drawPathMarker(drawContext, color);
       drawContext.restore();
-
-      if (previousMarker) {
-        drawPathBetween(drawContext, pathMarkerBorderColor, previousMarker, marker);
-      }
-
-      previousMarker = marker;
     }
+
+    if (previousMarker) {
+      drawContext.save();
+      drawPathBetween(drawContext, color, previousMarker, marker);
+      drawContext.restore();
+    }
+
+    previousMarker = marker;
   }
 };
 
 const drawPathBetween = (drawContext: CanvasRenderingContext2D, color: Color, firstPosition: Position, secondPosition: Position) => {
-  drawContext.save();
   const firstOrigin = pixelOriginOfPosition(firstPosition);
   const secondOrigin = pixelOriginOfPosition(secondPosition);
 
@@ -263,7 +295,6 @@ const drawPathBetween = (drawContext: CanvasRenderingContext2D, color: Color, fi
   drawContext.strokeStyle = color.toHex();
   drawContext.lineWidth = 2;
   drawContext.stroke();
-  drawContext.restore();
 };
 
 const drawPathMarker = (drawContext: CanvasRenderingContext2D, color: Color) => {
