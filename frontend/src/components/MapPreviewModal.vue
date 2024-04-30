@@ -9,7 +9,7 @@
 
     <template #content>
       <div class="is-flex is-justify-content-center">
-        <MapCanvasComponent :map="map" :style="{ width: mapWidth }" :drawable-path="pathDrawEnabled" />
+        <MapCanvasComponent :map="map" :style="{ width: mapWidth }" :drawable-path="pathDrawEnabled" @path-update="(path) => (drawnPath = path)" />
       </div>
     </template>
     <template #actions>
@@ -31,7 +31,11 @@
         <div class="column">
           <div class="field has-addons">
             <div class="control">
-              <button class="button" :disabled="!pathDrawEnabled" title="Calculates the shortest path between the selected points. (Ignoring the heights)">
+              <button
+                class="button"
+                :disabled="!routingFunctionsEnabled"
+                title="Calculates the shortest path between the selected points. (Ignoring the heights)"
+              >
                 <div class="icon mr-1">
                   <FontAwesomeIcon icon="fa-solid fa-route" />
                 </div>
@@ -41,7 +45,7 @@
             <div class="control">
               <button
                 class="button"
-                :disabled="!pathDrawEnabled || true"
+                :disabled="!routingFunctionsEnabled || true"
                 title="Calculates the path with the minimal fuel requirement between the selected points."
               >
                 <div class="icon mr-1">
@@ -69,14 +73,16 @@
 </template>
 
 <script setup lang="ts">
-import type { PlaygroundMap } from "@/models/Map";
+import type { Path, PlaygroundMap } from "@/models/Map";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
 import { computed, ref } from "vue";
 import BaseModalWithActions from "@/components/templates/BaseModalWithActions.vue";
 
 const pathDrawEnabled = ref<boolean>(false);
+const drawnPath = ref<Path>({ points: [] });
+const routingFunctionsEnabled = computed(() => drawnPath.value.points.length > 1);
 const requiredFuel = computed<number>(() => 123);
-const minimalTurns = computed<number>(() => 456);
+const minimalTurns = computed<number>(() => drawnPath.value.points.length);
 
 const props = defineProps<{
   map: PlaygroundMap;

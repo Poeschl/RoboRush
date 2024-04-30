@@ -1,8 +1,8 @@
 <template>
-  <div class="has-background-black map-container">
+  <div ref="container" class="has-background-white map-container">
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
-    <canvas id="path" ref="pathCanvas" />
+    <canvas id="path" ref="pathCanvas" @click="onPathCanvasClick" />
   </div>
 </template>
 
@@ -37,6 +37,7 @@ const props = withDefaults(
   },
 );
 
+const container = ref<HTMLDivElement>();
 const mapCanvas = ref<HTMLCanvasElement>();
 const mapDrawContext = computed(() => mapCanvas.value?.getContext("2d"));
 const robotCanvas = ref<HTMLCanvasElement>();
@@ -53,22 +54,69 @@ const heightMap = computed<Tile[]>(() => {
     return [];
   }
 });
-const currentPath = ref<Path>({
-  points: [
-    { x: 1, y: 1 },
-    { x: 18, y: 20 },
-    { x: 20, y: 1 },
-  ],
-});
+const currentPath = ref<Path>({ points: [] });
+
+const emits = defineEmits<{
+  (e: "pathUpdate", path: Path): void;
+}>();
 
 onMounted(() => {
-  redraw();
   if (props.robots) {
     watch(props.robots, drawRobots);
   }
-  watch(() => props.drawablePath, redraw);
+  watch(
+    () => props.drawablePath,
+    () => {
+      currentPath.value.points = [];
+      redraw();
+    },
+  );
   watch(() => props.map, redraw);
+  redraw();
 });
+
+const onPathCanvasClick = (event: MouseEvent) => {
+  if (pathCanvas.value && container.value && props.drawablePath) {
+    // Get css scale factor
+    const scale = mapWidth.value / container.value.clientWidth;
+
+    // Make coordinates relative to canvas
+    const rect = pathCanvas.value.getBoundingClientRect();
+    const x = (event.clientX - rect.x) * scale;
+    const y = (event.clientY - rect.y) * scale;
+
+    const positionClicked: Position = { x: Math.floor(x / fullTileSize), y: Math.floor(y / fullTileSize) };
+
+    log.debug(
+      "Clicked on",
+      positionClicked,
+      " rect: ",
+      rect.left,
+      "|",
+      rect.top,
+      " event: ",
+      event.clientX,
+      ",",
+      event.y,
+      " calc: ",
+      x,
+      ",",
+      y,
+      " scale: ",
+      scale,
+    );
+
+    const knownPath = currentPath.value;
+    if (currentPath.value.points.find((it) => it.x === positionClicked.x && it.y === positionClicked.y)) {
+      knownPath.points = knownPath.points.filter((it) => !(it.x === positionClicked.x && it.y === positionClicked.y));
+    } else {
+      knownPath.points.push(positionClicked);
+    }
+    currentPath.value = knownPath;
+    drawPathMarkers();
+    emits("pathUpdate", knownPath);
+  }
+};
 
 const redraw = () => {
   updateCanvasSize();
@@ -151,7 +199,7 @@ const drawRobots = () => {
 
 const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.fillStyle = mapBorderColor.toHex();
-  drawContext.fillRect(0, 0, cellSize + 2 * cellBorder, cellSize + 2 * cellBorder);
+  drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
   drawContext.fillStyle = color.toHex();
   drawContext.fillRect(cellBorder, cellBorder, cellSize, cellSize);
 };
