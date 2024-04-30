@@ -2,7 +2,7 @@
   <BaseModalWithActions>
     <template #header>
       <h4 class="modal-card-title is-size-4">
-        <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
+        <FontAwesomeIcon icon="fa-solid fa-map-location-dot" />
         Map Preview - {{ map.mapName }}
       </h4>
     </template>

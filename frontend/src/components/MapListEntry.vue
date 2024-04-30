@@ -15,7 +15,7 @@
       </button>
       <button class="button is-text" title="Preview map" @click="openPreview">
         <div class="icon">
-          <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
+          <FontAwesomeIcon icon="fa-solid fa-map-location-dot" />
         </div>
       </button>
     </div>
