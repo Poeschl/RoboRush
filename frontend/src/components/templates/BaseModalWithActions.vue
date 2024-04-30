@@ -9,11 +9,11 @@
       <div class="modal-card-body">
         <slot name="content" />
       </div>
-      <div class="modal-card-foot is-justify-content-space-between">
+      <div class="modal-card-foot is-flex-direction-column">
         <div>
           <slot name="actions" />
         </div>
-        <div>
+        <div class="mt-3 is-align-self-flex-end">
           <slot name="footer" />
         </div>
       </div>

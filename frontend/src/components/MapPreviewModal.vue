@@ -9,7 +9,7 @@
 
     <template #content>
       <div class="is-flex is-justify-content-center">
-        <MapCanvasComponent :map="map" :style="{ width: mapWidth }" />
+        <MapCanvasComponent :map="map" :style="{ width: mapWidth }" :drawable-path="pathDrawEnabled" />
       </div>
     </template>
     <template #actions>
@@ -17,16 +17,40 @@
         <div class="column">
           <button
             class="button"
-            :class="{ 'is-info': pathDrawMode }"
-            @click="pathDrawMode = !pathDrawMode"
-            title="If active click on the map to draw a path from clicked tile to clicked tile. Attributes of the path are shown on the right"
+            :class="{ 'is-info': pathDrawEnabled }"
+            @click="pathDrawEnabled = !pathDrawEnabled"
+            title="If active click on the map to draw a path from clicked tile to clicked tile."
           >
             <div class="icon mr-1">
-              <FontAwesomeIcon icon="fa-solid fa-square-check" class="fa-lg" v-if="pathDrawMode" />
-              <FontAwesomeIcon icon="fa-regular fa-square" class="fa-lg" v-else />
+              <FontAwesomeIcon icon="fa-solid fa-square-check" v-if="pathDrawEnabled" />
+              <FontAwesomeIcon icon="fa-regular fa-square" v-else />
             </div>
             Draw Path
           </button>
+        </div>
+        <div class="column">
+          <div class="field has-addons">
+            <div class="control">
+              <button class="button" :disabled="!pathDrawEnabled" title="Calculates the shortest path between the selected points. (Ignoring the heights)">
+                <div class="icon mr-1">
+                  <FontAwesomeIcon icon="fa-solid fa-route" />
+                </div>
+                Shortest
+              </button>
+            </div>
+            <div class="control">
+              <button
+                class="button"
+                :disabled="!pathDrawEnabled || true"
+                title="Calculates the path with the minimal fuel requirement between the selected points."
+              >
+                <div class="icon mr-1">
+                  <FontAwesomeIcon icon="fa-solid fa-route" />
+                </div>
+                Fuel-efficient
+              </button>
+            </div>
+          </div>
         </div>
         <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
           <div class="has-text-centered">Required fuel</div>
@@ -50,7 +74,7 @@ import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
 import { computed, ref } from "vue";
 import BaseModalWithActions from "@/components/templates/BaseModalWithActions.vue";
 
-const pathDrawMode = ref<boolean>(false);
+const pathDrawEnabled = ref<boolean>(false);
 const requiredFuel = computed<number>(() => 123);
 const minimalTurns = computed<number>(() => 456);
 

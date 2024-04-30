@@ -33,6 +33,11 @@ export interface Position {
   y: number;
 }
 
+export interface PixelPosition {
+  x: number;
+  y: number;
+}
+
 export enum TileType {
   DEFAULT_TILE = "DEFAULT_TILE",
   START_TILE = "START_TILE",
