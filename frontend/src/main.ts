@@ -18,6 +18,7 @@ import {
   faClipboard,
   faEdit,
   faGasPump,
+  faGlobe,
   faHourglassHalf,
   faLocationDot,
   faMagnifyingGlass,
@@ -39,6 +40,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { faCopy, faSquare, faUser } from "@fortawesome/free-regular-svg-icons";
 import { useLogging } from "@/config/logging";
 import { Env } from "@/Env";
+import { faGithub, faMastodon } from "@fortawesome/free-brands-svg-icons";
 
 const app = createApp(App);
 
@@ -74,6 +76,9 @@ library.add(
   faEdit,
   faGasPump,
   faSolarPanel,
+  faGithub,
+  faGlobe,
+  faMastodon,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
