@@ -26,7 +26,7 @@ const targetTileBorderColor = new Color(0, 130, 255);
 const startTileBorderColor = new Color(210, 110, 0);
 const fuelTileBorderColor = new Color(210, 0, 130);
 const pathMarkerBorderColor = new Color(255, 30, 30);
-const displayPathMarkerBorderColor = new Color(125, 125, 125);
+const displayPathMarkerBorderColor = new Color(0, 50, 255);
 
 const props = withDefaults(
   defineProps<{
@@ -70,7 +70,7 @@ onMounted(() => {
     watch(props.robots, drawRobots);
   }
   if (props.pathToDisplay) {
-    watch(props.pathToDisplay, drawDisplayPath);
+    watch(() => props.pathToDisplay!.points, drawDisplayPath);
   }
   watch(
     () => props.drawablePath,
@@ -288,6 +288,7 @@ const drawPathBetween = (drawContext: CanvasRenderingContext2D, color: Color, fi
 
   // shift drawing space to the middle of a tile
   drawContext.translate(fullTileSize / 2, fullTileSize / 2);
+  drawContext.beginPath();
   // goto the previous position
   drawContext.moveTo(firstOrigin.x, firstOrigin.y);
   // draw to the current position
@@ -295,6 +296,7 @@ const drawPathBetween = (drawContext: CanvasRenderingContext2D, color: Color, fi
   drawContext.strokeStyle = color.toHex();
   drawContext.lineWidth = 2;
   drawContext.stroke();
+  drawContext.closePath();
 };
 
 const drawPathMarker = (drawContext: CanvasRenderingContext2D, color: Color) => {

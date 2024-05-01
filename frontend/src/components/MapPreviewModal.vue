@@ -14,14 +14,7 @@
           :style="{ width: mapWidth }"
           :drawable-path="pathDrawEnabled"
           @path-update="(path) => (drawnPath = path)"
-          :path-to-display="{
-            points: [
-              { x: 1, y: 1 },
-              { x: 2, y: 1 },
-              { x: 2, y: 2 },
-              { x: 20, y: 20 },
-            ],
-          }"
+          :path-to-display="displayPath"
         />
       </div>
     </template>
@@ -46,8 +39,10 @@
             <div class="control">
               <button
                 class="button"
-                :disabled="!routingFunctionsEnabled"
+                :class="{ 'is-loading': routingActive }"
+                :disabled="!routingActionEnabled"
                 title="Calculates the shortest path between the selected points. (Ignoring the heights)"
+                @click="calculatePath(true)"
               >
                 <div class="icon mr-1">
                   <FontAwesomeIcon icon="fa-solid fa-route" />
@@ -58,8 +53,10 @@
             <div class="control">
               <button
                 class="button"
-                :disabled="!routingFunctionsEnabled || true"
+                :class="{ 'is-loading': routingActive }"
+                :disabled="!routingActionEnabled"
                 title="Calculates the path with the minimal fuel requirement between the selected points."
+                @click="calculatePath()"
               >
                 <div class="icon mr-1">
                   <FontAwesomeIcon icon="fa-solid fa-route" />
@@ -88,14 +85,20 @@
 <script setup lang="ts">
 import type { Path, PlaygroundMap } from "@/models/Map";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
-import { computed, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import BaseModalWithActions from "@/components/templates/BaseModalWithActions.vue";
+import type { PathFindingWorkerInput } from "@/workers/PathFindingWorker";
+import log from "loglevel";
 
 const pathDrawEnabled = ref<boolean>(false);
 const drawnPath = ref<Path>({ points: [] });
-const routingFunctionsEnabled = computed(() => drawnPath.value.points.length > 1);
-const requiredFuel = computed<number>(() => 123);
-const minimalTurns = computed<number>(() => drawnPath.value.points.length);
+const displayPath = ref<Path>({ points: [] });
+const routingActionEnabled = computed<boolean>(() => drawnPath.value.points.length > 1);
+const routingActive = ref<boolean>(false);
+const minimalTurns = computed<number>(() => displayPath.value.points.length);
+const requiredFuel = computed<number>(() => determineCostOfPath(displayPath.value));
+
+const routingWorker = new Worker(new URL("../workers/PathFindingWorker.ts", import.meta.url), { type: "module" });
 
 const props = defineProps<{
   map: PlaygroundMap;
@@ -104,6 +107,18 @@ const props = defineProps<{
 defineEmits<{
   (e: "close"): void;
 }>();
+
+onMounted(() => {
+  routingWorker.onmessage = (message) => {
+    log.info("Retrieved path from worker");
+    displayPath.value = JSON.parse(message.data);
+    routingActive.value = false;
+  };
+});
+
+onUnmounted(() => {
+  routingWorker.terminate();
+});
 
 const mapWidth = computed(() => {
   if (props.map && props.map.size.width <= 50) {
@@ -114,6 +129,39 @@ const mapWidth = computed(() => {
     return "110rem";
   }
 });
+
+const calculatePath = (ignoreHeights: boolean = false) => {
+  routingActive.value = true;
+  // Convert data to json, since couldn't get the object ot work
+  routingWorker.postMessage(
+    JSON.stringify({
+      mapSize: props.map.size,
+      heightMap: props.map.mapData,
+      inputPath: drawnPath.value,
+      ignoreHeights: ignoreHeights,
+    } as PathFindingWorkerInput),
+  );
+};
+
+const determineCostOfPath = (path: Path) => {
+  let costSum = 0;
+  for (let index = 0; index < path.points.length - 1; index++) {
+    const first = path.points[index];
+    const second = path.points[index + 1];
+
+    const firstHeight = props.map.mapData.find((it) => it.position.x === first.x && it.position.y === first.y)!.height;
+    const secondHeight = props.map.mapData.find((it) => it.position.x === second.x && it.position.y === second.y)!.height;
+
+    const heightDiff = secondHeight - firstHeight;
+    if (heightDiff < 0) {
+      // If the difference is negative aka "down the hill" there is only static cost. (1 is used for static cost)
+      costSum += 1;
+    } else {
+      costSum += 1 + heightDiff;
+    }
+  }
+  return costSum;
+};
 </script>
 
 <style scoped lang="scss">
