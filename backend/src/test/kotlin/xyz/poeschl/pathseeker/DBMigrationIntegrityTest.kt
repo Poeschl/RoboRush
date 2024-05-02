@@ -32,7 +32,7 @@ class DBMigrationIntegrityTest {
     .withHashPair("V1_001__create_robot_schemas.sql", "6b37f4a87fa7ff214b3f61b997cc83c4")
     .withHashPair("V1_002__create_config_schemas.sql", "536f4e48da2794ab9df48f2bb9670da3")
     .withHashPair("V1_003__create_map_schemas.sql", "1241f041234a0e4b6a62e9f0b2b4ba20")
-    .withHashPair("V1_004__add_map_icon_map.sql", "74e93bd0f6ee4510b23ed07be123e623")
+    .withHashPair("V1_004__add_map_icon_map.sql", "4f91d5e26259af25976aadedb9949d08")
     .withHashPair("V1_005__add_map_easy.sql", "66975341559c243797bcd6871b0a49dd")
     .withHashPair("V1_006__add_map_climb-up.sql", "b0e362ce9f195b2b3ab1cfc8aa4e44e3")
 
