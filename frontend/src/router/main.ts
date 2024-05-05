@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import { useSystemStore } from "@/stores/SystemStore";
 import { useUserStore } from "@/stores/UserStore";
 
@@ -22,6 +22,7 @@ export const router = createRouter({
     {
       path: "/not-connected",
       component: NotConnectedView,
+      meta: { hideFooter: true },
     },
     {
       path: "/config",
