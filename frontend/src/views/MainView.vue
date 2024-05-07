@@ -1,16 +1,18 @@
 <template>
-  <div class="is-flex is-justify-content-center mb-5">
-    <MapCanvasComponent :robots="robots" :map="currentMap" style="width: 600px" />
+  <div class="columns">
+    <div class="column is-flex is-justify-content-center">
+      <MapCanvasComponent :robots="robots" :map="currentMap" style="width: 90%" />
+    </div>
+    <div class="column is-one-quarter is-flex-direction-column is-narrow">
+      <RobotActiveList />
+      <GameStateBox />
+      <RobotScoreBoard />
+    </div>
   </div>
+  <div class="is-flex is-justify-content-center mb-5"></div>
   <div class="columns is-multiline is-fullwidth is-justify-content-center data-columns">
     <div class="column">
-      <RobotsList />
-    </div>
-    <div class="column">
       <UserRobotDetails />
-    </div>
-    <div class="column">
-      <GameDetails />
     </div>
     <div class="column">
       <RobotControl />
@@ -24,10 +26,11 @@ import type { PlaygroundMap } from "@/models/Map";
 import { computed } from "vue";
 import type { PublicRobot } from "@/models/Robot";
 import { useGameStore } from "@/stores/GameStore";
-import RobotsList from "@/components/PublicRobotsList.vue";
 import UserRobotDetails from "@/components/UserRobotDetails.vue";
-import GameDetails from "@/components/GameDetails.vue";
 import RobotControl from "@/components/RobotsControl.vue";
+import GameStateBox from "@/components/GameStateBox.vue";
+import RobotActiveList from "@/components/RobotActiveList.vue";
+import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 
 const gameStore = useGameStore();
 

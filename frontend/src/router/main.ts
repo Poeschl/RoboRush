@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useSystemStore } from "@/stores/SystemStore";
 import { useUserStore } from "@/stores/UserStore";
 
-const PlayView = () => import("@/views/PlayView.vue");
+const MainView = () => import("@/views/MainView.vue");
 const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 const GameConfigView = () => import("@/views/GameConfigView.vue");
@@ -12,7 +12,7 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      component: PlayView,
+      component: MainView,
     },
     {
       path: "/how-to-play",
