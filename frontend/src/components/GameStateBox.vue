@@ -31,7 +31,7 @@ watch(
     if (lastStateChangedTimer.value) {
       clearTimeout(lastStateChangedTimer.value);
     }
-    lastStateChangedTimer.value = setTimeout(() => {
+    lastStateChangedTimer.value = window.setTimeout(() => {
       showStateChanged.value = false;
       lastStateChangedTimer.value = null;
     }, 400);
