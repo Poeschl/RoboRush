@@ -16,6 +16,7 @@ import {
   faChalkboard,
   faCheck,
   faClipboard,
+  faCode,
   faEdit,
   faGasPump,
   faGlobe,
@@ -79,6 +80,7 @@ library.add(
   faGithub,
   faGlobe,
   faMastodon,
+  faCode,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

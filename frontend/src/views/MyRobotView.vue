@@ -4,9 +4,10 @@
       <MapCanvasComponent :robots="robots" :map="currentMap" style="width: 90%" />
     </div>
     <div class="column is-one-quarter is-flex-direction-column is-narrow">
-      <RobotActiveList />
+      <GameFlags />
       <GameStateBox />
-      <RobotScoreBoard />
+      <RobotDetails />
+      <RobotControl />
     </div>
   </div>
 </template>
@@ -17,9 +18,10 @@ import type { PlaygroundMap } from "@/models/Map";
 import { computed } from "vue";
 import type { PublicRobot } from "@/models/Robot";
 import { useGameStore } from "@/stores/GameStore";
+import RobotControl from "@/components/RobotsControl.vue";
 import GameStateBox from "@/components/GameStateBox.vue";
-import RobotActiveList from "@/components/RobotActiveList.vue";
-import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
+import GameFlags from "@/components/GameFlags.vue";
+import RobotDetails from "@/components/RobotDetails.vue";
 
 const gameStore = useGameStore();
 

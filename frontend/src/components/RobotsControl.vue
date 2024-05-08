@@ -3,8 +3,8 @@
     <div class="is-size-3 mb-3">Robot Control</div>
     <div v-if="userStore.loggedIn">
       <div v-if="gameStore.userRobotActive">
-        <div class="columns">
-          <div class="column is-one-third">
+        <div class="columns is-variable is-1">
+          <div class="column">
             <div class="is-dpad-control">
               <div class="columns">
                 <div class="column is-offset-one-third is-one-third">
@@ -50,28 +50,26 @@
             </div>
           </div>
           <div class="column">
-            <div class="columns additional-actions is-variable is-2 is-justify-content-space-between">
-              <div class="column is-two-thirds">
-                <div class="field has-addons is-scan-action">
-                  <div class="control">
-                    <input
-                      class="input"
-                      type="number"
-                      min="0"
-                      :disabled="!controlsEnabled"
-                      placeholder="Scan distance"
-                      @input="(event) => (scanNumber = parseInt((event.target as HTMLInputElement)?.value))"
-                    />
-                  </div>
-                  <div class="control">
-                    <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }" @click="scan">
-                      <div class="icon">
-                        <FontAwesomeIcon icon="fa-solid fa-satellite-dish" class="fa-xl" />
-                      </div>
-                    </button>
-                  </div>
-                </div>
+            <div class="field has-addons is-scan-action">
+              <div class="control">
+                <input
+                  class="input"
+                  type="number"
+                  min="0"
+                  :disabled="!controlsEnabled"
+                  placeholder="Scan distance"
+                  @input="(event) => (scanNumber = parseInt((event.target as HTMLInputElement)?.value))"
+                />
               </div>
+              <div class="control">
+                <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }" @click="scan">
+                  <div class="icon">
+                    <FontAwesomeIcon icon="fa-solid fa-satellite-dish" class="fa-xl" />
+                  </div>
+                </button>
+              </div>
+            </div>
+            <div class="columns is-multiline additional-actions is-variable is-1">
               <div class="column">
                 <button
                   class="button"

@@ -3,6 +3,7 @@ import { useSystemStore } from "@/stores/SystemStore";
 import { useUserStore } from "@/stores/UserStore";
 
 const MainView = () => import("@/views/MainView.vue");
+const MyRobotView = () => import("@/views/MyRobotView.vue");
 const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 const GameConfigView = () => import("@/views/GameConfigView.vue");
@@ -15,9 +16,13 @@ export const router = createRouter({
       component: MainView,
     },
     {
+      path: "/myRobot",
+      component: MyRobotView,
+      meta: { requiresNonAdmin: true },
+    },
+    {
       path: "/how-to-play",
       component: HowToView,
-      meta: { requiresNonAdmin: true },
     },
     {
       path: "/not-connected",
