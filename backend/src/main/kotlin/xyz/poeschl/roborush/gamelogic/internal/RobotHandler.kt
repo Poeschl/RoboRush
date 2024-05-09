@@ -37,7 +37,7 @@ class RobotHandler(
       if (robot.isPresent) {
         val realRobot = robot.get()
         if (isPositionCurrentFree(startPosition)) {
-          activeRobot = ActiveRobot(realRobot.id!!, realRobot.user, realRobot.color, initialRobotMaxFuel, startPosition)
+          activeRobot = ActiveRobot(realRobot.id!!, realRobot.user.username, realRobot.user, realRobot.color, initialRobotMaxFuel, startPosition)
           activeRobots.add(activeRobot)
           LOGGER.info("Registered robot {}", robotId)
         } else {

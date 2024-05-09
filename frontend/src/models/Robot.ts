@@ -3,6 +3,7 @@ import Color from "@/models/Color";
 
 export interface PublicRobot {
   id: number;
+  name: string;
   position: Position;
   color: Color;
 }
@@ -27,6 +28,7 @@ export interface SolarCharge extends Action {}
 
 export interface ActiveRobot {
   id: number;
+  name: string;
   color: Color;
   fuel: number;
   maxFuel: number;

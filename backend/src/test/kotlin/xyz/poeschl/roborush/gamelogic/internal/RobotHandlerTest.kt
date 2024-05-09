@@ -357,7 +357,7 @@ class RobotHandlerTest {
   fun isPositionFreeAfterActions() {
     // WHEN
     // stayRobot will be at position (3,3)
-    val stayRobot = createSingleActiveRobot(1)
+    createSingleActiveRobot(1)
 
     // THEN
     val isFree = robotHandler.isPositionFreeAfterActions(Position(2, 2))
@@ -371,7 +371,7 @@ class RobotHandlerTest {
   fun isPositionFreeAfterActions_occupied() {
     // WHEN
     // stayRobot will be at position (3,3)
-    val stayRobot = createSingleActiveRobot(1)
+    createSingleActiveRobot(1)
 
     // THEN
     val isFree = robotHandler.isPositionFreeAfterActions(Position(3, 3))
@@ -418,7 +418,7 @@ class RobotHandlerTest {
     // WHEN
     val robot1 = createSingleActiveRobot(1)
     val robot2 = createSingleActiveRobot(2)
-    val robot3 = createSingleActiveRobot(3)
+    createSingleActiveRobot(3)
     robot1.nextAction = MoveAction(a(`$Direction`()))
     robot2.nextAction = MoveAction(a(`$Direction`()))
 

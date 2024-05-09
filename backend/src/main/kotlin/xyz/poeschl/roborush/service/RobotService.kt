@@ -36,7 +36,7 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
 
   fun getActiveRobots(): List<PublicRobot> {
     return gameHandler.getActiveRobots()
-      .map { PublicRobot(it.id, it.color, it.position) }
+      .map { PublicRobot(it.id, it.name, it.color, it.position) }
       .sortedBy(PublicRobot::id)
   }
 

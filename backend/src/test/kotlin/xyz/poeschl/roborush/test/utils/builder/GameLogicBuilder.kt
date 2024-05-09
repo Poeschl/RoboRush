@@ -24,6 +24,7 @@ class GameLogicBuilder {
 
     fun `$ActiveRobot`() = ActiveRobotBuilder()
       .withId(a(`$Id`()))
+      .withName(a(`$String`("user")))
       .withUser(a(`$User`()))
       .withColor(a(`$Color`()))
       .withFuel(Int.MAX_VALUE)
@@ -31,6 +32,7 @@ class GameLogicBuilder {
 
     fun `$PublicRobot`() = PublicRobotBuilder()
       .withId(a(`$Id`()))
+      .withName(a(`$String`("user")))
       .withColor(a(`$Color`()))
       .withPosition(a(`$Position`()))
 
