@@ -32,4 +32,8 @@ export default class Color {
 
     return "#" + r + g + b;
   }
+
+  getLightLevel() {
+    return this.r + this.g + this.b;
+  }
 }

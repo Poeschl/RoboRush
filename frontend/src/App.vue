@@ -3,7 +3,7 @@
     <NavBar class="mb-5" />
     <main class="container">
       <router-view />
-      <div class="is-flex is-justify-content-center">
+      <div class="is-flex is-justify-content-center" v-if="!route.meta.hideFooter">
         <div class="is-flex is-justify-content-center pt-1 tool-links">
           <a class="button is-text" href="https://poeschl.xyz" target="_blank" title="Website">
             <div class="icon">
@@ -32,12 +32,13 @@ import { useGameStore } from "@/stores/GameStore";
 import { computed, watch } from "vue";
 import { useUserStore } from "@/stores/UserStore";
 import { useSystemStore } from "@/stores/SystemStore";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import log from "loglevel";
 
 log.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
 
 const router = useRouter();
+const route = useRoute();
 
 const userStore = useUserStore();
 const systemStore = useSystemStore();

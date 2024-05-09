@@ -1,6 +1,9 @@
+import type { Position } from "@/models/Map";
+
 export interface Game {
   currentState: GameState;
   solarChargeEnabled: boolean;
+  targetPosition?: Position;
 }
 
 export enum GameState {

@@ -1,8 +1,9 @@
-import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import { useSystemStore } from "@/stores/SystemStore";
 import { useUserStore } from "@/stores/UserStore";
 
-const PlayView = () => import("@/views/PlayView.vue");
+const MainView = () => import("@/views/MainView.vue");
+const MyRobotView = () => import("@/views/MyRobotView.vue");
 const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 const GameConfigView = () => import("@/views/GameConfigView.vue");
@@ -12,16 +13,21 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      component: PlayView,
+      component: MainView,
+    },
+    {
+      path: "/myRobot",
+      component: MyRobotView,
+      meta: { requiresNonAdmin: true },
     },
     {
       path: "/how-to-play",
       component: HowToView,
-      meta: { requiresNonAdmin: true },
     },
     {
       path: "/not-connected",
       component: NotConnectedView,
+      meta: { hideFooter: true },
     },
     {
       path: "/config",
