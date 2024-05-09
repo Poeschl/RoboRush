@@ -43,7 +43,7 @@ services:
       - traefik.http.middlewares.dashboard-redirect.redirectregex.replacement=$${1}/traefik/dashboard/
 
   frontend:
-    image: ghcr.io/poeschl/brettbutler:frontend
+    image: ghcr.io/poeschl/roborush:frontend
     restart: unless-stopped
     #    environment:
     #      PLAUSIBLE_DOMAIN: <your domain>
@@ -53,7 +53,7 @@ services:
       - traefik.http.routers.brettbutler-frontend.rule=PathPrefix(`/`)
 
   backend:
-    image: ghcr.io/poeschl/brettbutler:backend
+    image: ghcr.io/poeschl/roborush:backend
     restart: unless-stopped
     depends_on:
       - database

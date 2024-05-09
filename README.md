@@ -1,10 +1,29 @@
 # RoboRush
 
 A game about multiple robots trying to get from A to B on a map with quadratic tiles.
+The first robot which reaches the target tile wins!
+
+Get in the game by controlling your robot via REST calls and try to find the fastest way.
+Or block the others.
 
 ## Features
 
-//TBD
+* Robots
+  * A robot can travel in a 2D space (no diagonals)
+* Several maps with start and target zones
+  * Maps my contain gas stations
+  * Every step costs some fuel
+* Round-based gameplay
+  * Every robot schedules its action, then all actions are executed
+
+And more technical:
+
+* Watch all robots go via a web-interface.
+* Included "How to play on" for players
+* Full API docs for learning to control the robots and get map information
+* Additional web-sections for registering, first steps, initial debug of your robot actions
+* Included root user settings to change maps, import own ones and change game settings
+* Self-hosting setup with docker
 
 ## Setup
 
@@ -38,7 +57,7 @@ The admin user can never participate in a game!
 
 ### Plausible tracking
 
-If configured the application can be monitored with [Plausible](https://plausible.io/).
+If configured the application can be monitored with [Plausible](https://plausible.io/). So far only page calls are tracked.
 
 To enable this set the environment variable `PLAUSIBLE_DOMAIN`
 and if you are running on a self-hosted instance `PLAUSIBLE_API_HOST`.
