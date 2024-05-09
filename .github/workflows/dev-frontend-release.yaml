@@ -79,7 +79,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/poeschl/pathseeker
+          images: ghcr.io/poeschl/roborush
           tags: frontend
 
       - name: 🏗️ Set up Docker Buildx

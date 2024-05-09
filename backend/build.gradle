@@ -7,7 +7,7 @@ plugins {
   id 'org.jetbrains.kotlin.kapt' version "1.9.23"
 }
 
-group = 'xyz.poeschl.pathseeker'
+group = 'xyz.poeschl.roborush'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = JavaVersion.VERSION_21
 

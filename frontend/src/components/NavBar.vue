@@ -3,8 +3,8 @@
     <div class="container">
       <div class="navbar-brand">
         <a href="/" class="navbar-item">
-          <img class="mr-3" src="/img/icon_white.png" alt="Logo with the letter P and S" />
-          <span class="is-uppercase">PathSeeker</span>
+          <img class="mr-2" src="/img/icon_white.png" alt="Logo with two R's and a checkered flag" />
+          <span class="is-size-5">RoboRush</span>
         </a>
         <a role="button" class="navbar-burger" data-target="menuItems" :class="{ 'is-active': mobileNavOpen }" @click="toggleMobileNav">
           <span aria-hidden="true" />
@@ -33,7 +33,7 @@
             </div>
             How To Play
           </router-link>
-          <a v-if="!userIsAdmin" class="navbar-item" href="/api/swagger-ui" target="_blank">
+          <a v-if="!userIsAdmin" class="navbar-item" href="/api/swagger-ui?urls.primaryName=public" target="_blank">
             <div class="icon mr-1">
               <FontAwesomeIcon icon="fa-solid fa-code" />
             </div>

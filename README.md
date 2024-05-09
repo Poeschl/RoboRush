@@ -1,6 +1,6 @@
-# PathSeeker
+# RoboRush
 
-A game about multiple robots trying to get from A to B on an map with quadratic tiles.
+A game about multiple robots trying to get from A to B on a map with quadratic tiles.
 
 ## Features
 

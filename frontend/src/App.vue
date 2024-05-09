@@ -15,7 +15,7 @@
               <FontAwesomeIcon icon="fa-brands fa-mastodon" class="fa-xl" />
             </div>
           </a>
-          <a class="button is-text" href="https://github.com/Poeschl/PathSeeker" target="_blank" title="Source">
+          <a class="button is-text" href="https://github.com/Poeschl/RoboRush" target="_blank" title="Source">
             <div class="icon">
               <FontAwesomeIcon icon="fa-brands fa-github" class="fa-xl" />
             </div>

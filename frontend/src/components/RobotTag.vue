@@ -35,5 +35,6 @@ const inverseColor = computed<boolean>(() => {
 
 .tag {
   font-weight: bold;
+  cursor: default;
 }
 </style>
