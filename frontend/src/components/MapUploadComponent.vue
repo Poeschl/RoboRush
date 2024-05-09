@@ -29,7 +29,7 @@
     <div v-for="text in genResult.errors">{{ text }}</div>
   </div>
 
-  <a class="button is-text is-fullwidth" target="_blank" href="https://github.com/Poeschl/PathSeeker/tree/main/maps/README.md">How to create a heightmap?</a>
+  <a class="button is-text is-fullwidth" target="_blank" href="https://github.com/Poeschl/RoboRush/tree/main/maps/README.md">How to create a heightmap?</a>
 </template>
 
 <script setup lang="ts">

@@ -3,8 +3,8 @@
     <div class="container">
       <div class="navbar-brand">
         <a href="/" class="navbar-item">
-          <img class="mr-3" src="/img/icon_white.png" alt="Logo with the letter P and S" />
-          <span class="is-uppercase">PathSeeker</span>
+          <img class="mr-3" src="/img/icon_white.png" alt="Logo with two R's and a checkered flag" />
+          <span>RoboRush</span>
         </a>
         <a role="button" class="navbar-burger" data-target="menuItems" :class="{ 'is-active': mobileNavOpen }" @click="toggleMobileNav">
           <span aria-hidden="true" />

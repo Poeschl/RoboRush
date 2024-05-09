@@ -1,11 +1,11 @@
-# PathSeeker Maps
+# RoboRush Maps
 
 This folder contains the default maps which are available on the first start.
 They are generated with a height map generator called [wgen](https://github.com/jice-nospam/wgen) and modified with Photoshop (or any other picture editor) to place spawn area pixels and the single target position pixel (described below).
 
 ## Generate your own map
 
-PathSeeker recognizes grayscale images as height maps.
+RoboRush recognizes grayscale images as height maps.
 Each pixel will be interpreted as a distinct tile.
 Make sure the color values are equal for each pixel - notable exceptions are described below.
 `Gray` values may range from 0 (for deep valleys) to 255 (for mountain peaks).

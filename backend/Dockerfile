@@ -43,7 +43,7 @@ RUN adduser --no-create-home -u 1000 -D $APPLICATION_USER && \
 USER 1000
 WORKDIR /app
 
-ENTRYPOINT ["java", "-jar", "/app/pathseeker-backend.jar"]
+ENTRYPOINT ["java", "-jar", "/app/roborush-backend.jar"]
 EXPOSE 8080
 
-COPY --chown=1000:1000 build/libs/backend-*.jar /app/pathseeker-backend.jar
+COPY --chown=1000:1000 build/libs/backend-*.jar /app/roborush-backend.jar

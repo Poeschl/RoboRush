@@ -1,10 +1,10 @@
 <template>
   <div class="columns is-multiline">
     <div class="column is-full">
-      <HelpText title="What is PathSeeker?">
+      <HelpText title="What is RoboRush?">
         <div class="mb-2">
-          PathSeeker is a multiplayer coding game about finding a path from A to B for a robot on a 2 dimensional map. The game is played in a round-based
-          manner, so that every player's robot moves at the exact same time.
+          RoboRush is a multiplayer coding game about finding a path from A to B for a robot on a 2 dimensional map. The game is played in a round-based manner,
+          so that every player's robot moves at the exact same time.
         </div>
         <div class="mb-2">
           Every player will control its robot via REST interfaces to check its environment or execute a robot action. Since the robots are not aware of the map
@@ -15,7 +15,7 @@
       </HelpText>
     </div>
     <div class="column is-half">
-      <HelpText title="Game Lifecycle"> // TODO </HelpText>
+      <HelpText title="Game Lifecycle"> //TODO </HelpText>
     </div>
     <div class="column is-half">
       <HelpText title="Robot">
