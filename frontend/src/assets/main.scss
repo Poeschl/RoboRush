@@ -29,6 +29,10 @@
   $body-background-color: lighten(utilities.$black, 5)
 );
 
+@use "bulma/sass/elements/progress" with (
+  $progress-bar-background-color: utilities.$black-bis
+);
+
 // All bulma modules which are used without a modification
 @forward "bulma/sass/components/card";
 @forward "bulma/sass/components/modal";
@@ -38,7 +42,6 @@
 @forward "bulma/sass/elements/delete";
 @forward "bulma/sass/elements/icon";
 @forward "bulma/sass/elements/notification";
-@forward "bulma/sass/elements/progress";
 @forward "bulma/sass/elements/title";
 @forward "bulma/sass/elements/tag";
 @forward "bulma/sass/form";

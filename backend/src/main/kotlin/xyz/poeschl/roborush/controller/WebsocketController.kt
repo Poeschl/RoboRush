@@ -10,7 +10,7 @@ import xyz.poeschl.roborush.models.PublicRobot
 class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
 
   fun sendRobotUpdate(robot: ActiveRobot) {
-    messageTemplate.convertAndSend("/topic/robot", PublicRobot(robot.id, robot.color, robot.position))
+    messageTemplate.convertAndSend("/topic/robot", PublicRobot(robot.id, robot.name, robot.color, robot.position))
   }
 
   fun sendUserRobotData(robot: ActiveRobot) {

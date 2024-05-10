@@ -1,6 +1,9 @@
 package xyz.poeschl.roborush.service
 
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -10,7 +13,7 @@ import xyz.poeschl.roborush.gamelogic.actions.MoveAction
 import xyz.poeschl.roborush.gamelogic.actions.RefuelAction
 import xyz.poeschl.roborush.gamelogic.actions.ScanAction
 import xyz.poeschl.roborush.gamelogic.actions.WaitAction
-import xyz.poeschl.roborush.models.*
+import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.repositories.RobotRepository
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
@@ -130,8 +133,8 @@ class RobotServiceTest {
 
     // VERIFY
     assertThat(result).containsExactly(
-      PublicRobot(activeRobot1.id, activeRobot1.color, activeRobot1.position),
-      PublicRobot(activeRobot2.id, activeRobot2.color, activeRobot2.position)
+      PublicRobot(activeRobot1.id, activeRobot1.name, activeRobot1.color, activeRobot1.position),
+      PublicRobot(activeRobot2.id, activeRobot2.name, activeRobot2.color, activeRobot2.position)
     )
   }
 

@@ -1,26 +1,20 @@
 <template>
   <InfoBoxTemplate title="Your robot">
     <div v-if="robot != undefined">
-      <div class="level">
+      <div class="level mb-3">
         <div class="level-left">
-          <div class="level-item is-size-5">
-            <FontAwesomeIcon icon="fa-solid fa-robot" class="mr-2" :style="{ color: robot.color.toHex() }" />
-            Robot Id
-          </div>
+          <div class="level-item">Name</div>
         </div>
         <div class="level-right">
           <div class="level-item">
-            <div>{{ robot.id }}</div>
+            <RobotTag :robot="robot" />
           </div>
         </div>
       </div>
 
-      <div class="level">
+      <div class="level mb-3">
         <div class="level-left">
-          <div class="level-item is-size-5">
-            <FontAwesomeIcon icon="fa-solid fa-gas-pump" class="mr-2" />
-            Fuel
-          </div>
+          <div class="level-item">Fuel</div>
         </div>
         <div class="level-right">
           <div class="level-item">
@@ -29,12 +23,9 @@
         </div>
       </div>
 
-      <div class="level">
+      <div class="level mb-3">
         <div class="level-left">
-          <div class="level-item is-size-5">
-            <FontAwesomeIcon icon="fa-solid fa-location-dot" class="mr-2" />
-            Position
-          </div>
+          <div class="level-item">Position</div>
         </div>
         <div class="level-right">
           <div class="level-item">
@@ -49,12 +40,10 @@
 
 <script setup lang="ts">
 import { useGameStore } from "@/stores/GameStore";
-import { computed, ref } from "vue";
-import type { ActiveRobot, Move, Scan } from "@/models/Robot";
-import { useUserStore } from "@/stores/UserStore";
+import { computed } from "vue";
 import InfoBoxTemplate from "@/components/templates/InfoBoxTemplate.vue";
+import RobotTag from "@/components/RobotTag.vue";
 
-const userStore = useUserStore();
 const gameStore = useGameStore();
 const robot = computed(() => gameStore.userRobot);
 </script>

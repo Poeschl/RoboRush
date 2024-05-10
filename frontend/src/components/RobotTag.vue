@@ -18,12 +18,12 @@ const props = defineProps<{
 }>();
 
 const tagColor = computed<string | undefined>(() => props.robot?.color.toHex());
-const text = computed<string | undefined>(() => props.robot?.id.toString());
+const text = computed<string | undefined>(() => props.robot?.name);
 const inverseColor = computed<boolean>(() => {
   const lightLevel = props.robot?.color.getLightLevel();
   if (lightLevel !== undefined) {
     // Find a better light level detection, future me!
-    return lightLevel > 300;
+    return lightLevel < (255 * 3) / 2;
   } else {
     return true;
   }

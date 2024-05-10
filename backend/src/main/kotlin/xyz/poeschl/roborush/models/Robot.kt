@@ -10,6 +10,7 @@ import xyz.poeschl.roborush.security.repository.User
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class ActiveRobot(
   val id: Long,
+  val name: String,
   @JsonIgnore val user: User,
   val color: Color,
   var fuel: Int,
@@ -26,7 +27,7 @@ data class ActiveRobot(
 }
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
-data class PublicRobot(val id: Long, val color: Color, var position: Position)
+data class PublicRobot(val id: Long, val name: String, val color: Color, var position: Position)
 
 enum class Direction {
   NORTH,
