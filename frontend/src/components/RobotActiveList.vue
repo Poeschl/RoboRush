@@ -17,7 +17,7 @@ import type { PublicRobot } from "@/models/Robot";
 
 const gameStore = useGameStore();
 
-const robots = computed<PublicRobot[]>(() => gameStore.robots);
+const robots = computed<PublicRobot[]>(() => gameStore.robots.data);
 </script>
 
 <style scoped lang="scss">

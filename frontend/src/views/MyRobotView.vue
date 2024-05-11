@@ -26,7 +26,7 @@ import RobotDetails from "@/components/RobotDetails.vue";
 const gameStore = useGameStore();
 
 const currentMap = computed<PlaygroundMap | undefined>(() => gameStore.currentMap);
-const robots = computed<PublicRobot[]>(() => gameStore.robots);
+const robots = computed<PublicRobot[]>(() => gameStore.robots.data);
 </script>
 
 <style scoped>

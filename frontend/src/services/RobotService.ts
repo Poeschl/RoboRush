@@ -10,7 +10,7 @@ export default function useRobotService() {
   const getRobots = (): Promise<PublicRobot[]> => {
     return axios.get(`${baseRobotUrl}/all`).then((response) =>
       response.data.map((origin: PublicRobot) => {
-        return { id: origin.id, position: origin.position, color: new Color(origin.color.r, origin.color.g, origin.color.b) } as PublicRobot;
+        return { id: origin.id, name: origin.name, position: origin.position, color: new Color(origin.color.r, origin.color.g, origin.color.b) } as PublicRobot;
       }),
     );
   };

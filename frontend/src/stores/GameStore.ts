@@ -18,17 +18,16 @@ export const useGameStore = defineStore("gameStore", () => {
   const websocketService = useWebSocket();
   const gameService = useGameService();
 
-  const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargeEnabled: false });
+  const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargePossible: false });
 
   const internalMap = ref<PlaygroundMap>();
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
-  const internalRobots: Ref<{ robots: PublicRobot[] }> = ref({ robots: [] });
-  const robots = computed<PublicRobot[]>(() => internalRobots.value.robots);
+  const internalRobots: Ref<{ data: PublicRobot[] }> = ref({ data: [] });
 
   const userRobot = ref<ActiveRobot | undefined>();
   const userRobotActive = computed<boolean>(() => {
-    return userRobot.value != null && internalRobots.value.robots.map((robot) => robot.id).includes(userRobot.value.id);
+    return userRobot.value != null && internalRobots.value.data.map((robot) => robot.id).includes(userRobot.value.id);
   });
 
   const updateMap = () => {
@@ -49,8 +48,8 @@ export const useGameStore = defineStore("gameStore", () => {
       .getRobots()
       .then((response: PublicRobot[]) => {
         // Clears whole array
-        internalRobots.value.robots = [];
-        internalRobots.value.robots = response;
+        internalRobots.value.data = [];
+        internalRobots.value.data = response;
       })
       .catch((reason) => {
         log.error(`Could not get robots (${reason})`);
@@ -75,9 +74,15 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const updateRobot = (updatedRobot: PublicRobot) => {
-    const index = internalRobots.value.robots.findIndex((robot: PublicRobot) => robot.id == updatedRobot.id);
-    //log.debug(`Update robot with index ${index}`);
-    internalRobots.value.robots[index] = updatedRobot;
+    const index = internalRobots.value.data.findIndex((robot: PublicRobot) => robot.id == updatedRobot.id);
+
+    if (index >= 0) {
+      // It's an update
+      internalRobots.value.data[index] = updatedRobot;
+    } else {
+      // It's a new robot
+      internalRobots.value.data.push(updatedRobot);
+    }
   };
 
   const updateUserRobot = (activeRobot: ActiveRobot | undefined) => {
@@ -92,6 +97,10 @@ export const useGameStore = defineStore("gameStore", () => {
     const previousGameState = currentGame.value.currentState;
     currentGame.value.currentState = gameState;
 
+    if (previousGameState == GameState.ENDED && gameState === GameState.PREPARE) {
+      // Reset robot list on prepare stage
+      internalRobots.value.data = [];
+    }
     if (previousGameState == GameState.PREPARE && gameState === GameState.WAIT_FOR_PLAYERS) {
       // Update map data after game preparations
       updateMap();
@@ -121,7 +130,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const isSolarChargePossible = (): boolean => {
-    return currentGame.value.solarChargeEnabled;
+    return currentGame.value.solarChargePossible;
   };
 
   const solarCharge = (): Promise<void> => {
@@ -130,7 +139,7 @@ export const useGameStore = defineStore("gameStore", () => {
 
   return {
     currentMap: internalMap,
-    robots,
+    robots: internalRobots,
     userRobot,
     updateMap,
     updateRobots,

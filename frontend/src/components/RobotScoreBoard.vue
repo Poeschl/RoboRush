@@ -32,7 +32,7 @@ const gameStore = useGameStore();
 
 // TODO: Determine the score correctly
 const winners = computed<PublicRobot[]>(() => {
-  const winners = gameStore.robots.slice();
+  const winners = gameStore.robots.data.slice();
   winners.sort((a, b) => a.position.x - b.position.x);
   winners.slice(0, 10);
   return winners;
