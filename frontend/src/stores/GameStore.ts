@@ -18,7 +18,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const websocketService = useWebSocket();
   const gameService = useGameService();
 
-  const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargeEnabled: false });
+  const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargePossible: false });
 
   const internalMap = ref<PlaygroundMap>();
 
@@ -127,7 +127,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const isSolarChargePossible = (): boolean => {
-    return currentGame.value.solarChargeEnabled;
+    return currentGame.value.solarChargePossible;
   };
 
   const solarCharge = (): Promise<void> => {

@@ -2,7 +2,7 @@ import type { Position } from "@/models/Map";
 
 export interface Game {
   currentState: GameState;
-  solarChargeEnabled: boolean;
+  solarChargePossible: boolean;
   targetPosition?: Position;
 }
 

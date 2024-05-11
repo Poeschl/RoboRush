@@ -15,7 +15,7 @@
           <div class="level-item">Solar charge possible</div>
         </div>
         <div class="level-right">
-          <FontAwesomeIcon icon="fa-solid fa-square-check" v-if="currentGame.solarChargeEnabled" />
+          <FontAwesomeIcon icon="fa-solid fa-square-check" v-if="currentGame.solarChargePossible" />
           <FontAwesomeIcon icon="fa-regular fa-square" v-else />
         </div>
       </div>
