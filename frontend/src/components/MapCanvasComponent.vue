@@ -198,7 +198,7 @@ const drawMap = () => {
 const drawRobots = () => {
   if (robotCanvas.value && robotDrawContext.value && props.robots) {
     const drawContext = robotDrawContext.value;
-    log.debug("Draw robots");
+    log.debug(`Draw robots (count: ${props.robots.length})`);
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
