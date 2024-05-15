@@ -21,4 +21,8 @@ class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
   fun sendGameStateUpdate(gameState: GameState) {
     messageTemplate.convertAndSend("/topic/game/state", gameState)
   }
+
+  fun sendTurnUpdate(turn: Int) {
+    messageTemplate.convertAndSend("/topic/game/turn", turn)
+  }
 }

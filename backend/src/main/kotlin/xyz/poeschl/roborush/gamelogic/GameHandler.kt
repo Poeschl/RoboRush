@@ -30,6 +30,8 @@ class GameHandler(
     private val LOGGER = LoggerFactory.getLogger(GameHandler::class.java)
   }
 
+  private var currentTurn = 0
+
   fun getCurrentMap(): Map {
     return mapHandler.getCurrentMap()
   }
@@ -84,6 +86,7 @@ class GameHandler(
 
   fun executeAllRobotMoves() {
     robotHandler.executeRobotActions(this)
+    setGameTurn(currentTurn + 1)
   }
 
   fun registerRobotForNextGame(robotId: Long) {
@@ -112,11 +115,13 @@ class GameHandler(
 
     robotHandler.setRobotMaxFuel(map.maxRobotFuel)
     robotHandler.clearActiveRobots()
+    setGameTurn(0)
   }
 
   fun getPublicGameInfo(): Game {
     return Game(
       currentState = gameStateMachine.getCurrentState(),
+      currentTurn = currentTurn,
       targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
       solarChargePossible = mapHandler.isSolarChargePossible()
     )
@@ -132,5 +137,10 @@ class GameHandler(
 
   fun getSolarChargeRate(): Double {
     return mapHandler.getSolarChargeRate()
+  }
+
+  private fun setGameTurn(turn: Int) {
+    currentTurn = turn
+    websocketController.sendTurnUpdate(currentTurn)
   }
 }

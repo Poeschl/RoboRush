@@ -282,6 +282,7 @@ class GameHandlerTest {
     assertThat(game.currentState).isEqualTo(state)
     assertThat(game.targetPosition).isEqualTo(target)
     assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
+    assertThat(game.currentTurn).isEqualTo(0)
   }
 
   @Test
@@ -328,5 +329,50 @@ class GameHandlerTest {
 
     // VERIFY
     assertThat(pending).isFalse()
+  }
+
+  @Test
+  fun currentGameTurn_changesWithActions() {
+    // WHEN
+    val previousTurn = getCurrentTurn()
+
+    // THEN
+    gameHandler.executeAllRobotMoves()
+
+    // VERIFY
+    val currentTurn = getCurrentTurn()
+    assertThat(currentTurn).isEqualTo(previousTurn + 1)
+  }
+
+  @Test
+  fun currentGameTurn_resetOnPrepare() {
+    // WHEN
+    val map = a(`$Map`())
+
+    every { mapService.getNextChallengeMap() } returns map
+
+    gameHandler.executeAllRobotMoves()
+    val previousTurn = getCurrentTurn()
+
+    // THEN
+    gameHandler.prepareNewGame()
+
+    // VERIFY
+    val currentTurn = getCurrentTurn()
+    assertThat(previousTurn).isNotEqualTo(currentTurn)
+    assertThat(currentTurn).isEqualTo(0)
+  }
+
+  private fun getCurrentTurn(): Int {
+    val state = a(`$GameState`())
+    val target = a(`$Position`())
+    val chargingPossible = a(`$Boolean`())
+
+    every { gameStateMachine.getCurrentState() } returns state
+    every { mapHandler.getTargetPosition() } returns target
+    every { mapHandler.isSolarChargePossible() } returns chargingPossible
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
+
+    return gameHandler.getPublicGameInfo().currentTurn
   }
 }
