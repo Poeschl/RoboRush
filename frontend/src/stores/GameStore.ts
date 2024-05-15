@@ -18,7 +18,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const websocketService = useWebSocket();
   const gameService = useGameService();
 
-  const currentGame = ref<Game>({ currentState: GameState.ENDED, solarChargePossible: false });
+  const currentGame = ref<Game>({ currentState: GameState.ENDED, currentTurn: 0, solarChargePossible: false });
 
   const internalMap = ref<PlaygroundMap>();
 
@@ -71,6 +71,7 @@ export const useGameStore = defineStore("gameStore", () => {
     websocketService.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
     websocketService.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
     websocketService.registerForTopicCallback(WebSocketTopic.GAME_STATE_TOPIC, updateGameStateTo);
+    websocketService.registerForTopicCallback(WebSocketTopic.GAME_TURN_TOPIC, updateGameTurnTo);
   };
 
   const updateRobot = (updatedRobot: PublicRobot) => {
@@ -105,6 +106,10 @@ export const useGameStore = defineStore("gameStore", () => {
       // Update map data after game preparations
       updateMap();
     }
+  };
+
+  const updateGameTurnTo = (turnCount: number) => {
+    currentGame.value.currentTurn = turnCount;
   };
 
   const registerRobotOnGame = (): Promise<void> => {
