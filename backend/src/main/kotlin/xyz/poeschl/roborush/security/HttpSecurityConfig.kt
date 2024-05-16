@@ -41,9 +41,9 @@ class HttpSecurityConfig(
 
         // allow the map api and websockets for all users
         authorize("/ws", permitAll)
-        authorize("/map/**", permitAll)
         authorize("/robot/all", permitAll)
         authorize("/game", permitAll)
+        authorize("/game/map", permitAll)
 
         authorize(anyRequest, authenticated)
       }
