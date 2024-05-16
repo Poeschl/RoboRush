@@ -21,6 +21,7 @@ import xyz.poeschl.roborush.service.MapService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
+import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$DurationSetting`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
@@ -274,6 +275,9 @@ class GameHandlerTest {
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END) } returns a(`$DurationSetting`())
 
     // THEN
     val game = gameHandler.getPublicGameInfo()
@@ -296,6 +300,9 @@ class GameHandlerTest {
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END) } returns a(`$DurationSetting`())
 
     // THEN
     val game = gameHandler.getPublicGameInfo()
@@ -372,6 +379,9 @@ class GameHandlerTest {
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
+    every { configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END) } returns a(`$DurationSetting`())
 
     return gameHandler.getPublicGameInfo().currentTurn
   }
