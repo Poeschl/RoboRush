@@ -31,12 +31,15 @@ const displayPathMarkerBorderColor = new Color(0, 50, 255);
 const props = withDefaults(
   defineProps<{
     map: PlaygroundMap | undefined;
-    robots?: PublicRobot[] | undefined;
-    drawablePath: boolean;
+    // Strange wrapping is needed since VUE does not recognize the array update correctly
+    robots?: { data: PublicRobot[] } | undefined;
+    drawablePath?: boolean;
     pathToDisplay?: Path | undefined;
   }>(),
   {
+    robots: undefined,
     drawablePath: false,
+    pathToDisplay: undefined,
   },
 );
 
@@ -196,13 +199,13 @@ const drawMap = () => {
 };
 
 const drawRobots = () => {
-  if (robotCanvas.value && robotDrawContext.value && props.robots) {
+  if (robotCanvas.value && robotDrawContext.value && props.robots?.data) {
     const drawContext = robotDrawContext.value;
-    log.debug(`Draw robots (count: ${props.robots.length})`);
+    log.debug(`Draw robots (count: ${props.robots.data.length})`);
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const robot of props.robots) {
+    for (const robot of props.robots.data) {
       // log.debug(`Draw robot ${JSON.stringify(robot)}`);
       drawContext.save();
       const origin = pixelOriginOfPosition(robot.position);
