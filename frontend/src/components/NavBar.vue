@@ -33,7 +33,7 @@
             </div>
             How To Play
           </router-link>
-          <a v-if="!userIsAdmin" class="navbar-item" href="/api/swagger-ui?urls.primaryName=public" target="_blank">
+          <a class="navbar-item" href="/api/swagger-ui?urls.primaryName=public" target="_blank">
             <div class="icon mr-1">
               <FontAwesomeIcon icon="fa-solid fa-code" />
             </div>
