@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic.internal
 
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.CacheEvict
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.Size
@@ -37,6 +38,7 @@ class MapHandler {
     return currentMap.maxRobotFuel
   }
 
+  @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
   fun loadNewMap(map: Map) {
     currentMap = map
 

@@ -1,5 +1,6 @@
 package xyz.poeschl.roborush.service
 
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import xyz.poeschl.roborush.models.settings.*
 import xyz.poeschl.roborush.repositories.ConfigRepository
@@ -11,6 +12,7 @@ class ConfigService(
   private val settingsEntityMapper: SettingEntityMapper
 ) {
 
+  @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
   fun saveSetting(settingDto: SaveSettingDto): Setting<*> {
     val existingEntity: SettingEntity = configRepository.findByKey(settingDto.key)
     val updatedEntity = settingsEntityMapper.toEntity(existingEntity, settingDto)

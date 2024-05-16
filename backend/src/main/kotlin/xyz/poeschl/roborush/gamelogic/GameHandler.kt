@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic
 
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
@@ -118,6 +119,7 @@ class GameHandler(
     setGameTurn(0)
   }
 
+  @Cacheable("gameInfoCache")
   fun getPublicGameInfo(): Game {
     return Game(
       currentState = gameStateMachine.getCurrentState(),
