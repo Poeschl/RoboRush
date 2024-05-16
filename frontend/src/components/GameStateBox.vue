@@ -8,6 +8,7 @@
         </div>
       </Transition>
     </div>
+    <div>Game turn: {{ currentGame.currentTurn }}</div>
   </InfoBoxTemplate>
 </template>
 

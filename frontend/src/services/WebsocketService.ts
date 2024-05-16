@@ -12,12 +12,14 @@ export enum WebSocketTopic {
   PUBLIC_ROBOT_TOPIC = 0,
   PRIVATE_ROBOT_TOPIC,
   GAME_STATE_TOPIC,
+  GAME_TURN_TOPIC,
 }
 
 export function useWebSocket() {
   const websocketPath = "/api/ws";
   const publicRobotUpdateTopic = "/topic/robot";
   const publicGameStateUpdateTopic = "/topic/game/state";
+  const publicGameTurnUpdateTopic = "/topic/game/turn";
   const userRobotUpdateQueue = "/queue/robot";
   const topicListener = new Map<WebSocketTopic, Function>();
   let websocketClient: Client | undefined = undefined;
@@ -103,6 +105,10 @@ export function useWebSocket() {
     client.subscribe(publicGameStateUpdateTopic, (message) => {
       const gameState: GameState = JSON.parse(message.body);
       topicListener.get(WebSocketTopic.GAME_STATE_TOPIC)?.call(null, gameState);
+    });
+    client.subscribe(publicGameTurnUpdateTopic, (message) => {
+      const turnCount: number = parseInt(message.body);
+      topicListener.get(WebSocketTopic.GAME_TURN_TOPIC)?.call(null, turnCount);
     });
   };
 
