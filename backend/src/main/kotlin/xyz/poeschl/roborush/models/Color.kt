@@ -1,5 +1,6 @@
 package xyz.poeschl.roborush.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
 import net.karneim.pojobuilder.GeneratePojoBuilder
@@ -14,6 +15,7 @@ data class Color(val r: Int, val g: Int, val b: Int) {
   }
 
   // Allow a little pixel color delta
+  @JsonIgnore
   fun isGrey() = (r == g || r == g - 1 || r == g + 1) && (g == b || g == b - 1 || g == b + 1) && (b == r || b == r - 1 || b == r + 1)
 }
 
