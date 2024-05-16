@@ -4,6 +4,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import xyz.poeschl.roborush.configuration.GameLogic
+import xyz.poeschl.roborush.gamelogic.internal.MapHandler
+import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
 import xyz.poeschl.roborush.models.settings.SettingKey.*
 import xyz.poeschl.roborush.service.ConfigService
 import kotlin.concurrent.thread
@@ -12,13 +14,16 @@ import kotlin.concurrent.thread
 class GameLoop(
   private val gameHandler: GameHandler,
   private val gameStateService: GameStateMachine,
-  private val configService: ConfigService
+  private val configService: ConfigService,
+  private val robotHandler: RobotHandler,
+  private val mapHandler: MapHandler
 ) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
   }
 
   private var noRobotActionCounter = 0
+  private var successIndex = -1
 
   @EventListener(ApplicationReadyEvent::class)
   fun startGameLoop() {
@@ -67,13 +72,29 @@ class GameLoop(
         } else {
           LOGGER.debug("Execute robot actions")
           gameHandler.executeAllRobotMoves()
-          gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
+
+          robotHandler.getAllActiveRobots().forEachIndexed { index, robot ->
+            if (robot.position.equals(mapHandler.getTargetPosition())) {
+              successIndex = index
+              gameStateService.setGameState(GameState.VICTORY)
+            }
+          }
+          if (successIndex < 0) {
+            gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
+          }
         }
+      }
+
+      GameState.VICTORY -> {
+        LOGGER.debug("Robot #"+successIndex+" has reached the target tile!")
+        Thread.sleep(configService.getDurationSetting(TIMEOUT_VICTORY_SCREEN).inWholeMilliseconds())
+        gameStateService.setGameState(GameState.ENDED)
       }
 
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
         Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
+        successIndex = -1
         gameStateService.setGameState(GameState.PREPARE)
       }
     }

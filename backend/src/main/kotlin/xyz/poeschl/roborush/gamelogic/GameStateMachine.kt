@@ -43,6 +43,7 @@ enum class GameState {
   WAIT_FOR_PLAYERS,
   WAIT_FOR_ACTION,
   ACTION,
+  VICTORY,
   ENDED;
 
   val validPredecessor: List<GameState>
@@ -51,6 +52,7 @@ enum class GameState {
       WAIT_FOR_PLAYERS -> listOf(PREPARE)
       WAIT_FOR_ACTION -> listOf(WAIT_FOR_PLAYERS, ACTION)
       ACTION -> listOf(WAIT_FOR_ACTION)
-      ENDED -> listOf(ACTION)
+      VICTORY -> listOf(ACTION)
+      ENDED -> listOf(VICTORY)
     }
 }
