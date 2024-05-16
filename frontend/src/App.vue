@@ -58,6 +58,8 @@ watch(
   (current, previous, onCleanup) => {
     if (current) {
       gameStore.retrieveUserRobotState();
+    } else {
+      router.push({ path: "/" });
     }
   },
 );
