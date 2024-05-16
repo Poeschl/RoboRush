@@ -15,7 +15,7 @@ class GameStateMachine(private val websocketController: WebsocketController) {
 
   private var currentGameState = GameState.ENDED
 
-  @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
+  @CacheEvict(cacheNames = ["gameInfoCache", "userRobotCache"], allEntries = true)
   fun setGameState(state: GameState) {
     if (state.validPredecessor.contains(currentGameState)) {
       LOGGER.debug("Game state change: {} -> {}", currentGameState, state)
