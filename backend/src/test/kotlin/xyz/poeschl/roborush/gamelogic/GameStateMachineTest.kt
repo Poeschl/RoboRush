@@ -53,9 +53,21 @@ class GameStateMachineTest {
         GameState.PREPARE,
         false
       ),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.PREPARE, true),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.WAIT_FOR_PLAYERS, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.WAIT_FOR_ACTION, false),
+      Arguments.of(
+        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED),
+        GameState.PREPARE,
+        true
+      ),
+      Arguments.of(
+        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED),
+        GameState.WAIT_FOR_PLAYERS,
+        false
+      ),
+      Arguments.of(
+        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED),
+        GameState.WAIT_FOR_ACTION,
+        false
+      ),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.ACTION, false)
     )
   }
