@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic
 
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.CacheEvict
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.exceptions.GameStateException
@@ -14,6 +15,7 @@ class GameStateMachine(private val websocketController: WebsocketController) {
 
   private var currentGameState = GameState.ENDED
 
+  @CacheEvict(cacheNames = ["gameInfoCache", "userRobotCache"], allEntries = true)
   fun setGameState(state: GameState) {
     if (state.validPredecessor.contains(currentGameState)) {
       LOGGER.debug("Game state change: {} -> {}", currentGameState, state)

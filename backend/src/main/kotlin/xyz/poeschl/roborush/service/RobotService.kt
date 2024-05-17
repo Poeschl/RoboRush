@@ -1,5 +1,6 @@
 package xyz.poeschl.roborush.service
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import xyz.poeschl.roborush.exceptions.RobotNotActiveException
 import xyz.poeschl.roborush.gamelogic.GameHandler
@@ -18,6 +19,7 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
     return robotRepository.findRobotByUser(user)
   }
 
+  @Cacheable("userRobotCache", key = "#user.username")
   fun getActiveRobotByUser(user: User): ActiveRobot? {
     robotRepository.findRobotByUser(user)?.let {
       return gameHandler.getActiveRobot(it.id!!)

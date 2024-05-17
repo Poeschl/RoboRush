@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic
 
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
@@ -118,12 +119,18 @@ class GameHandler(
     setGameTurn(0)
   }
 
+  @Cacheable("gameInfoCache")
   fun getPublicGameInfo(): Game {
     return Game(
       currentState = gameStateMachine.getCurrentState(),
       currentTurn = currentTurn,
       targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
-      solarChargePossible = mapHandler.isSolarChargePossible()
+      solarChargePossible = mapHandler.isSolarChargePossible(),
+      gameTimeoutsInMillis = GameTimeouts(
+        waitForPlayers = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS).value.inWholeMilliseconds,
+        waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value.inWholeMilliseconds,
+        gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
+      )
     )
   }
 
