@@ -6,6 +6,7 @@ import org.springframework.context.event.EventListener
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
+import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.settings.SettingKey.*
 import xyz.poeschl.roborush.service.ConfigService
 import kotlin.concurrent.thread
@@ -23,7 +24,7 @@ class GameLoop(
   }
 
   private var noRobotActionCounter = 0
-  private var successIndex = -1
+  private var winningRobot: ActiveRobot? = null
 
   @EventListener(ApplicationReadyEvent::class)
   fun startGameLoop() {
@@ -40,6 +41,7 @@ class GameLoop(
   fun gameLoop() {
     when (gameStateService.getCurrentState()) {
       GameState.PREPARE -> {
+        winningRobot = null
         gameHandler.prepareNewGame()
         gameStateService.setGameState(GameState.WAIT_FOR_PLAYERS)
       }
@@ -73,13 +75,13 @@ class GameLoop(
           LOGGER.debug("Execute robot actions")
           gameHandler.executeAllRobotMoves()
 
-          robotHandler.getAllActiveRobots().forEachIndexed { index, robot ->
-            if (robot.position.equals(mapHandler.getTargetPosition())) {
-              successIndex = index
+          robotHandler.getAllActiveRobots().forEach { robot ->
+            if (robot.position == mapHandler.getTargetPosition()) {
+              winningRobot = robot
               gameStateService.setGameState(GameState.ENDED)
             }
           }
-          if (successIndex < 0) {
+          if (winningRobot == null) {
             gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
           }
         }
@@ -87,12 +89,11 @@ class GameLoop(
 
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
-        if (successIndex >= 0) {
-          LOGGER.debug("Robot #" + successIndex + " has reached the target tile!")
+        if (winningRobot != null) {
+          LOGGER.debug("Robot ${winningRobot!!.name} has reached the target tile!")
         } else {
-          LOGGER.debug("Noone reached the target tile!")
+          LOGGER.debug("Noone reached the target tile in time!")
         }
-        successIndex = -1
         Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
         gameStateService.setGameState(GameState.PREPARE)
       }
