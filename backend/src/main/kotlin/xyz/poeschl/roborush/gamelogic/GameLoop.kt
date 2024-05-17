@@ -87,9 +87,13 @@ class GameLoop(
 
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
-        LOGGER.debug("Robot #"+successIndex+" has reached the target tile!")
-        Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
+        if (successIndex >= 0) {
+          LOGGER.debug("Robot #" + successIndex + " has reached the target tile!")
+        } else {
+          LOGGER.debug("Noone reached the target tile!")
+        }
         successIndex = -1
+        Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
         gameStateService.setGameState(GameState.PREPARE)
       }
     }
