@@ -117,4 +117,12 @@ class RobotHandler(
 
     return positionsAfterNextActions.none { it == position }
   }
+
+  fun wonTheCurrentRound(robot: ActiveRobot) {
+    val actualRobot = robotRepository.findById(robot.id)
+    actualRobot.ifPresent {
+      it.score += 1
+      robotRepository.save(it)
+    }
+  }
 }

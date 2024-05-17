@@ -9,7 +9,9 @@ import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
 import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
-import xyz.poeschl.roborush.models.*
+import xyz.poeschl.roborush.models.ActiveRobot
+import xyz.poeschl.roborush.models.Game
+import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Map
 import xyz.poeschl.roborush.repositories.Tile
@@ -39,6 +41,10 @@ class GameHandler(
 
   fun getTileAtPosition(position: Position): Tile {
     return mapHandler.getTileAtPosition(position)
+  }
+
+  fun getTargetPosition(): Position {
+    return mapHandler.getTargetPosition()
   }
 
   /**
@@ -76,6 +82,10 @@ class GameHandler(
 
   fun getActiveRobot(robotId: Long): ActiveRobot? {
     return robotHandler.getActiveRobot(robotId)
+  }
+
+  fun wonTheCurrentRound(robot: ActiveRobot) {
+    return robotHandler.wonTheCurrentRound(robot)
   }
 
   fun nextActionForRobot(robotId: Long, action: RobotAction<*>) {

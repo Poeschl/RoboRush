@@ -33,9 +33,9 @@ class DummyBots(
   private val dummyUser1: User = userRepository.findByUsername("dummy1") ?: userRepository.save(User(null, "dummy1", DUMMY_PASSWORD))
   private val dummyUser2: User = userRepository.findByUsername("dummy2") ?: userRepository.save(User(null, "dummy2", DUMMY_PASSWORD))
   private val dummyUser3: User = userRepository.findByUsername("dummy3") ?: userRepository.save(User(null, "dummy3", DUMMY_PASSWORD))
-  private val robot1 = robotRepository.findRobotByUser(dummyUser1) ?: robotRepository.save(Robot(null, Color.randomColor(), dummyUser1))
-  private val robot2 = robotRepository.findRobotByUser(dummyUser2) ?: robotRepository.save(Robot(null, Color.randomColor(), dummyUser2))
-  private val robot3 = robotRepository.findRobotByUser(dummyUser3) ?: robotRepository.save(Robot(null, Color.randomColor(), dummyUser3))
+  private val robot1 = robotRepository.findRobotByUser(dummyUser1) ?: robotRepository.save(Robot(null, Color.randomColor(), 1, dummyUser1))
+  private val robot2 = robotRepository.findRobotByUser(dummyUser2) ?: robotRepository.save(Robot(null, Color.randomColor(), 0, dummyUser2))
+  private val robot3 = robotRepository.findRobotByUser(dummyUser3) ?: robotRepository.save(Robot(null, Color.randomColor(), 0, dummyUser3))
 
   @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
   fun dummyRobots() {

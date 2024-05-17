@@ -4,8 +4,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import xyz.poeschl.roborush.configuration.GameLogic
-import xyz.poeschl.roborush.gamelogic.internal.MapHandler
-import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.settings.SettingKey.*
 import xyz.poeschl.roborush.service.ConfigService
@@ -15,9 +13,7 @@ import kotlin.concurrent.thread
 class GameLoop(
   private val gameHandler: GameHandler,
   private val gameStateService: GameStateMachine,
-  private val configService: ConfigService,
-  private val robotHandler: RobotHandler,
-  private val mapHandler: MapHandler
+  private val configService: ConfigService
 ) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
@@ -75,8 +71,8 @@ class GameLoop(
           LOGGER.debug("Execute robot actions")
           gameHandler.executeAllRobotMoves()
 
-          robotHandler.getAllActiveRobots().forEach { robot ->
-            if (robot.position == mapHandler.getTargetPosition()) {
+          gameHandler.getActiveRobots().forEach { robot ->
+            if (robot.position == gameHandler.getTargetPosition()) {
               winningRobot = robot
               gameStateService.setGameState(GameState.ENDED)
             }
@@ -91,6 +87,7 @@ class GameLoop(
         LOGGER.debug("Game ended")
         if (winningRobot != null) {
           LOGGER.debug("Robot ${winningRobot!!.name} has reached the target tile!")
+          gameHandler.wonTheCurrentRound(winningRobot!!)
         } else {
           LOGGER.debug("Noone reached the target tile in time!")
         }

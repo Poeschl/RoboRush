@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.Comparator
 import java.util.stream.Stream
 
 class DBMigrationIntegrityTest {
@@ -29,7 +28,7 @@ class DBMigrationIntegrityTest {
   private val changeChecker = MigrationChangeChecker.setup()
     .withHashAlgorithm(HashAlgorithm.MD5)
     .withHashPair("V1_000__create_user_schemas.sql", "5982877bb3946da9beea4e57f4d1f57e")
-    .withHashPair("V1_001__create_robot_schemas.sql", "6b37f4a87fa7ff214b3f61b997cc83c4")
+    .withHashPair("V1_001__create_robot_schemas.sql", "1cf42c0d26713eb7b6d42894118b82e1")
     .withHashPair("V1_002__create_config_schemas.sql", "536f4e48da2794ab9df48f2bb9670da3")
     .withHashPair("V1_003__create_map_schemas.sql", "1241f041234a0e4b6a62e9f0b2b4ba20")
     .withHashPair("V1_004__add_map_icon_map.sql", "2aa3f876a708aaf32eb95b8f6cec980a")
