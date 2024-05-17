@@ -76,7 +76,7 @@ class GameLoop(
           robotHandler.getAllActiveRobots().forEachIndexed { index, robot ->
             if (robot.position.equals(mapHandler.getTargetPosition())) {
               successIndex = index
-              gameStateService.setGameState(GameState.VICTORY)
+              gameStateService.setGameState(GameState.ENDED)
             }
           }
           if (successIndex < 0) {
@@ -85,14 +85,9 @@ class GameLoop(
         }
       }
 
-      GameState.VICTORY -> {
-        LOGGER.debug("Robot #"+successIndex+" has reached the target tile!")
-        Thread.sleep(configService.getDurationSetting(TIMEOUT_VICTORY_SCREEN).inWholeMilliseconds())
-        gameStateService.setGameState(GameState.ENDED)
-      }
-
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
+        LOGGER.debug("Robot #"+successIndex+" has reached the target tile!")
         Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
         successIndex = -1
         gameStateService.setGameState(GameState.PREPARE)

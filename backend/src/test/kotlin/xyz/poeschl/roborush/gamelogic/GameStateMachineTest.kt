@@ -21,27 +21,22 @@ class GameStateMachineTest {
       Arguments.of(listOf<GameState>(), GameState.WAIT_FOR_PLAYERS, false),
       Arguments.of(listOf<GameState>(), GameState.WAIT_FOR_ACTION, false),
       Arguments.of(listOf<GameState>(), GameState.ACTION, false),
-      Arguments.of(listOf<GameState>(), GameState.VICTORY, false),
       Arguments.of(listOf<GameState>(), GameState.ENDED, false),
       Arguments.of(listOf(GameState.PREPARE), GameState.WAIT_FOR_PLAYERS, true),
       Arguments.of(listOf(GameState.PREPARE), GameState.WAIT_FOR_ACTION, false),
       Arguments.of(listOf(GameState.PREPARE), GameState.ACTION, false),
-      Arguments.of(listOf(GameState.PREPARE), GameState.VICTORY, false),
       Arguments.of(listOf(GameState.PREPARE), GameState.ENDED, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS), GameState.WAIT_FOR_ACTION, true),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS), GameState.ACTION, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS), GameState.VICTORY, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS), GameState.ENDED, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS), GameState.PREPARE, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION), GameState.WAIT_FOR_PLAYERS, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION), GameState.ACTION, true),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION), GameState.VICTORY, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION), GameState.ENDED, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION), GameState.PREPARE, false),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION), GameState.WAIT_FOR_ACTION, true),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION), GameState.WAIT_FOR_PLAYERS, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION), GameState.VICTORY, true),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION), GameState.ENDED, false),
+      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION), GameState.ENDED, true),
       Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION), GameState.ACTION, false),
       Arguments.of(
         listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.WAIT_FOR_ACTION),
@@ -50,10 +45,6 @@ class GameStateMachineTest {
       ),
       Arguments.of(
         listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.WAIT_FOR_ACTION),
-        GameState.VICTORY,
-        false),
-      Arguments.of(
-        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.WAIT_FOR_ACTION),
         GameState.ENDED,
         false
       ),
@@ -62,27 +53,10 @@ class GameStateMachineTest {
         GameState.PREPARE,
         false
       ),
-      Arguments.of(
-        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY),
-        GameState.PREPARE,
-        false
-      ),
-      Arguments.of(
-        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY),
-        GameState.ENDED,
-        true
-      ),
-      Arguments.of(
-        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY),
-        GameState.WAIT_FOR_ACTION,
-        false
-      ),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY), GameState.ACTION, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY, GameState.ENDED), GameState.PREPARE, true),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY, GameState.ENDED), GameState.WAIT_FOR_PLAYERS, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY, GameState.ENDED), GameState.WAIT_FOR_ACTION, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY, GameState.ENDED), GameState.ACTION, false),
-      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.VICTORY, GameState.ENDED), GameState.VICTORY, false)
+      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.PREPARE, true),
+      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.WAIT_FOR_PLAYERS, false),
+      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.WAIT_FOR_ACTION, false),
+      Arguments.of(listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED), GameState.ACTION, false)
     )
   }
 
