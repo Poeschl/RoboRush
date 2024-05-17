@@ -126,10 +126,10 @@ class GameHandler(
       currentTurn = currentTurn,
       targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
       solarChargePossible = mapHandler.isSolarChargePossible(),
-      gameTimeouts = GameTimeouts(
-        waitForPlayers = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS).value,
-        waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value,
-        gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value
+      gameTimeoutsInMillis = GameTimeouts(
+        waitForPlayers = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS).value.inWholeMilliseconds,
+        waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value.inWholeMilliseconds,
+        gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
       )
     )
   }
