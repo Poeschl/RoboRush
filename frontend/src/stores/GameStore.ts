@@ -101,10 +101,14 @@ export const useGameStore = defineStore("gameStore", () => {
     if (previousGameState == GameState.ENDED && gameState === GameState.PREPARE) {
       // Reset robot list on prepare stage
       internalRobots.value.data = [];
+      updateGameInfo();
     }
     if (previousGameState == GameState.PREPARE && gameState === GameState.WAIT_FOR_PLAYERS) {
       // Update map data after game preparations
       updateMap();
+    }
+    if (gameState === GameState.ENDED) {
+      updateGameInfo();
     }
   };
 

@@ -11,6 +11,7 @@ import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Game
+import xyz.poeschl.roborush.models.GameTimeouts
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Map
@@ -85,7 +86,7 @@ class GameHandler(
   }
 
   fun wonTheCurrentRound(robot: ActiveRobot) {
-    return robotHandler.wonTheCurrentRound(robot)
+    robotHandler.wonTheCurrentRound(robot)
   }
 
   fun nextActionForRobot(robotId: Long, action: RobotAction<*>) {
@@ -140,7 +141,8 @@ class GameHandler(
         waitForPlayers = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS).value.inWholeMilliseconds,
         waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value.inWholeMilliseconds,
         gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
-      )
+      ),
+      nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username
     )
   }
 

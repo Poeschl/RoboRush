@@ -20,7 +20,6 @@ class GameLoop(
   }
 
   private var noRobotActionCounter = 0
-  private var winningRobot: ActiveRobot? = null
 
   @EventListener(ApplicationReadyEvent::class)
   fun startGameLoop() {
@@ -37,7 +36,6 @@ class GameLoop(
   fun gameLoop() {
     when (gameStateService.getCurrentState()) {
       GameState.PREPARE -> {
-        winningRobot = null
         gameHandler.prepareNewGame()
         gameStateService.setGameState(GameState.WAIT_FOR_PLAYERS)
       }
@@ -71,13 +69,14 @@ class GameLoop(
           LOGGER.debug("Execute robot actions")
           gameHandler.executeAllRobotMoves()
 
-          gameHandler.getActiveRobots().forEach { robot ->
-            if (robot.position == gameHandler.getTargetPosition()) {
-              winningRobot = robot
-              gameStateService.setGameState(GameState.ENDED)
-            }
+          val winningRobot = gameHandler.getActiveRobots().find { robot ->
+            robot.position == gameHandler.getTargetPosition()
           }
-          if (winningRobot == null) {
+
+          if (winningRobot != null){
+            gameHandler.wonTheCurrentRound(winningRobot)
+            gameStateService.setGameState(GameState.ENDED)
+          } else {
             gameStateService.setGameState(GameState.WAIT_FOR_ACTION)
           }
         }
@@ -85,12 +84,6 @@ class GameLoop(
 
       GameState.ENDED -> {
         LOGGER.debug("Game ended")
-        if (winningRobot != null) {
-          LOGGER.debug("Robot ${winningRobot!!.name} has reached the target tile!")
-          gameHandler.wonTheCurrentRound(winningRobot!!)
-        } else {
-          LOGGER.debug("Noone reached the target tile in time!")
-        }
         Thread.sleep(configService.getDurationSetting(TIMEOUT_GAME_END).inWholeMilliseconds())
         gameStateService.setGameState(GameState.PREPARE)
       }
