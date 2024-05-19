@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot } from "@/models/Robot";
-import type { PlaygroundMap, Tile } from "@/models/Map";
+import type { PlaygroundMap } from "@/models/Map";
 import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
 import type { User } from "@/models/User";
 import { useGameService } from "@/services/GameService";
