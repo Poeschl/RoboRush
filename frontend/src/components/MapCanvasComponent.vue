@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="has-background-white map-container">
+  <div ref="container" class="has-background-white map-container" :style="{ 'aspect-ratio': mapAspectRatio }">
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
     <canvas id="displayPath" ref="displayPathCanvas" />
@@ -55,6 +55,7 @@ const pathDrawContext = computed(() => pathCanvas.value?.getContext("2d"));
 
 const mapWidth = ref<number>(800);
 const mapHeight = ref<number>(800);
+const mapAspectRatio = computed<number>(() => mapWidth.value / mapHeight.value);
 const heightMap = computed<Tile[]>(() => {
   if (props.map != undefined) {
     return props.map.mapData;
@@ -318,7 +319,6 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
 <style scoped lang="scss">
 .map-container {
   position: relative;
-  aspect-ratio: 1/1;
   min-width: 600px;
   width: auto;
   height: auto;
