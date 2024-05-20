@@ -152,7 +152,45 @@
     </div>
     <div class="column is-half">
       <InfoBoxTemplate title="Game Lifecycle">
-        <div class="doc">//TODO</div>
+        <div class="doc">
+          <div>
+            RoboRush is a pure turn-based game to ensure that all actions happens at the same time. For that the game engine has defined game states, which
+            describes what is currently happening. In the Overview below you can see normal state transitions as well as transitions with timeouts (little clock
+            icons). The timeouts will just block the game flow for a defined time in the current game state. All timeouts for the current game can be looked up
+            in the game information GET endpoint (See the <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec</a>).
+          </div>
+          <div class="doc-img">
+            <ImageComponent
+              class="m-3 is-block is-background-grey"
+              image-src="/img/how-to/game-states.drawio.svg"
+              title="The game states with all possible transitions."
+            />
+          </div>
+          <div class="doc-title">PREPARE</div>
+          <div>This state selects on of the available maps and prepares everything for a new game.</div>
+          <div class="doc-title">WAIT_FOR_PLAYERS</div>
+          <div>
+            During this phase the game allows the registration of participating robots for the upcoming game. New participants will be spawned immediately at a
+            random start tile of the map. In case of no players after the timeout, the game will reset to the preparation state.
+          </div>
+          <div class="doc-title">WAIT_FOR_ACTION</div>
+          <div>
+            While the game is in this state, every robot can schedule its next action. This is typically done by a decision based on the current game and robot
+            information. If a invalid action is intended errors with a detailed description will be returned. Also if a action with returning data is planned,
+            remember that the data will available <span class="highlighted">after</span> the upcoming action state.
+          </div>
+          <div class="doc-title">ACTION</div>
+          <div>
+            Now all robot actions will be executed and all action results are stored in the robot attributes. After the execution the target tile will be
+            checked for a standing robot. If no winner is found, the state transitions to <code>WAIT_FOR_ACTION</code>. Otherwise the winner will be announced
+            and the game went into the ending phase.
+          </div>
+          <div class="doc-title">ENDED</div>
+          <div>
+            The final state acts like a little cooldown in which no robot interaction is possible and the winning robot is shown at the web ui as well as in the
+            game info endpoint. After this chill-phase a new game starts with entering the <code>PREPARE</code> state again.
+          </div>
+        </div>
       </InfoBoxTemplate>
     </div>
   </div>
