@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
-import {useGameStore} from "@/stores/GameStore";
+import { useGameStore } from "@/stores/GameStore";
 import GameStateBox from "@/components/GameStateBox.vue";
 import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
