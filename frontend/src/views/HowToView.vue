@@ -4,7 +4,7 @@
       <InfoBoxTemplate title="What is RoboRush?">
         <div class="doc">
           <div>
-            RoboRush is a multiplayer coding game about finding a path from A to B for a robot on a 2 dimensional map. The game is played in a turn-based
+            RoboRush is a multiplayer coding challenge about finding a path from A to B for a robot on a 2 dimensional map. The game is played in a turn-based
             manner, so that every player's robot moves at the exact same time.
           </div>
           <div>
@@ -13,7 +13,8 @@
             tank a little. If a robot runs out of fuel it is immobile and can't execute a action anymore.
           </div>
           <div>
-            To win the game your robot needs to be the first one reaching the target position. Every win adds one point on the highscore list to your entry.
+            To win the game your robot needs to be <span class="highlighted">the first one reaching the target position</span>. Every win adds one point on the
+            highscore list to your entry.
           </div>
         </div>
       </InfoBoxTemplate>
@@ -23,7 +24,20 @@
         <div class="doc">
           <div>
             Every player has exactly one robot and the robot has some attributes. The robot is named after the players username and can be instructed via a rest
-            interface. To monitor the live attributes look at the main page and be logged in.
+            interface. To visually monitor the live attributes look at the main page and be logged in.
+          </div>
+          <div class="doc-title">Robot attributes</div>
+          <div>
+            Every robot has a fuel tank, which is filled at the start of each game. For every map the maximum amount of fuel can be different. We made sure you
+            have a good chance to reach the target tile, no worries. The tank will be drained on most of the robot actions. When it
+            <span class="highlighted">reaches zero fuel units your robot can not execute a action with a cost anymore</span>.
+          </div>
+          <div class="doc-title">Robot actions</div>
+          <div>
+            A robot can be instructed via a REST interface, which require your API access token. For a overview of the available commands and how the
+            authentication works in detail, we provide a
+            <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec for the robot</a>. To send example requests, please enter you api
+            token in the top "Authorize" button dialog and execute some requests with the "Try it out" button.
           </div>
           <div class="doc-title">Registration</div>
           <div>
@@ -33,38 +47,44 @@
           <div class="doc-img">
             <ImageComponent class="m-3 is-block" image-src="/img/how-to/user-profile.png" title="A screenshot of the user profile dialog." />
           </div>
-          <div class="doc-title">Robot actions</div>
-          <div>
-            A robot can be instructed via a REST interface, which require your API access token. For a overview of the available commands and how the
-            authentication works in detail, we provide a
-            <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec for the robot</a>. To send example requests, please enter you api
-            token in the top "Authorize" button dialog and execute some requests with the "Try it out" button.
-          </div>
         </div>
       </InfoBoxTemplate>
       <InfoBoxTemplate title="Possible robot actions">
         <div class="doc">
-          <div>There are several actions a robot can do in a turn.</div>
-          <div class="doc-title">Move Action</div>
+          <div>
+            There are several actions a robot can do in a turn. If no participating robot execute a action at all for a few rounds the game will be ended.
+          </div>
+          <div class="doc-title">Move</div>
           <div>
             With this action the robot moves to one of the neighbor map tiles. The robot can only move one tile at once in one of the 4 directions (east, south,
             west, north). Every movement costs the height difference of the map tiles plus 1 static fuel. "Rolling down" from a higher tile to a lower one,
-            costs only 1 fuel unit.
+            costs only 1 fuel unit. After the movement is carried out, the new position of the robot can be retrieved by the <code>lastResult</code> attribute
+            of the robot information GET request.
           </div>
           <div>Cost: <code>max(heightDestinationTile - heightCurrentTile, 0) + 1</code></div>
-          <div class="doc-title">Scan Action</div>
+          <div class="doc-title">Scan</div>
           <div>
             With the scan the robot will retrieve the map tiles around hin according to the given scan distance. The scan return every tile which has a
             <a href="https://en.wikipedia.org/wiki/Taxicab_geometry" target="_blank">Manhattan geometry</a> equal or less then the scan distance parameter. A
-            scan is very fuel consuming on large patches, since the cost is the distance squared.
+            scan is very fuel consuming on large patches, since the cost is the distance squared. The results of the scan are available by the
+            <code>lastResult</code> attribute of the robot information GET request after the execution phase.
           </div>
           <div>Cost: <code>distance * distance</code></div>
+          <div class="doc-title">Wait</div>
+          <div>Let your robot skip the next turn. Just chilling...</div>
+          <div>Gain: <code>Nothing</code></div>
           <div class="doc-title">Refuel</div>
-          <div>//TBD</div>
+          <div>
+            <span class="highlighted">When standing on a fuel station tile</span> your robot can schedule the refuel action. After execution your robot's fuel
+            tank will be fully refilled. Just remember, that there can only one robot on a single tile.
+          </div>
           <div>Gain: <code>Full fuel tank</code></div>
           <div class="doc-title">Solar Charge</div>
-          <div>//TBD</div>
-          <div>Gain: <code>distance * distance</code></div>
+          <div>
+            If the map allows it, the robot can spend a turn and charge its fuel tank to gain some fuel units. This amount is a small percentage of the fuel
+            tank capacity. Typically below 5%. It is intended to be a emergency backup if a robot is stuck by mistake.
+          </div>
+          <div>Gain: <code>Small amount of fuel</code></div>
         </div>
       </InfoBoxTemplate>
     </div>
@@ -95,19 +115,38 @@
             can move on all tiles with a height in the range of 0 - 255 (including both). There are some tiles which are marked with colored borders. For them
             see the special tiles section.
           </div>
+          <div class="doc-title">Robot Collision</div>
+          <div>
+            <span class="highlighted">Every tile can only contain one robot at a time.</span> If robot A wants to go to a tile where robot B is standing or
+            wants to go in the next round, the move action will fail and the robot will not move.
+          </div>
         </div>
       </InfoBoxTemplate>
-      <InfoBoxTemplate title="Map Special Tiles">
+      <InfoBoxTemplate title="Map special tiles">
         <div class="doc">
           <div class="doc-img">
             <ImageComponent class="m-3 is-block" image-src="/img/how-to/tiles-map.png" title="A small map with all special tiles in it." />
           </div>
           <div class="doc-title">Starting tiles</div>
-          <div>//TBD</div>
+          <div>
+            Every map has several starting points, in which new participating robots are placed during the <code>WAITING_FOR_PLAYERS</code> game state. All of
+            them are marked with a <span style="color: rgb(210, 110, 0)">orange</span> tile border. The count of starting tiles also defines the maximum players
+            for a map. If more robots participate then tiles are available, <span class="highlighted">only the early ones</span> will be included.
+          </div>
+          <div>Tile type: <code>START_TILE</code></div>
           <div class="doc-title">Target tile</div>
-          <div>//TBD</div>
+          <div>
+            The target tile is marked on the map with a <span style="color: rgb(0, 130, 255)">cyan</span> colored tile border. Every map has exactly one target
+            tile, which must be reached to win the current game. It's position can be retrieved by the global game infos. The position is normally given, but
+            could be hidden by the operators for a higher difficulty.
+          </div>
+          <div>Tile type: <code>TARGET_TILE</code></div>
           <div class="doc-title">Fuel stations</div>
-          <div>//TBD</div>
+          <div>
+            The map can contain fuel stations which allow your robot to use the refuel action on this special tile. A magenta border shows the locations on the
+            web ui.
+          </div>
+          <div>Tile type: <code>FUEL_TILE</code></div>
         </div>
       </InfoBoxTemplate>
     </div>
@@ -147,6 +186,7 @@ import InfoBoxTemplate from "@/components/templates/InfoBoxTemplate.vue";
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
     font-size: 1.5rem;
+    text-transform: capitalize;
   }
 }
 </style>
