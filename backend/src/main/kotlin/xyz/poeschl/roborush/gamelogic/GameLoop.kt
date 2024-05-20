@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import xyz.poeschl.roborush.configuration.GameLogic
-import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.settings.SettingKey.*
 import xyz.poeschl.roborush.service.ConfigService
 import kotlin.concurrent.thread
@@ -73,7 +72,7 @@ class GameLoop(
             robot.position == gameHandler.getTargetPosition()
           }
 
-          if (winningRobot != null){
+          if (winningRobot != null) {
             gameHandler.wonTheCurrentRound(winningRobot)
             gameStateService.setGameState(GameState.ENDED)
           } else {
