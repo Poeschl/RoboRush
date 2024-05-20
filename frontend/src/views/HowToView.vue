@@ -99,6 +99,9 @@
       </InfoBoxTemplate>
       <InfoBoxTemplate title="Map Special Tiles">
         <div class="doc">
+          <div class="doc-img">
+            <ImageComponent class="m-3 is-block" image-src="/img/how-to/tiles-map.png" title="A small map with all special tiles in it." />
+          </div>
           <div class="doc-title">Starting tiles</div>
           <div>//TBD</div>
           <div class="doc-title">Target tile</div>
@@ -134,6 +137,10 @@ import InfoBoxTemplate from "@/components/templates/InfoBoxTemplate.vue";
   .doc-img {
     display: flex;
     flex-direction: column;
+
+    img {
+      align-self: center;
+    }
   }
 
   .doc-title {
