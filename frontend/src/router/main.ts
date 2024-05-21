@@ -46,10 +46,11 @@ export const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const systemStore = useSystemStore();
   const userStore = useUserStore();
+  const fullscreenView = "/fullscreen";
   const notConnectedView = "/not-connected";
   systemStore.checkBackendAvailability();
 
-  if (!systemStore.backendAvailable && to.path !== notConnectedView) {
+  if (!systemStore.backendAvailable && to.path !== notConnectedView && from.path !== fullscreenView) {
     return next({ path: notConnectedView });
   } else if (to.path == notConnectedView && systemStore.backendAvailable) {
     return next({ path: "/" });
