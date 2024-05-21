@@ -1,7 +1,7 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div data-theme="dark" class="mb-5">
-    <NavBar class="mb-5" />
-    <main class="container">
+    <NavBar v-if="route.meta.hideNavBar != true" class="mb-5" />
+    <main :class="{ container: route.meta.noContainer != true }">
       <router-view />
       <div class="is-flex is-justify-content-center" v-if="!route.meta.hideFooter">
         <div class="is-flex is-justify-content-center pt-1 tool-links">

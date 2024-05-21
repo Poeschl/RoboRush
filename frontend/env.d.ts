@@ -9,5 +9,7 @@ declare module "vue-router" {
     requiresNonAdmin?: boolean;
     hideFooter?: boolean;
     requiresAdmin?: boolean;
+    hideNavBar?: boolean;
+    noContainer?: boolean;
   }
 }

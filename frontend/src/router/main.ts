@@ -7,6 +7,7 @@ const MyRobotView = () => import("@/views/MyRobotView.vue");
 const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 const GameConfigView = () => import("@/views/GameConfigView.vue");
+const FullScreenView = () => import("@/views/FullScreenView.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +34,11 @@ export const router = createRouter({
       path: "/config",
       component: GameConfigView,
       meta: { requiresAdmin: true },
+    },
+    {
+      path: "/fullscreen",
+      component: FullScreenView,
+      meta: { hideFooter: true, hideNavBar: true, noContainer: true },
     },
   ],
 });
