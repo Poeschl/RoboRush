@@ -205,14 +205,20 @@ class GameHandlerTest {
   }
 
   @Test
-  fun executeAllRobotMoves() {
+  fun executeAllRobotActions() {
     // WHEN
+    val knownPositions = setWithOne(`$Position`())
+    val robots = setWithOne(`$ActiveRobot`().withKnownPositions(knownPositions))
+    every { robotHandler.getAllActiveRobots() } returns robots
 
     // THEN
-    gameHandler.executeAllRobotMoves()
+    gameHandler.executeAllRobotActions()
 
     // VERIFY
     verify { robotHandler.executeRobotActions(gameHandler) }
+    verify(exactly = 1) { websocketController.sendTurnUpdate(any()) }
+    verify(exactly = 1) { websocketController.sendKnownPositionsUpdate(robots.first()) }
+    verify(exactly = 1) { websocketController.sendGlobalKnownPositionsUpdate(knownPositions) }
   }
 
   @Test
@@ -231,6 +237,7 @@ class GameHandlerTest {
     // VERIFY
     verify { robotHandler.registerRobotForGame(1, startPosition) }
     verify { websocketController.sendRobotUpdate(registeredRobot) }
+    verify { websocketController.sendKnownPositionsUpdate(registeredRobot) }
   }
 
   @Test
@@ -263,6 +270,8 @@ class GameHandlerTest {
     // VERIFY
     verify { mapHandler.loadNewMap(map) }
     verify { robotHandler.clearActiveRobots() }
+    verify(exactly = 1) { websocketController.sendTurnUpdate(0) }
+    verify(exactly = 1) { websocketController.sendGlobalKnownPositionsUpdate(setOf()) }
   }
 
   @Test
@@ -349,9 +358,12 @@ class GameHandlerTest {
   fun currentGameTurn_changesWithActions() {
     // WHEN
     val previousTurn = getCurrentTurn()
+    val robots = setWithOne(`$ActiveRobot`())
+
+    every { robotHandler.getAllActiveRobots() } returns robots
 
     // THEN
-    gameHandler.executeAllRobotMoves()
+    gameHandler.executeAllRobotActions()
 
     // VERIFY
     val currentTurn = getCurrentTurn()
@@ -362,10 +374,12 @@ class GameHandlerTest {
   fun currentGameTurn_resetOnPrepare() {
     // WHEN
     val map = a(`$Map`())
+    val robots = setWithOne(`$ActiveRobot`())
 
     every { mapService.getNextChallengeMap() } returns map
+    every { robotHandler.getAllActiveRobots() } returns robots
 
-    gameHandler.executeAllRobotMoves()
+    gameHandler.executeAllRobotActions()
     val previousTurn = getCurrentTurn()
 
     // THEN

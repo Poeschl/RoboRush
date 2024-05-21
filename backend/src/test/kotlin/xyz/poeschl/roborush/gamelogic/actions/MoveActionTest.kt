@@ -115,6 +115,7 @@ class MoveActionTest {
     assertThat(newPosition).isEqualTo(expectedPosition)
     assertThat(robot.fuel).isEqualTo(90)
     assertThat(robot.position).isEqualTo(expectedPosition)
+    assertThat(robot.knownPositions).containsExactly(newPosition)
 
     verify { gameHandler.sendRobotUpdate(robot) }
   }

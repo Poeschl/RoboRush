@@ -9,16 +9,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import xyz.poeschl.roborush.exceptions.RobotNotActiveException
 import xyz.poeschl.roborush.gamelogic.GameHandler
-import xyz.poeschl.roborush.gamelogic.actions.MoveAction
-import xyz.poeschl.roborush.gamelogic.actions.RefuelAction
-import xyz.poeschl.roborush.gamelogic.actions.ScanAction
-import xyz.poeschl.roborush.gamelogic.actions.WaitAction
+import xyz.poeschl.roborush.gamelogic.actions.*
 import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.repositories.RobotRepository
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
+import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
 import xyz.poeschl.roborush.test.utils.builder.SecurityBuilder.Companion.`$User`
 
@@ -212,6 +210,20 @@ class RobotServiceTest {
   }
 
   @Test
+  fun scheduleSolarCharge() {
+    // WHEN
+    val robotId = 1L
+
+    // THEN
+    robotService.scheduleSolarCharge(robotId)
+
+    // VERIFY
+    verify {
+      gameHandler.nextActionForRobot(robotId, SolarChargeAction())
+    }
+  }
+
+  @Test
   fun getTopRobots() {
     // WHEN
     val robot1 = a(`$Robot`().withUser(a(`$User`().withUsername("Hans"))).withScore(100))
@@ -225,5 +237,56 @@ class RobotServiceTest {
     // VERIFY
     assertThat(result[0]).isEqualTo(ScoreboardEntry(robot1.user.username, robot1.color, robot1.score))
     assertThat(result[1]).isEqualTo(ScoreboardEntry(robot2.user.username, robot2.color, robot2.score))
+  }
+
+  @Test
+  fun getKnownPositionsForRobot() {
+    // WHEN
+    val robotId = 1L
+    val knownPositions = setOf(a(`$Position`()))
+    val activeRobot = a(`$ActiveRobot`().withId(robotId).withKnownPositions(knownPositions))
+
+    every { gameHandler.getActiveRobot(robotId) } returns activeRobot
+
+    // THEN
+    val result = robotService.getKnownPositionsForRobot(robotId)
+
+    // VERIFY
+    assertThat(result).isEqualTo(knownPositions)
+  }
+
+  @Test
+  fun getKnownPositionsForRobot_notActive() {
+    // WHEN
+    val robotId = 1L
+    val knownPositions = setOf(a(`$Position`()))
+    val activeRobot = a(`$ActiveRobot`().withId(robotId).withKnownPositions(knownPositions))
+
+    every { gameHandler.getActiveRobot(robotId) } returns null
+
+    // THEN
+    assertThrows<RobotNotActiveException> {
+      robotService.getKnownPositionsForRobot(robotId)
+    }
+  }
+
+  @Test
+  fun getKnownPositionsForAllRobots() {
+    // WHEN
+    val overlappingPos = a(`$Position`())
+    val positionsA = setOf(a(`$Position`()), overlappingPos)
+    val positionsB = setOf(a(`$Position`()), overlappingPos)
+    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positionsA))
+    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positionsB))
+
+    every { gameHandler.getActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+
+    // THEN
+    val result = robotService.getKnownPositionsForAllRobots()
+
+    // VERIFY
+    assertThat(result).containsAll(positionsA)
+    assertThat(result).containsAll(positionsB)
+    assertThat(result).containsOnlyOnce(overlappingPos)
   }
 }

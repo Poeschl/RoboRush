@@ -7,6 +7,7 @@ import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.actions.*
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
+import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.repositories.Robot
@@ -70,5 +71,13 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
   fun getTopRobots(): List<ScoreboardEntry> {
     return robotRepository.findTop10Robots()
       .map { ScoreboardEntry(it.user.username, it.color, it.score) }
+  }
+
+  fun getKnownPositionsForRobot(robotId: Long): Set<Position> {
+    return gameHandler.getActiveRobot(robotId)?.knownPositions ?: throw RobotNotActiveException("No active Robot found")
+  }
+
+  fun getKnownPositionsForAllRobots(): Set<Position> {
+    return gameHandler.getActiveRobots().map { it.knownPositions }.flatten().toSet()
   }
 }

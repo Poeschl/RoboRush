@@ -96,9 +96,11 @@ class GameHandler(
 
   fun robotMovesReceived(): Boolean = robotHandler.countPendingRobotActions() > 0
 
-  fun executeAllRobotMoves() {
+  fun executeAllRobotActions() {
     robotHandler.executeRobotActions(this)
     setGameTurn(currentTurn + 1)
+    robotHandler.getAllActiveRobots().forEach { websocketController.sendKnownPositionsUpdate(it) }
+    websocketController.sendGlobalKnownPositionsUpdate(robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toSet())
   }
 
   fun registerRobotForNextGame(robotId: Long) {
@@ -110,6 +112,7 @@ class GameHandler(
       activeRobot?.let {
         websocketController.sendRobotUpdate(activeRobot)
         websocketController.sendUserRobotData(activeRobot)
+        websocketController.sendKnownPositionsUpdate(activeRobot)
       }
     } else {
       throw PositionNotAllowedException("Could not place robot at a empty start position.")
@@ -128,6 +131,7 @@ class GameHandler(
     robotHandler.setRobotMaxFuel(map.maxRobotFuel)
     robotHandler.clearActiveRobots()
     setGameTurn(0)
+    websocketController.sendGlobalKnownPositionsUpdate(emptySet())
   }
 
   @Cacheable("gameInfoCache")

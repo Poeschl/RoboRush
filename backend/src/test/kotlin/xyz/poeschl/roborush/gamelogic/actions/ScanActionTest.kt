@@ -68,6 +68,7 @@ class ScanActionTest {
     // VERIFY
     assertThat(tiles).containsAll(scannedTiles)
     assertThat(robot.fuel).isEqualTo(90)
+    assertThat(robot.knownPositions).containsAll(scannedTiles.map { it.position })
   }
 
   @Test

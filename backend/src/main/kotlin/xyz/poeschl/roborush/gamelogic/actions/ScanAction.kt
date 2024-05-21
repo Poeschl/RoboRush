@@ -23,6 +23,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<
     val tileList = scanResult.first
 
     robot.fuel -= fuelCost
+    robot.knownPositions.addAll(tileList.map { it.position })
     return tileList
   }
 

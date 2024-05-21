@@ -4,6 +4,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.models.ActiveRobot
+import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.models.settings.ClientSettings
 
@@ -29,5 +30,14 @@ class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
 
   fun sendClientSettingsUpdate(settings: ClientSettings) {
     messageTemplate.convertAndSend("/topic/config/client", settings)
+  }
+
+  fun sendKnownPositionsUpdate(robot: ActiveRobot) {
+    val user = robot.user.username
+    messageTemplate.convertAndSendToUser(user, "/queue/robot/knownPositions", robot.knownPositions)
+  }
+
+  fun sendGlobalKnownPositionsUpdate(knownPositions: Set<Position>) {
+    messageTemplate.convertAndSend("/topic/robot/knownPositions", knownPositions)
   }
 }

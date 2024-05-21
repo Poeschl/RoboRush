@@ -17,6 +17,7 @@ import xyz.poeschl.roborush.controller.restmodels.Move
 import xyz.poeschl.roborush.controller.restmodels.Scan
 import xyz.poeschl.roborush.exceptions.RobotNotActiveException
 import xyz.poeschl.roborush.models.ActiveRobot
+import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.security.repository.User
@@ -38,6 +39,21 @@ class RobotRestController(private val robotService: RobotService) {
   @GetMapping("/all/scores", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getScoreboard(): List<ScoreboardEntry> {
     return robotService.getTopRobots()
+  }
+
+  @GetMapping("/all/knownPositions", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getKnownPositionsOfAll(): Set<Position> {
+    return robotService.getKnownPositionsForAllRobots()
+  }
+
+  @GetMapping("/knownPositions", produces = [MediaType.APPLICATION_JSON_VALUE])
+  @PreAuthorize("hasRole('${User.ROLE_USER}')")
+  fun getKnownPositions(auth: Authentication): Set<Position> {
+    var positions: Set<Position> = emptySet()
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      positions = robotService.getKnownPositionsForRobot(it)
+    }
+    return positions
   }
 
   @Operation(
