@@ -3,6 +3,7 @@ package xyz.poeschl.roborush.gamelogic.actions
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -15,7 +16,7 @@ import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Tile
 
 class ScanActionTest {
 
-  private val gameHandler = mockk<GameHandler>()
+  private val gameHandler = mockk<GameHandler>(relaxUnitFun = true)
   private val objectMapper = jacksonObjectMapper()
 
   @Test
@@ -69,6 +70,7 @@ class ScanActionTest {
     assertThat(tiles).containsAll(scannedTiles)
     assertThat(robot.fuel).isEqualTo(90)
     assertThat(robot.knownPositions).containsAll(scannedTiles.map { it.position })
+    verify { gameHandler.sendRobotUpdate(robot) }
   }
 
   @Test

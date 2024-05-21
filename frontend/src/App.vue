@@ -65,12 +65,14 @@ configStore.initWebsocket(webSocketService);
 
 if (userStore.loggedIn) {
   gameStore.retrieveUserRobotState();
+  gameStore.updateUserRobotKnownPositions();
 }
 watch(
   () => userStore.loggedIn,
   (current, previous, onCleanup) => {
     if (current) {
       gameStore.retrieveUserRobotState();
+      gameStore.updateUserRobotKnownPositions();
     } else {
       router.push({ path: "/" });
     }

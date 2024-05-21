@@ -7,6 +7,7 @@ import { watch } from "vue";
 import type { User } from "@/models/User";
 import type { GameState } from "@/models/Game";
 import log from "loglevel";
+import type { Position } from "@/models/Map";
 import type { ClientSettings } from "@/models/Config";
 
 export enum WebSocketTopic {
@@ -15,6 +16,8 @@ export enum WebSocketTopic {
   GAME_STATE_TOPIC,
   GAME_TURN_TOPIC,
   CLIENT_SETTINGS_TOPIC,
+  PUBLIC_KNOWN_POSITIONS_TOPIC,
+  PRIVATE_KNOWN_POSITIONS_TOPIC,
 }
 
 export function useWebSocket(): { initWebsocket: Function; registerForTopicCallback: Function } {
@@ -23,7 +26,9 @@ export function useWebSocket(): { initWebsocket: Function; registerForTopicCallb
   const publicGameStateUpdateTopic = "/topic/game/state";
   const publicGameTurnUpdateTopic = "/topic/game/turn";
   const publicClientSettingsTopic = "/topic/config/client";
+  const publicKnownPositionsUpdateTopic = "/topic/robot/knownPositions";
   const userRobotUpdateQueue = "/queue/robot";
+  const userRobotKnownPositionsUpdateTopic = "/queue/robot/knownPositions";
   const topicListener = new Map<WebSocketTopic, Function>();
   let websocketClient: Client | undefined = undefined;
 
@@ -117,6 +122,10 @@ export function useWebSocket(): { initWebsocket: Function; registerForTopicCallb
       const settings: ClientSettings = JSON.parse(message.body);
       topicListener.get(WebSocketTopic.CLIENT_SETTINGS_TOPIC)?.call(null, settings);
     });
+    client.subscribe(publicKnownPositionsUpdateTopic, (message) => {
+      const knownPositions: Position[] = JSON.parse(message.body);
+      topicListener.get(WebSocketTopic.PUBLIC_KNOWN_POSITIONS_TOPIC)?.call(null, knownPositions);
+    });
   };
 
   const connectToUserQueue = (client: Client, username: string) => {
@@ -127,6 +136,10 @@ export function useWebSocket(): { initWebsocket: Function; registerForTopicCallb
       } else {
         topicListener.get(WebSocketTopic.PRIVATE_ROBOT_TOPIC)?.call(null, undefined);
       }
+    });
+    client.subscribe(`/user/${username}${userRobotKnownPositionsUpdateTopic}`, (message) => {
+      const knownPositions: Position[] = JSON.parse(message.body);
+      topicListener.get(WebSocketTopic.PRIVATE_KNOWN_POSITIONS_TOPIC)?.call(null, knownPositions);
     });
   };
 

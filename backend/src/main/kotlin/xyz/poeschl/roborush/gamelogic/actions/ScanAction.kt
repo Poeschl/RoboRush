@@ -24,6 +24,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<
 
     robot.fuel -= fuelCost
     robot.knownPositions.addAll(tileList.map { it.position })
+    gameHandler.sendRobotUpdate(robot)
     return tileList
   }
 

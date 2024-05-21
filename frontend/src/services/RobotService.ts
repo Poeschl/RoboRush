@@ -3,6 +3,7 @@ import type { ActiveRobot, Move, PublicRobot, Scan, ScoreboardEntry } from "@/mo
 import { correctTypesFromJson } from "@/models/Robot";
 import Color from "@/models/Color";
 import axiosWithAuth from "@/config/axiosWithAuth";
+import type { Position } from "@/models/Map";
 
 export default function useRobotService() {
   const baseRobotUrl = "/api/robot";
@@ -24,6 +25,14 @@ export default function useRobotService() {
         return undefined;
       }
     });
+  };
+
+  const getAllRobotsKnownPositions = (): Promise<Position[]> => {
+    return axios.get(`${baseRobotUrl}/all/knownPositions`).then((response) => response.data);
+  };
+
+  const getUserRobotKnownPositions = (): Promise<Position[]> => {
+    return axiosWithAuth.get(`${baseRobotUrl}/knownPositions`).then((response) => response.data);
   };
 
   const registerCurrentRobotForGame = (): Promise<void> => {
@@ -58,5 +67,17 @@ export default function useRobotService() {
     );
   };
 
-  return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot, waitOnRobot, refuelRobot, solarChargeRobot, getTop10Robots };
+  return {
+    getRobots,
+    getUserRobot,
+    registerCurrentRobotForGame,
+    moveRobot,
+    scanOnRobot,
+    waitOnRobot,
+    refuelRobot,
+    solarChargeRobot,
+    getTop10Robots,
+    getAllRobotsKnownPositions,
+    getUserRobotKnownPositions,
+  };
 }

@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="has-background-white map-container" :style="{ 'aspect-ratio': mapAspectRatio }">
+  <div ref="container" class="box map-container p-0" :style="{ 'aspect-ratio': mapAspectRatio }">
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
     <canvas id="displayPath" ref="displayPathCanvas" />
@@ -35,11 +35,13 @@ const props = withDefaults(
     robots?: { data: PublicRobot[] } | undefined;
     drawablePath?: boolean;
     pathToDisplay?: Path | undefined;
+    positionsToDraw?: { data: Position[] } | undefined;
   }>(),
   {
     robots: undefined,
     drawablePath: false,
     pathToDisplay: undefined,
+    positionsToDraw: undefined,
   },
 );
 
@@ -64,6 +66,8 @@ const heightMap = computed<Tile[]>(() => {
   }
 });
 const currentPath = ref<Path>({ points: [] });
+const mapTileMinHeight = ref<number>(0);
+const mapTileMaxHeight = ref<number>(255);
 
 const emits = defineEmits<{
   (e: "pathUpdate", path: Path): void;
@@ -75,6 +79,9 @@ onMounted(() => {
   }
   if (props.pathToDisplay) {
     watch(() => props.pathToDisplay!.points, drawDisplayPath);
+  }
+  if (props.positionsToDraw) {
+    watch(() => props.positionsToDraw?.data, drawMapTiles);
   }
   watch(
     () => props.drawablePath,
@@ -168,22 +175,36 @@ const updateCanvasSize = () => {
 const drawMap = () => {
   const tiles = heightMap.value;
   if (mapCanvas.value && mapDrawContext.value && tiles.length > 0) {
-    const drawContext = mapDrawContext.value;
-    log.debug("Draw terrain");
+    log.debug("Draw whole map");
 
-    const maxHeight = Math.max(...tiles.map((t) => t.height));
-    const minHeight = Math.min(...tiles.map((t) => t.height));
+    const maxHeight = Math.max(...[...tiles].map((t) => t.height));
+    const minHeight = Math.min(...[...tiles].map((t) => t.height));
 
     log.debug("Max height: ", maxHeight, "Min height: ", minHeight);
+    mapTileMinHeight.value = minHeight;
+    mapTileMaxHeight.value = maxHeight;
+
+    drawMapTiles();
+  }
+};
+
+const drawMapTiles = () => {
+  const drawContext = mapDrawContext.value;
+  const tiles = heightMap.value;
+
+  if (drawContext && tiles.length > 0) {
+    log.debug("Draw map tiles");
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in tiles) {
-      const tile: Tile = tiles[index];
+    const searchSet = new Set(props.positionsToDraw?.data.map((pos) => `${pos.x}|${pos.y}`));
+    const filteredTiles = tiles.filter((tile) => props.positionsToDraw == undefined || searchSet.has(`${tile.position.x}|${tile.position.y}`));
+
+    for (const tile of filteredTiles) {
       drawContext.save();
       drawContext.translate(tile.position.x * fullTileSize, tile.position.y * fullTileSize);
 
-      const heightInPercentage = (tile.height - minHeight) / (maxHeight - minHeight);
+      const heightInPercentage = (tile.height - mapTileMinHeight.value) / (mapTileMaxHeight.value - mapTileMinHeight.value);
       drawTile(drawContext, mapColor.enlightenWithPercentage(heightInPercentage));
 
       if (tile.type == TileType.TARGET_TILE) {
