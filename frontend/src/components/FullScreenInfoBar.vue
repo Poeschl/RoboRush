@@ -10,18 +10,18 @@
     <div id="menuItems" class="navbar-menu">
       <div class="navbar-start"></div>
       <div class="navbar-end">
-        <div class="navbar-item is-size-4">
+        <a class="navbar-item is-size-4" href="https://chaos.social/tags/RoboRush" target="_blank">
           <div class="icon mr-1">
             <FontAwesomeIcon icon="fa-brands fa-mastodon" class="fa-xl" />
           </div>
           : #RoboRush
-        </div>
-        <div class="navbar-item is-size-4">
+        </a>
+        <a class="navbar-item is-size-4" :href="currentUrl" target="_blank">
           <div class="icon mr-1">
             <FontAwesomeIcon icon="fa-solid fa-globe" class="fa-xl" />
           </div>
           : {{ currentUrl }}
-        </div>
+        </a>
       </div>
     </div>
   </nav>
