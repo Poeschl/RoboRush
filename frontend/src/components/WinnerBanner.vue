@@ -1,11 +1,16 @@
 <template>
   <div
-    class="box is-color-black is-flex is-justify-content-center is-size-4"
+    class="box is-color-black is-flex is-justify-content-center is-size-4 p-3"
     :class="{ 'has-background-success': winnerAvailable, 'has-background-warning': !winnerAvailable }"
     v-if="gameStore.currentGame.currentState === GameState.ENDED"
   >
-    <p v-if="gameStore.currentGame.nameOfWinningRobot != null">{{ gameStore.currentGame.nameOfWinningRobot }} won the round!</p>
-    <p v-else>No robot reached the target!</p>
+    <div class="is-flex is-flex-direction-column is-align-items-center" v-if="winnerAvailable">
+      <div>
+        🏆 <span class="has-text-weight-bold">{{ winnerName }}</span> won the round! 🏆
+      </div>
+      <ConfettiExplosion :force="0.4" :stage-height="1600" :particle-count="300" />
+    </div>
+    <div class="has-text-weight-bold" v-else>No robot reached the target!</div>
   </div>
 </template>
 
@@ -13,10 +18,12 @@
 import { GameState } from "@/models/Game";
 import { useGameStore } from "@/stores/GameStore";
 import { computed } from "vue";
+import ConfettiExplosion from "vue-confetti-explosion/src/ConfettiExplosion.vue";
 
 const gameStore = useGameStore();
 
-const winnerAvailable = computed(() => gameStore.currentGame.nameOfWinningRobot != null);
+const winnerAvailable = computed<boolean>(() => gameStore.currentGame.nameOfWinningRobot != null);
+const winnerName = computed<string | undefined>(() => gameStore.currentGame.nameOfWinningRobot);
 </script>
 
 <style scoped lang="scss">

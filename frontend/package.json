@@ -29,6 +29,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "plausible-tracker": "^0.3.8",
     "vue": "^3.4.26",
+    "vue-confetti-explosion": "^1.0.2",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
