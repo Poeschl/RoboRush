@@ -7,6 +7,7 @@ const MyRobotView = () => import("@/views/MyRobotView.vue");
 const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 const GameConfigView = () => import("@/views/GameConfigView.vue");
+const FullScreenView = () => import("@/views/FullScreenView.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -34,16 +35,22 @@ export const router = createRouter({
       component: GameConfigView,
       meta: { requiresAdmin: true },
     },
+    {
+      path: "/fullscreen",
+      component: FullScreenView,
+      meta: { hideFooter: true, hideNavBar: true, noContainer: true },
+    },
   ],
 });
 
 router.beforeEach(async (to, from, next) => {
   const systemStore = useSystemStore();
   const userStore = useUserStore();
+  const fullscreenView = "/fullscreen";
   const notConnectedView = "/not-connected";
   systemStore.checkBackendAvailability();
 
-  if (!systemStore.backendAvailable && to.path !== notConnectedView) {
+  if (!systemStore.backendAvailable && to.path !== notConnectedView && from.path !== fullscreenView) {
     return next({ path: notConnectedView });
   } else if (to.path == notConnectedView && systemStore.backendAvailable) {
     return next({ path: "/" });
