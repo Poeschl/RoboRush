@@ -143,8 +143,9 @@
           <div>Tile type: <code>TARGET_TILE</code></div>
           <div class="doc-title">Fuel stations</div>
           <div>
-            The map can contain fuel stations which allow your robot to use the refuel action on this special tile. A magenta border shows the locations on the
-            web ui.
+            The map can contain fuel stations which allow your robot to use the refuel action on this special tile. A
+            <span style="color: rgb(210, 0, 130)">magenta</span>
+            border shows the locations on the web ui.
           </div>
           <div>Tile type: <code>FUEL_TILE</code></div>
         </div>
