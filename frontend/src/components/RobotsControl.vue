@@ -3,10 +3,10 @@
     <div class="is-size-3 mb-3">Robot Control</div>
     <div v-if="userStore.loggedIn">
       <div v-if="gameStore.userRobotActive">
-        <div class="columns is-variable is-1">
+        <div class="columns is-variable is-1 is-mobile">
           <div class="column">
             <div class="is-dpad-control">
-              <div class="columns">
+              <div class="columns is-mobile">
                 <div class="column is-offset-one-third is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightUp }" @click="move('NORTH')">
                     <div class="icon">
@@ -15,7 +15,7 @@
                   </button>
                 </div>
               </div>
-              <div class="columns">
+              <div class="columns is-mobile">
                 <div class="column is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightLeft }" @click="move('WEST')">
                     <div class="icon">
@@ -38,7 +38,7 @@
                   </button>
                 </div>
               </div>
-              <div class="columns">
+              <div class="columns is-mobile">
                 <div class="column is-offset-one-third is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightDown }" @click="move('SOUTH')">
                     <div class="icon">

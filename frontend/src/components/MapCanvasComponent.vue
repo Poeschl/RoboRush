@@ -319,7 +319,7 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
 <style scoped lang="scss">
 .map-container {
   position: relative;
-  min-width: 600px;
+  min-width: 200px;
   width: auto;
   height: auto;
 
