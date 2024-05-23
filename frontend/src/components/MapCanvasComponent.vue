@@ -1,5 +1,11 @@
 <template>
   <div ref="container" class="box map-container p-0" :style="{ 'aspect-ratio': mapAspectRatio }">
+    <div class="fog-container">
+      <div class="fog">
+        <div class="fog-image1"></div>
+        <div class="fog-image2"></div>
+      </div>
+    </div>
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
     <canvas id="displayPath" ref="displayPathCanvas" />
@@ -343,11 +349,67 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
 </script>
 
 <style scoped lang="scss">
+@keyframes fog_opacity {
+  0% {
+    opacity: 0.2;
+  }
+  22% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.28;
+  }
+  58% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.16;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes fog_move {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
 .map-container {
   position: relative;
   min-width: 200px;
   width: auto;
   height: auto;
+
+  .fog-container {
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    filter: blur(4px) grayscale(0.2) saturate(1.2) sepia(0.2);
+
+    .fog {
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      animation:
+        fog_opacity 20s linear infinite,
+        fog_move 15s linear infinite;
+
+      .fog-image1,
+      .fog-image2 {
+        background: url("/img/fog.png") repeat-x center left transparent;
+        background-size: 180%;
+        width: 50%;
+        height: 100%;
+        float: left;
+      }
+    }
+  }
 
   canvas {
     position: absolute;
