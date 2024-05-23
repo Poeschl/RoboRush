@@ -1,6 +1,7 @@
 <template>
   <div class="columns">
-    <div class="column is-flex is-justify-content-center is-align-items-start">
+    <div class="column is-flex is-align-items-center is-flex-direction-column">
+      <WinnerBanner />
       <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="width: 90%" />
     </div>
     <div class="column is-one-quarter is-flex-direction-column is-narrow">
@@ -19,6 +20,7 @@ import RobotControl from "@/components/RobotsControl.vue";
 import GameStateBox from "@/components/GameStateBox.vue";
 import GameFlags from "@/components/GameFlags.vue";
 import RobotDetails from "@/components/RobotDetails.vue";
+import WinnerBanner from "@/components/WinnerBanner.vue";
 
 const gameStore = useGameStore();
 </script>
