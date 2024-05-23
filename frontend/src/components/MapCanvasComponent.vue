@@ -198,7 +198,12 @@ const drawMapTiles = () => {
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
     const searchSet = new Set(props.positionsToDraw?.data.map((pos) => `${pos.x}|${pos.y}`));
-    const filteredTiles = tiles.filter((tile) => props.positionsToDraw == undefined || searchSet.has(`${tile.position.x}|${tile.position.y}`));
+    let filteredTiles;
+    if (props.positionsToDraw != undefined) {
+      filteredTiles = tiles.filter((tile) => searchSet.has(`${tile.position.x}|${tile.position.y}`));
+    } else {
+      filteredTiles = tiles;
+    }
 
     for (const tile of filteredTiles) {
       drawContext.save();
