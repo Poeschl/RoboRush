@@ -26,7 +26,9 @@
 );
 
 @use "bulma/sass/base" with (
-  $body-background-color: lighten(utilities.$black, 5)
+  $body-background-color: lighten(utilities.$black, 5),
+  $body-overflow-x: auto,
+  $body-overflow-y: auto
 );
 
 @use "bulma/sass/elements/progress" with (

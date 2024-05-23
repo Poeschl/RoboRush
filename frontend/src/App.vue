@@ -4,7 +4,7 @@
     <main :class="{ container: route.meta.noContainer != true }">
       <router-view />
       <div class="is-flex is-justify-content-center" v-if="!route.meta.hideFooter">
-        <div class="is-flex is-justify-content-center pt-1 tool-links">
+        <div class="is-flex is-justify-content-center pt-1 footer-divider">
           <a class="button is-text" href="https://poeschl.xyz" target="_blank" title="Website">
             <div class="icon">
               <FontAwesomeIcon icon="fa-solid fa-globe" class="fa-xl" />
@@ -77,7 +77,7 @@ watch(
 <style lang="scss">
 @use "bulma/sass/utilities/initial-variables";
 
-.tool-links {
+.footer-divider {
   width: 25%;
   border-top-style: solid;
   border-top-color: initial-variables.$black-ter;
