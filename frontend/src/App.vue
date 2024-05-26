@@ -54,6 +54,7 @@ const webSocketService = useWebSocket();
 //Init data stores
 configStore.updateClientConfig();
 gameStore.updateGameInfo();
+gameStore.updateScoreBoard();
 gameStore.updateMap();
 gameStore.updateRobots();
 gameStore.initWebsocket(

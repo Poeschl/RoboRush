@@ -18,6 +18,7 @@ import xyz.poeschl.roborush.controller.restmodels.Scan
 import xyz.poeschl.roborush.exceptions.RobotNotActiveException
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.PublicRobot
+import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.security.repository.User
 import xyz.poeschl.roborush.service.RobotService
 
@@ -28,10 +29,15 @@ class RobotRestController(private val robotService: RobotService) {
     private val LOGGER = LoggerFactory.getLogger(RobotRestController::class.java)
   }
 
-  @GetMapping("/all", produces = [MediaType.APPLICATION_JSON_VALUE])
+  @GetMapping("/all/active", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getActiveRobots(): List<PublicRobot> {
     LOGGER.debug("Get all robots")
     return robotService.getActiveRobots()
+  }
+
+  @GetMapping("/all/scores", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getScoreboard(): List<ScoreboardEntry> {
+    return robotService.getTopRobots()
   }
 
   @Operation(
