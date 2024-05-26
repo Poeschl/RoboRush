@@ -37,3 +37,5 @@ enum class SettingType {
   INT,
   BOOLEAN
 }
+
+data class ClientSettings(val globalNotificationText: String)

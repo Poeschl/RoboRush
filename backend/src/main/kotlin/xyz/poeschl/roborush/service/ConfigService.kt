@@ -2,6 +2,7 @@ package xyz.poeschl.roborush.service
 
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
+import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.models.settings.*
 import xyz.poeschl.roborush.repositories.ConfigRepository
 import xyz.poeschl.roborush.repositories.SettingEntity
@@ -9,8 +10,11 @@ import xyz.poeschl.roborush.repositories.SettingEntity
 @Service
 class ConfigService(
   private val configRepository: ConfigRepository,
-  private val settingsEntityMapper: SettingEntityMapper
+  private val settingsEntityMapper: SettingEntityMapper,
+  private val websocketController: WebsocketController
 ) {
+
+  private var globalNotificationText = ""
 
   @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
   fun saveSetting(settingDto: SaveSettingDto): Setting<*> {
@@ -39,5 +43,16 @@ class ConfigService(
   fun getSetting(key: SettingKey): Setting<*> {
     val entity: SettingEntity = configRepository.findByKey(key)
     return settingsEntityMapper.fromEntity(entity)
+  }
+
+  fun setGlobalNotificationText(text: String) {
+    this.globalNotificationText = text
+    sendClientConfigUpdate()
+  }
+
+  fun getGlobalNotificationText(): String = globalNotificationText
+
+  private fun sendClientConfigUpdate() {
+    websocketController.sendClientSettingsUpdate(ClientSettings(globalNotificationText))
   }
 }

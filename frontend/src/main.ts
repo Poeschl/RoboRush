@@ -18,6 +18,7 @@ import {
   faClipboard,
   faCode,
   faEdit,
+  faEraser,
   faExpand,
   faGasPump,
   faGlobe,
@@ -81,6 +82,7 @@ library.add(
   faMastodon,
   faCode,
   faExpand,
+  faEraser,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

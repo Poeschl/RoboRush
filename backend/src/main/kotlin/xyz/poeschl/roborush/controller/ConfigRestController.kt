@@ -10,9 +10,11 @@ import org.springframework.web.multipart.MultipartFile
 import xyz.poeschl.roborush.controller.restmodels.MapActiveDto
 import xyz.poeschl.roborush.controller.restmodels.MapAttributeSaveDto
 import xyz.poeschl.roborush.controller.restmodels.MapGenerationResult
+import xyz.poeschl.roborush.controller.restmodels.TextConfigDto
 import xyz.poeschl.roborush.exceptions.InvalidConfigKeyException
 import xyz.poeschl.roborush.exceptions.InvalidHeightMapException
 import xyz.poeschl.roborush.exceptions.MapNotFound
+import xyz.poeschl.roborush.models.settings.ClientSettings
 import xyz.poeschl.roborush.models.settings.SaveSettingDto
 import xyz.poeschl.roborush.models.settings.Setting
 import xyz.poeschl.roborush.models.settings.SettingKey
@@ -23,17 +25,19 @@ import xyz.poeschl.roborush.service.MapService
 
 @RestController
 @RequestMapping("/config")
-@SecurityRequirement(name = "Bearer Authentication")
-@PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
 class ConfigRestController(private val configService: ConfigService, private val mapService: MapService) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(ConfigRestController::class.java)
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getAll(): List<Setting<*>> = configService.getAllSettings()
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @GetMapping("/{key}", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getSingle(@PathVariable key: String): Setting<*> {
     if (EnumUtils.isValidEnum(SettingKey::class.java, key)) {
@@ -43,11 +47,15 @@ class ConfigRestController(private val configService: ConfigService, private val
     }
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun saveSingle(@RequestBody setting: SaveSettingDto): Setting<*> {
     return configService.saveSetting(setting)
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @PostMapping("/map/heightmap", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun newHeightMap(@RequestParam("heightmap") heightMapFile: MultipartFile): MapGenerationResult {
     if (heightMapFile.contentType != MediaType.IMAGE_PNG_VALUE) {
@@ -60,11 +68,15 @@ class ConfigRestController(private val configService: ConfigService, private val
     return MapGenerationResult(mapGenResult.errors)
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getMaps(): List<Map> {
     return mapService.getAllMaps()
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @PostMapping("/map/{id}/active", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun setMapActive(@PathVariable id: Long, @RequestBody activeDto: MapActiveDto): Map {
     val map = mapService.getMap(id)
@@ -76,6 +88,8 @@ class ConfigRestController(private val configService: ConfigService, private val
     }
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @PostMapping("/map/{id}", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
   fun setMapAttributes(@PathVariable id: Long, @RequestBody attributes: MapAttributeSaveDto): Map {
     val map = mapService.getMap(id)
@@ -87,6 +101,8 @@ class ConfigRestController(private val configService: ConfigService, private val
     }
   }
 
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @DeleteMapping("/map/{id}")
   fun removeMap(@PathVariable id: Long) {
     val map = mapService.getMap(id)
@@ -96,5 +112,17 @@ class ConfigRestController(private val configService: ConfigService, private val
     } else {
       throw MapNotFound("No matching map found for deletion")
     }
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
+  @PostMapping("/client/globalNotificationText", consumes = [MediaType.APPLICATION_JSON_VALUE])
+  fun setGlobalNotificationText(@RequestBody dto: TextConfigDto) {
+    configService.setGlobalNotificationText(dto.text)
+  }
+
+  @GetMapping("/client", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getClientSettings(): ClientSettings {
+    return ClientSettings(configService.getGlobalNotificationText())
   }
 }

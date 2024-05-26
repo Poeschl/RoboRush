@@ -16,7 +16,9 @@
 
   $white-ter: custom-variables.$white-ter,
   $white-bis: custom-variables.$white-bis,
-  $white: custom-variables.$white
+  $white: custom-variables.$white,
+
+  $cyan: custom-variables.$cyan
 );
 
 @use "bulma/sass/elements/box" with (
