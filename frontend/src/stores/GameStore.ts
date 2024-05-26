@@ -40,6 +40,7 @@ export const useGameStore = defineStore("gameStore", () => {
         // Clears whole object first
         internalMap.value = undefined;
         internalMap.value = response;
+        updateGameInfo();
       })
       .catch((reason) => {
         log.error(`Could not get map data (${reason})`);
