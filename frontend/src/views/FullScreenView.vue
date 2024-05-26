@@ -1,7 +1,9 @@
 <template>
-  <FullScreenInfoBar class="mb-5" />
   <div class="fullscreen-container ml-4 mr-4">
     <div class="columns">
+      <div class="column is-one-fifth">
+        <FullScreenInfoBox />
+      </div>
       <div class="column is-flex is-align-items-center is-flex-direction-column pr-5">
         <WinnerBanner />
         <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="height: 100%" />
@@ -21,7 +23,7 @@ import { useGameStore } from "@/stores/GameStore";
 import GameStateBox from "@/components/GameStateBox.vue";
 import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
-import FullScreenInfoBar from "@/components/FullScreenInfoBar.vue";
+import FullScreenInfoBox from "@/components/FullScreenInfoBox.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
 
 const gameStore = useGameStore();
@@ -30,7 +32,7 @@ const gameStore = useGameStore();
 <style scoped lang="scss">
 .fullscreen-container {
   // Beware of very hacky height
-  height: calc(100vh - 1.5rem - 1.5rem - 52px);
+  height: calc(100vh);
 }
 
 .columns {
@@ -43,6 +45,6 @@ const gameStore = useGameStore();
   transform: scale($scale);
   height: fit-content;
   width: calc((20% - var(--bulma-column-gap) / 2) * 1 / $scale);
-  margin-left: calc(var(--bulma-column-gap) * 2);
+  margin-left: calc(var(--bulma-column-gap) * 3);
 }
 </style>
