@@ -41,6 +41,7 @@ Depending on the environment a certificate for TLS is recommended.
 * `SPRING_DATASOURCE_*`: Those environment variables are used to connect to an external database.
 * `SPRING_PROFILES_ACTIVE`: Set this environment variable to `prod` to disable some dev features.
   It will also hide the OpenApi Docs for all internal interfaces.
+  By enabling the `dummybots` profile some random movement robots will be participating.
 * `INITIAL_ROOT_PASSWORD` (optional): The initial root user password.
   If not set a random one is generated at first start and output in the backend log.
 * `AUTH_ISSUER` (optional): Set an explicit issuer string for the auth tokens.
