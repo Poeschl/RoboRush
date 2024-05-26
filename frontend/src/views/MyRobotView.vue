@@ -1,9 +1,9 @@
 <template>
   <div class="columns">
-    <div class="column is-flex is-justify-content-center is-align-items-start">
+    <div class="column is-flex is-justify-content-center is-align-items-start mb-5">
       <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="width: 90%" />
     </div>
-    <div class="column is-one-quarter is-flex-direction-column is-narrow">
+    <div class="column is-one-half is-one-quarter-desktop is-flex-direction-column is-narrow-mobile mobile">
       <GameFlags />
       <GameStateBox />
       <RobotDetails />

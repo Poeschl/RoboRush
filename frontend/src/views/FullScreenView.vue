@@ -25,13 +25,6 @@ import FullScreenInfoBar from "@/components/FullScreenInfoBar.vue";
 const gameStore = useGameStore();
 </script>
 
-<style lang="scss">
-html {
-  overflow: auto;
-  background-color: black;
-}
-</style>
-
 <style scoped lang="scss">
 .fullscreen-container {
   // Beware of very hacky height
