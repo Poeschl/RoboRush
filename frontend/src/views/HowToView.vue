@@ -18,6 +18,16 @@
         </div>
       </InfoBoxTemplate>
     </div>
+    <div class="column is-full">
+      <InfoBoxTemplate title="Global rules">
+        <div class="doc content">
+          <ul>
+            <li>Use only the public REST interfaces we defined in our <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec</a></li>
+            <li>Fasten your seatbelts and have fun 🙌</li>
+          </ul>
+        </div>
+      </InfoBoxTemplate>
+    </div>
     <div class="column is-half">
       <InfoBoxTemplate title="Robot">
         <div class="doc">
