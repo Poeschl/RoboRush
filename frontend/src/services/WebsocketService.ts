@@ -7,19 +7,22 @@ import { watch } from "vue";
 import type { User } from "@/models/User";
 import type { GameState } from "@/models/Game";
 import log from "loglevel";
+import type { ClientSettings } from "@/models/Config";
 
 export enum WebSocketTopic {
   PUBLIC_ROBOT_TOPIC = 0,
   PRIVATE_ROBOT_TOPIC,
   GAME_STATE_TOPIC,
   GAME_TURN_TOPIC,
+  CLIENT_SETTINGS_TOPIC,
 }
 
-export function useWebSocket() {
+export function useWebSocket(): { initWebsocket: Function; registerForTopicCallback: Function } {
   const websocketPath = "/api/ws";
   const publicRobotUpdateTopic = "/topic/robot";
   const publicGameStateUpdateTopic = "/topic/game/state";
   const publicGameTurnUpdateTopic = "/topic/game/turn";
+  const publicClientSettingsTopic = "/topic/config/client";
   const userRobotUpdateQueue = "/queue/robot";
   const topicListener = new Map<WebSocketTopic, Function>();
   let websocketClient: Client | undefined = undefined;
@@ -109,6 +112,10 @@ export function useWebSocket() {
     client.subscribe(publicGameTurnUpdateTopic, (message) => {
       const turnCount: number = parseInt(message.body);
       topicListener.get(WebSocketTopic.GAME_TURN_TOPIC)?.call(null, turnCount);
+    });
+    client.subscribe(publicClientSettingsTopic, (message) => {
+      const settings: ClientSettings = JSON.parse(message.body);
+      topicListener.get(WebSocketTopic.CLIENT_SETTINGS_TOPIC)?.call(null, settings);
     });
   };
 

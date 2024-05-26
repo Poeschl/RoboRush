@@ -1,14 +1,22 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
+import type { ClientSettings, MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import useConfigService from "@/services/ConfigService";
 import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
-
-const configService = useConfigService();
+import { WebSocketTopic } from "@/services/WebsocketService";
 
 export const useConfigStore = defineStore("configStore", () => {
+  const configService = useConfigService();
+  const websocketService = ref<{ initWebsocket: Function; registerForTopicCallback: Function } | undefined>();
+
   const currentConfig = ref<Map<string, Setting>>(new Map());
   const availableMaps = ref<{ maps: PlaygroundMap[] }>({ maps: [] });
+  const clientSettings = ref<ClientSettings>({ globalNotificationText: "" });
+
+  const initWebsocket = (webSocketInstance: { initWebsocket: Function; registerForTopicCallback: Function }) => {
+    websocketService.value = webSocketInstance;
+    websocketService.value.registerForTopicCallback(WebSocketTopic.CLIENT_SETTINGS_TOPIC, updateClientConfigTo);
+  };
 
   const updateConfig = () => {
     configService.getAllSettings().then((response) => {
@@ -20,9 +28,23 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
+  const updateClientConfig = () => {
+    configService.getClientSettings().then((newSettings) => updateClientConfigTo(newSettings));
+  };
+
+  const updateClientConfigTo = (newSettings: ClientSettings) => {
+    clientSettings.value = newSettings;
+  };
+
   const save = (setting: SaveSetting): Promise<void> => {
     return configService.saveSetting(setting).then((response) => {
       currentConfig.value.set(response.key, response);
+    });
+  };
+
+  const setGlobalNotificationText = (text: string): Promise<void> => {
+    return configService.setGlobalNotificationText(text).then(() => {
+      clientSettings.value.globalNotificationText = text;
     });
   };
 
@@ -53,5 +75,18 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
-  return { currentConfig, availableMaps, updateConfig, save, uploadNewHeightmap, setMapActive, removeMap, setMapAttributes };
+  return {
+    currentConfig,
+    availableMaps,
+    updateConfig,
+    save,
+    uploadNewHeightmap,
+    setMapActive,
+    removeMap,
+    setMapAttributes,
+    clientSettings,
+    updateClientConfig,
+    initWebsocket,
+    setGlobalNotificationText,
+  };
 });

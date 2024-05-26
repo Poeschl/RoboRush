@@ -15,7 +15,7 @@ import type { AxiosError } from "axios";
 const robotService = useRobotService();
 
 export const useGameStore = defineStore("gameStore", () => {
-  const websocketService = useWebSocket();
+  const websocketService = ref<{ initWebsocket: Function; registerForTopicCallback: Function } | undefined>();
   const gameService = useGameService();
 
   const currentGame = ref<Game>({ currentState: GameState.ENDED, currentTurn: 0, solarChargePossible: false });
@@ -66,12 +66,14 @@ export const useGameStore = defineStore("gameStore", () => {
       });
   };
 
-  const initWebsocket = (user: ComputedRef<User | undefined>) => {
-    websocketService.initWebsocket(user);
-    websocketService.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
-    websocketService.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
-    websocketService.registerForTopicCallback(WebSocketTopic.GAME_STATE_TOPIC, updateGameStateTo);
-    websocketService.registerForTopicCallback(WebSocketTopic.GAME_TURN_TOPIC, updateGameTurnTo);
+  const initWebsocket = (service: { initWebsocket: Function; registerForTopicCallback: Function }, user: ComputedRef<User | undefined>) => {
+    websocketService.value = service;
+
+    websocketService.value.initWebsocket(user);
+    websocketService.value.registerForTopicCallback(WebSocketTopic.PUBLIC_ROBOT_TOPIC, updateRobot);
+    websocketService.value.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
+    websocketService.value.registerForTopicCallback(WebSocketTopic.GAME_STATE_TOPIC, updateGameStateTo);
+    websocketService.value.registerForTopicCallback(WebSocketTopic.GAME_TURN_TOPIC, updateGameTurnTo);
   };
 
   const updateRobot = (updatedRobot: PublicRobot) => {

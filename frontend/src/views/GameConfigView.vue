@@ -13,6 +13,11 @@
     </div>
   </div>
   <div class="section">
+    <div class="title">Notifications</div>
+    <div class="subtitle">The given text will be displayed immediately on all open websites. It will be not persisted between backend restarts.</div>
+    <ConfigNotificaionInputComponent />
+  </div>
+  <div class="section">
     <div class="title">Map Editor</div>
     <div class="subtitle">
       During the preparing phase of every game one of the active maps is chosen randomly and the fuel value becomes the robots max fuel
@@ -39,6 +44,7 @@ import ConfigDurationSettingComponent from "@/components/ConfigDurationSettingCo
 import ConfigBooleanSettingComponent from "@/components/ConfigBooleanSettingComponent.vue";
 import MapUploadComponent from "@/components/MapUploadComponent.vue";
 import MapList from "@/components/MapList.vue";
+import ConfigNotificaionInputComponent from "@/components/ConfigNotificaionInputComponent.vue";
 
 const configStore = useConfigStore();
 
