@@ -8,12 +8,13 @@
             manner, so that every player's robot moves at the exact same time.
           </div>
           <div>
-            Each player controls their robot via REST interfaces to check its environment or perform a robot action. Since the robots are not aware of the
-            map around them, they might need to have a clever way to navigate through the map. But be careful, because all actions will deplete the robot's fuel
+            Each player controls their robot via REST interfaces to check its environment or perform a robot action. Since the robots are not aware of the map
+            around them, they might need to have a clever way to navigate through the map. But be careful, because all actions will deplete the robot's fuel
             tank a little. If a robot runs out of fuel, it becomes immobile and can't perform any actions.
           </div>
           <div>
-            To win the game, your robot must be <span class="highlighted">the first to reach the target position</span>. Each win adds one point to your entry on the high score list.
+            To win the game, your robot must be <span class="highlighted">the first to reach the target position</span>. Each win adds one point to your entry
+            on the high score list.
           </div>
         </div>
       </InfoBoxTemplate>
@@ -32,26 +33,26 @@
       <InfoBoxTemplate title="Robot">
         <div class="doc">
           <div>
-            Every player has exactly one robot, which possesses various attributes. The robot is named after the player's username and can be instructed via a REST
-            interface. To visually monitor the live attributes, visit the main page and ensure you are logged in.
+            Every player has exactly one robot, which possesses various attributes. The robot is named after the player's username and can be instructed via a
+            REST interface. To visually monitor the live attributes, visit the main page and ensure you are logged in.
           </div>
           <div class="doc-title">Robot attributes</div>
           <div>
-            Each robot has a fuel tank that is filled at the start of each game. The maximum amount of fuel can be different for each map, but rest assured, we have made sure that you
-            have a good chance of reaching the target tile. Most robot actions will drain the fuel tank. When it
+            Each robot has a fuel tank that is filled at the start of each game. The maximum amount of fuel can be different for each map, but rest assured, we
+            have made sure that you have a good chance of reaching the target tile. Most robot actions will drain the fuel tank. When it
             <span class="highlighted">reaches zero fuel units, your robot will not be able to perform any action that requires fuel</span>.
           </div>
           <div class="doc-title">Robot actions</div>
           <div>
-            A robot can be instructed via a REST interface, which requires your API access token. For an overview of the available commands and details on how the
-            authentication works, we provide an
+            A robot can be instructed via a REST interface, which requires your API access token. For an overview of the available commands and details on how
+            the authentication works, we provide an
             <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec for the robot</a>. To send example requests, please enter your API
             token in the "Authorize" button dialog at the top and execute some requests with the "Try it out" button.
           </div>
           <div class="doc-title">Registration</div>
           <div>
-            To get a robot you need to register by clicking the button in the top right corner of the navigation bar. After registering, you can log in 
-            with your new credentials and click on your username in the top bar to get your API key.
+            To get a robot you need to register by clicking the button in the top right corner of the navigation bar. After registering, you can log in with
+            your new credentials and click on your username in the top bar to get your API key.
           </div>
           <div class="doc-img">
             <ImageComponent class="m-3 is-block" image-src="/img/how-to/user-profile.png" title="A screenshot of the user profile dialog." />
@@ -60,9 +61,7 @@
       </InfoBoxTemplate>
       <InfoBoxTemplate title="Possible robot actions">
         <div class="doc">
-          <div>
-            There are several actions a robot can perform in a turn. If no participating robot executes any action for a few rounds, the game will end.
-          </div>
+          <div>There are several actions a robot can perform in a turn. If no participating robot executes any action for a few rounds, the game will end.</div>
           <div class="doc-title">Move</div>
           <div>
             With this action the robot moves to one of the neighbor map tiles. The robot can only move one tile at once in one of the 4 directions (east, south,
@@ -101,8 +100,9 @@
       <InfoBoxTemplate title="Map">
         <div class="doc">
           <div>
-            The map serves as the playground where every robot will move. It is described by tiles arranged in a grid with variable size. At the start of every game,
-            the map can be switched to a different one, depending on the preferences of the operators. However, during a game, the map size remains constant.
+            The map serves as the playground where every robot will move. It is described by tiles arranged in a grid with variable size. At the start of every
+            game, the map can be switched to a different one, depending on the preferences of the operators. However, during a game, the map size remains
+            constant.
           </div>
           <div class="doc-img">
             <ImageComponent class="m-3 is-block" image-src="/img/how-to/basic-map.png" title="A small map with its tile as an example." />
@@ -121,8 +121,8 @@
           <div class="doc-title">Tile attributes</div>
           <div>
             Every tile has a height, which is displayed in different shades of green on the web UI. Higher tiles are brighter than tiles at zero level. Robots
-            can move on all tiles with a height in the range of 0 to 255 (including both). Some tiles are marked with colored borders. For more information on these tiles,
-            see the special tiles section.
+            can move on all tiles with a height in the range of 0 to 255 (including both). Some tiles are marked with colored borders. For more information on
+            these tiles, see the special tiles section.
           </div>
           <div class="doc-title">Robot Collision</div>
           <div>
@@ -139,15 +139,16 @@
           <div class="doc-title">Starting tiles</div>
           <div>
             Every map has several starting points, in which new participating robots are placed during the <code>WAITING_FOR_PLAYERS</code> game state. All of
-            them are marked with an <span style="color: rgb(210, 110, 0)">orange</span> tile border. The count of starting tiles also defines the maximum number of players
-            for a map. If more robots participate than there are tiles available, <span class="highlighted">only the early ones</span> will be included.
+            them are marked with an <span style="color: rgb(210, 110, 0)">orange</span> tile border. The count of starting tiles also defines the maximum number
+            of players for a map. If more robots participate than there are tiles available, <span class="highlighted">only the early ones</span> will be
+            included.
           </div>
           <div>Tile type: <code>START_TILE</code></div>
           <div class="doc-title">Target tile</div>
           <div>
             The target tile is marked on the map with a <span style="color: rgb(0, 130, 255)">cyan</span> colored tile border. Every map has exactly one target
-            tile, which must be reached to win the current game. Its position can be retrieved from the global game information. The position is usually provided, but it
-            could be hidden by the operators to increase the difficulty.
+            tile, which must be reached to win the current game. Its position can be retrieved from the global game information. The position is usually
+            provided, but it could be hidden by the operators to increase the difficulty.
           </div>
           <div>Tile type: <code>TARGET_TILE</code></div>
           <div class="doc-title">Fuel stations</div>
@@ -164,10 +165,11 @@
       <InfoBoxTemplate title="Game Lifecycle">
         <div class="doc">
           <div>
-            RoboRush is a pure turn-based game to ensure that all actions happen simultaneously. For this purpose, the game engine has defined game states, which
-            describe what is currently happening. In the Overview below, you can see normal state transitions as well as transitions with timeouts (indicated by little clock
-            icons). Timeouts simply pause the game flow for a defined time in the current game state. All timeouts for the current game can be viewed
-            in the game information GET endpoint (See the <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec</a>).
+            RoboRush is a pure turn-based game to ensure that all actions happen simultaneously. For this purpose, the game engine has defined game states,
+            which describe what is currently happening. In the Overview below, you can see normal state transitions as well as transitions with timeouts
+            (indicated by little clock icons). Timeouts simply pause the game flow for a defined time in the current game state. All timeouts for the current
+            game can be viewed in the game information GET endpoint (See the
+            <a href="/api/swagger-ui?urls.primaryName=public" target="_blank">OpenApi Spec</a>).
           </div>
           <div class="doc-img">
             <ImageComponent
@@ -185,9 +187,9 @@
           </div>
           <div class="doc-title">WAIT_FOR_ACTION</div>
           <div>
-            While the game is in this state, every robot can schedule its next action. This is typically done by making decisions based on the current game and robot
-            information. If an invalid action is intended, errors with a detailed description will be returned. Additionally, if an action with returning data is planned,
-            remember that the data will available <span class="highlighted">after</span> the upcoming action state.
+            While the game is in this state, every robot can schedule its next action. This is typically done by making decisions based on the current game and
+            robot information. If an invalid action is intended, errors with a detailed description will be returned. Additionally, if an action with returning
+            data is planned, remember that the data will available <span class="highlighted">after</span> the upcoming action state.
           </div>
           <div class="doc-title">ACTION</div>
           <div>
@@ -197,8 +199,8 @@
           </div>
           <div class="doc-title">ENDED</div>
           <div>
-            The final state acts like a little cooldown period during which no robot interaction is possible, and the winning robot is displayed on the web UI as well as in the
-            game info endpoint. After this cooldown phase, a new game starts by transitioning to the <code>PREPARE</code> state again.
+            The final state acts like a little cooldown period during which no robot interaction is possible, and the winning robot is displayed on the web UI
+            as well as in the game info endpoint. After this cooldown phase, a new game starts by transitioning to the <code>PREPARE</code> state again.
           </div>
         </div>
       </InfoBoxTemplate>
