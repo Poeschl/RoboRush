@@ -25,19 +25,24 @@ import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 import FullScreenInfoBox from "@/components/FullScreenInfoBox.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
-import { useRouter } from "vue-router";
 import { computed } from "vue";
 import type { Position } from "@/models/Map";
+import { useConfigStore } from "@/stores/ConfigStore";
 
+const configStore = useConfigStore();
 const gameStore = useGameStore();
 
-const shownTiles = computed<{ data: Position[] }>(() => {
-  const positions = gameStore.globalKnownPositions;
+const shownTiles = computed<{ data: Position[] } | undefined>(() => {
+  if (configStore.clientSettings.useFogOfWar) {
+    const positions = gameStore.globalKnownPositions;
 
-  if (gameStore.currentGame.targetPosition !== undefined) {
-    positions.data.push(gameStore.currentGame.targetPosition);
+    if (gameStore.currentGame.targetPosition !== undefined) {
+      positions.data.push(gameStore.currentGame.targetPosition);
+    }
+    return positions;
+  } else {
+    return undefined;
   }
-  return positions;
 });
 </script>
 

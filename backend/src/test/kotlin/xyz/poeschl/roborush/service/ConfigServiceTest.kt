@@ -24,7 +24,7 @@ class ConfigServiceTest {
   @Test
   fun saveSetting() {
     // WHEN
-    val settingEntity = a(`$SettingEntity`().withType(SettingType.INT).withValue("40"))
+    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.TIMEOUT_GAME_END).withType(SettingType.INT).withValue("40"))
     val convertedEntity = a(`$SettingEntity`().withType(SettingType.INT).withKey(settingEntity.key).withValue("50"))
     val settingDto = SaveSettingDto(settingEntity.key, "30")
 
@@ -40,6 +40,31 @@ class ConfigServiceTest {
     assertThat(setting.key).isEqualTo(settingEntity.key)
     assertThat(setting.type).isEqualTo(SettingType.INT)
     assertThat(setting.value).isEqualTo(50)
+
+    verify(exactly = 0) { websocketController.sendClientSettingsUpdate(any()) }
+  }
+
+  @Test
+  fun saveSetting_frontendSetting() {
+    // WHEN
+    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val convertedEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val settingDto = SaveSettingDto(settingEntity.key, "true")
+
+    every { configRepository.findByKey(settingEntity.key) } returns settingEntity
+    every { settingEntityMapper.toEntity(settingEntity, settingDto) } returns convertedEntity
+    every { configRepository.save(convertedEntity) } returns convertedEntity
+    every { settingEntityMapper.fromEntity(any()) } answers { callOriginal() }
+
+    // THEN
+    val setting = configService.saveSetting(settingDto)
+
+    // VERIFY
+    assertThat(setting.key).isEqualTo(settingEntity.key)
+    assertThat(setting.type).isEqualTo(SettingType.BOOLEAN)
+    assertThat(setting.value).isEqualTo(true)
+
+    verify(exactly = 1) { websocketController.sendClientSettingsUpdate(any()) }
   }
 
   @Test
@@ -131,6 +156,10 @@ class ConfigServiceTest {
   fun setGlobalNotificationText() {
     // WHEN
     val text = a(`$String`("text"))
+    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+
+    every { configRepository.findByKey(SettingKey.USE_FOG_OF_WAR) } returns settingEntity
+    every { settingEntityMapper.fromEntity(settingEntity) } answers { callOriginal() }
 
     // THEN
     configService.setGlobalNotificationText(text)

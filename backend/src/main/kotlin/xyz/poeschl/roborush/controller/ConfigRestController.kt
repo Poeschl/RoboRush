@@ -123,6 +123,9 @@ class ConfigRestController(private val configService: ConfigService, private val
 
   @GetMapping("/client", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getClientSettings(): ClientSettings {
-    return ClientSettings(configService.getGlobalNotificationText())
+    return ClientSettings(
+      configService.getGlobalNotificationText(),
+      configService.getBooleanSetting(SettingKey.USE_FOG_OF_WAR).value
+    )
   }
 }

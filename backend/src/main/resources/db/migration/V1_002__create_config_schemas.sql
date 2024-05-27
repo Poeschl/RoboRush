@@ -13,3 +13,4 @@ INSERT INTO config (key, type, value) values ('TIMEOUT_WAIT_FOR_ACTION', 'DURATI
 INSERT INTO config (key, type, value) values ('TIMEOUT_GAME_END', 'DURATION', 'PT2M');
 INSERT INTO config (key, type, value) values ('THRESHOLD_NO_ROBOT_ACTION_END_GAME', 'INT', '3');
 INSERT INTO config (key, type, value) values ('TARGET_POSITION_IN_GAMEINFO', 'BOOLEAN', 'true');
+INSERT INTO config (key, type, value) values ('USE_FOG_OF_WAR', 'BOOLEAN', 'true');

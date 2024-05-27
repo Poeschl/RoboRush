@@ -23,16 +23,22 @@ import RobotDetails from "@/components/RobotDetails.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
 import { computed } from "vue";
 import type { Position } from "@/models/Map";
+import { useConfigStore } from "@/stores/ConfigStore";
 
+const configStore = useConfigStore();
 const gameStore = useGameStore();
 
-const shownTiles = computed<{ data: Position[] }>(() => {
-  const positions = gameStore.userRobotKnownPositions;
+const shownTiles = computed<{ data: Position[] } | undefined>(() => {
+  if (configStore.clientSettings.useFogOfWar) {
+    const positions = gameStore.userRobotKnownPositions;
 
-  if (gameStore.currentGame.targetPosition !== undefined) {
-    positions.data.push(gameStore.currentGame.targetPosition);
+    if (gameStore.currentGame.targetPosition !== undefined) {
+      positions.data.push(gameStore.currentGame.targetPosition);
+    }
+    return positions;
+  } else {
+    return undefined;
   }
-  return positions;
 });
 </script>
 

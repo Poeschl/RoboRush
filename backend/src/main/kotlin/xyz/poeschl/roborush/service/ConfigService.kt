@@ -21,7 +21,13 @@ class ConfigService(
     val existingEntity: SettingEntity = configRepository.findByKey(settingDto.key)
     val updatedEntity = settingsEntityMapper.toEntity(existingEntity, settingDto)
 
-    return settingsEntityMapper.fromEntity(configRepository.save(updatedEntity))
+    val saved = settingsEntityMapper.fromEntity(configRepository.save(updatedEntity))
+
+    if (saved.key.isFrontendSetting) {
+      sendClientConfigUpdate()
+    }
+
+    return saved
   }
 
   fun getAllSettings(): List<Setting<*>> {
@@ -53,6 +59,11 @@ class ConfigService(
   fun getGlobalNotificationText(): String = globalNotificationText
 
   private fun sendClientConfigUpdate() {
-    websocketController.sendClientSettingsUpdate(ClientSettings(globalNotificationText))
+    websocketController.sendClientSettingsUpdate(
+      ClientSettings(
+        globalNotificationText,
+        getBooleanSetting(SettingKey.USE_FOG_OF_WAR).value
+      )
+    )
   }
 }
