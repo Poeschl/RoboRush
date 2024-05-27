@@ -8,7 +8,7 @@
       <div>
         🏆 <span class="has-text-weight-bold">{{ winnerName }}</span> won the round! 🏆
       </div>
-      <ConfettiExplosion :force="0.4" :stage-height="1600" :particle-count="300" />
+      <div v-confetti="{ stageHeight: 1000, particleCount: 300 }" />
     </div>
     <div class="has-text-weight-bold" v-else>No robot reached the target!</div>
   </div>
@@ -18,7 +18,7 @@
 import { GameState } from "@/models/Game";
 import { useGameStore } from "@/stores/GameStore";
 import { computed } from "vue";
-import ConfettiExplosion from "vue-confetti-explosion/src/ConfettiExplosion.vue";
+import { vConfetti } from "@neoconfetti/vue";
 
 const gameStore = useGameStore();
 
