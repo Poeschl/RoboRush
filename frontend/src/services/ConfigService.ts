@@ -1,6 +1,6 @@
-import type { MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
+import type { ClientSettings, MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import axiosWithAuth from "@/config/axiosWithAuth";
-import type { AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
 import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
 
 export default function useConfigService() {
@@ -41,5 +41,23 @@ export default function useConfigService() {
     return axiosWithAuth.delete(`${baseConfigUrl}/map/${mapId}`);
   };
 
-  return { getAllSettings, saveSetting, uploadNewHeightmap, getAvailableMaps, setMapActive, removeMap, setMapAttributes };
+  const setGlobalNotificationText = (notificationText: string): Promise<void> => {
+    return axiosWithAuth.post(`${baseConfigUrl}/client/globalNotificationText`, { text: notificationText });
+  };
+
+  const getGlobalNotificationText = (): Promise<ClientSettings> => {
+    return axios.get(`${baseConfigUrl}/client`).then((response) => response.data);
+  };
+
+  return {
+    getAllSettings,
+    saveSetting,
+    uploadNewHeightmap,
+    getAvailableMaps,
+    setMapActive,
+    removeMap,
+    setMapAttributes,
+    setGlobalNotificationText,
+    getClientSettings: getGlobalNotificationText,
+  };
 }

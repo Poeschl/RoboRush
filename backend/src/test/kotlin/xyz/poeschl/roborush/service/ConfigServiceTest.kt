@@ -2,20 +2,24 @@ package xyz.poeschl.roborush.service
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.models.settings.*
 import xyz.poeschl.roborush.repositories.ConfigRepository
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$SettingEntity`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Int`
+import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$String`
 import kotlin.time.Duration.Companion.minutes
 
 class ConfigServiceTest {
 
   private val configRepository = mockk<ConfigRepository>()
   private val settingEntityMapper = mockk<SettingEntityMapper>()
-  private val configService = ConfigService(configRepository, settingEntityMapper)
+  private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
+  private val configService = ConfigService(configRepository, settingEntityMapper, websocketController)
 
   @Test
   fun saveSetting() {
@@ -121,5 +125,18 @@ class ConfigServiceTest {
 
     // VERIFY
     assertThat(setting).isEqualTo(expected)
+  }
+
+  @Test
+  fun setGlobalNotificationText() {
+    // WHEN
+    val text = a(`$String`("text"))
+
+    // THEN
+    configService.setGlobalNotificationText(text)
+
+    // VERIFY
+    assertThat(configService.getGlobalNotificationText()).isEqualTo(text)
+    verify { websocketController.sendClientSettingsUpdate(any()) }
   }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller
 import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.PublicRobot
+import xyz.poeschl.roborush.models.settings.ClientSettings
 
 @Controller
 class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
@@ -24,5 +25,9 @@ class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
 
   fun sendTurnUpdate(turn: Int) {
     messageTemplate.convertAndSend("/topic/game/turn", turn)
+  }
+
+  fun sendClientSettingsUpdate(settings: ClientSettings) {
+    messageTemplate.convertAndSend("/topic/config/client", settings)
   }
 }

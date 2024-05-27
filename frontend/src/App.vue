@@ -2,9 +2,10 @@
   <div data-theme="dark" class="mb-5">
     <NavBar v-if="route.meta.hideNavBar != true" class="mb-5" />
     <main :class="{ container: route.meta.noContainer != true }">
+      <GlobalNotification />
       <router-view />
       <div class="is-flex is-justify-content-center" v-if="!route.meta.hideFooter">
-        <div class="is-flex is-justify-content-center pt-1 tool-links">
+        <div class="is-flex is-justify-content-center pt-1 footer-divider">
           <a class="button is-text" href="https://poeschl.xyz" target="_blank" title="Website">
             <div class="icon">
               <FontAwesomeIcon icon="fa-solid fa-globe" class="fa-xl" />
@@ -34,21 +35,32 @@ import { useUserStore } from "@/stores/UserStore";
 import { useSystemStore } from "@/stores/SystemStore";
 import { useRoute, useRouter } from "vue-router";
 import log from "loglevel";
+import GlobalNotification from "@/components/GlobalNotification.vue";
+import { useConfigStore } from "@/stores/ConfigStore";
+import { useWebSocket } from "@/services/WebsocketService";
 
 log.info(`Swagger UI: ${window.location.origin}/api/swagger-ui`);
 
 const router = useRouter();
 const route = useRoute();
 
+const configStore = useConfigStore();
 const userStore = useUserStore();
 const systemStore = useSystemStore();
 const gameStore = useGameStore();
 
-//Start the websocket
+const webSocketService = useWebSocket();
+
+//Init data stores
+configStore.updateClientConfig();
 gameStore.updateGameInfo();
 gameStore.updateMap();
 gameStore.updateRobots();
-gameStore.initWebsocket(computed(() => userStore.user));
+gameStore.initWebsocket(
+  webSocketService,
+  computed(() => userStore.user),
+);
+configStore.initWebsocket(webSocketService);
 
 if (userStore.loggedIn) {
   gameStore.retrieveUserRobotState();
@@ -77,7 +89,7 @@ watch(
 <style lang="scss">
 @use "bulma/sass/utilities/initial-variables";
 
-.tool-links {
+.footer-divider {
   width: 25%;
   border-top-style: solid;
   border-top-color: initial-variables.$black-ter;

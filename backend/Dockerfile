@@ -43,6 +43,7 @@ RUN adduser --no-create-home -u 1000 -D $APPLICATION_USER && \
 USER 1000
 WORKDIR /app
 
+ENV SPRING_PROFILES_ACTIVE=prod
 ENTRYPOINT ["java", "-jar", "/app/roborush-backend.jar"]
 EXPOSE 8080
 

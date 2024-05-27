@@ -17,7 +17,9 @@ import xyz.poeschl.roborush.security.repository.UserRepository
 import java.util.concurrent.TimeUnit
 
 @GameLogic
-@Profile("!prod") // The dummy bots are only available when the profile is not "prod" (like inside the docker image)
+@Profile(
+  "dummybots | !prod"
+) // The dummy bots are only available when the profile "dummybots" is set, or it's not a prod environment (like inside the docker image)
 class DummyBots(
   robotRepository: RobotRepository,
   userRepository: UserRepository,

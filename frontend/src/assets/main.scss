@@ -16,7 +16,9 @@
 
   $white-ter: custom-variables.$white-ter,
   $white-bis: custom-variables.$white-bis,
-  $white: custom-variables.$white
+  $white: custom-variables.$white,
+
+  $cyan: custom-variables.$cyan
 );
 
 @use "bulma/sass/elements/box" with (
@@ -26,7 +28,9 @@
 );
 
 @use "bulma/sass/base" with (
-  $body-background-color: lighten(utilities.$black, 5)
+  $body-background-color: lighten(utilities.$black, 5),
+  $body-overflow-x: auto,
+  $body-overflow-y: auto
 );
 
 @use "bulma/sass/elements/progress" with (

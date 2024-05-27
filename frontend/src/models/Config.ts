@@ -18,3 +18,7 @@ export interface SaveSetting {
 export interface MapGenerationResult {
   warnings: string[];
 }
+
+export interface ClientSettings {
+  globalNotificationText: string;
+}

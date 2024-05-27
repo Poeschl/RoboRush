@@ -24,6 +24,7 @@
       </button>
     </div>
   </div>
+  <p class="help text-placeholder">&nbsp;</p>
 </template>
 
 <script setup lang="ts">
