@@ -1,0 +1,7 @@
+# Dynamic configuration
+
+tls:
+  options:
+    default:
+      # Set the min version to TLS 1.2 for the websockets
+      minVersion: VersionTLS12
