@@ -116,4 +116,5 @@ Then run `./gradlew backend:bootRun` (from project root) (or execute it through 
 
 For the frontend install all packages with `npm install --dev` and run the VUE app with `npm run dev` (from the `frontend` folder).
 
-Now the application can be reached by http://localhost:8888 and http://localhost:8888/api/swagger-ui..
+Now the application can be reached by http://localhost:8888 and http://localhost:8888/api/swagger-ui.
+Also, a "secure" version is available via port `8889` as https://localhost:8888.
