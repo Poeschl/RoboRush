@@ -10,7 +10,7 @@
           <div>
             Each player controls their robot via REST interfaces to check its environment. They also triggers all available robot actions. Since the robots are
             not aware of the map around them, they might need to have a clever way to navigate through the map. But be careful, because all actions will deplete
-            the robot's fuel tank a little. If a robot runs out of fuel, it becomes immobile and can't perform any actions.
+            the robot's fuel tank a little. If a robot runs out of fuel, it becomes immobile and can't perform any movement actions.
           </div>
           <div>
             To win the game, your robot must be <span class="highlighted">the first to reach the target position</span>. Each win adds one point to your entry
