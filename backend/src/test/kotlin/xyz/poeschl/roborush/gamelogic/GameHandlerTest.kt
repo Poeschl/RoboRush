@@ -12,13 +12,14 @@ import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
 import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
-import xyz.poeschl.roborush.models.*
+import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.settings.BooleanSetting
 import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.service.ConfigService
 import xyz.poeschl.roborush.service.MapService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.b
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$DurationSetting`
@@ -27,6 +28,7 @@ import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Dire
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Position`
+import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Boolean`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Int`
@@ -270,10 +272,12 @@ class GameHandlerTest {
     val state = a(`$GameState`())
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
+    val robot = b(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
+    every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
@@ -287,6 +291,7 @@ class GameHandlerTest {
     assertThat(game.targetPosition).isEqualTo(target)
     assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
     assertThat(game.currentTurn).isEqualTo(0)
+    assertThat(game.nameOfWinningRobot).isEqualTo(robot?.user!!.username)
   }
 
   @Test
@@ -295,10 +300,12 @@ class GameHandlerTest {
     val state = a(`$GameState`())
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
+    val robot = b(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
+    every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
@@ -311,6 +318,7 @@ class GameHandlerTest {
     assertThat(game.currentState).isEqualTo(state)
     assertThat(game.targetPosition).isNull()
     assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
+    assertThat(game.nameOfWinningRobot).isEqualTo(robot?.user!!.username)
   }
 
   @Test
@@ -374,10 +382,12 @@ class GameHandlerTest {
     val state = a(`$GameState`())
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
+    val robot = b(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
+    every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
