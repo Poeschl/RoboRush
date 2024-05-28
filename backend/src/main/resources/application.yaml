@@ -42,7 +42,16 @@ logging:
     # org.hibernate.SQL: debug # Show sql statements
 
 ---
-# This is a second config section which gets activated when the "test" spring profile is active
+# This is a second config section which gets activated when the "prod" spring profile is active
+spring:
+  config.activate.on-profile: prod
+
+springdoc:
+  swagger-ui:
+    default-models-expand-depth: -1
+
+---
+# This is a third config section which gets activated when the "test" spring profile is active
 spring:
   config.activate.on-profile: test
 
