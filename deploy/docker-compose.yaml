@@ -1,7 +1,7 @@
 version: "3"
 services:
   traefik:
-    image: traefik:v2.10.3
+    image: traefik:v2.11.3
     restart: unless-stopped
     command:
       - --api
@@ -45,12 +45,12 @@ services:
   frontend:
     image: ghcr.io/poeschl/roborush:frontend
     restart: unless-stopped
-    #    environment:
-    #      PLAUSIBLE_DOMAIN: <your domain>
-    #      PLAUSIBLE_API_HOST: https://plausible.io
+    #environment:
+    #  PLAUSIBLE_DOMAIN: <your domain>
+    #  PLAUSIBLE_API_HOST: https://plausible.io
     labels:
       - traefik.enable=true
-      - traefik.http.routers.brettbutler-frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.roborush-frontend.rule=PathPrefix(`/`)
 
   backend:
     image: ghcr.io/poeschl/roborush:backend
@@ -67,9 +67,11 @@ services:
       #AUTH_ISSUER:
       # Insert a random string with a recommended length of 64 chars. If changed, all users need to re-login.
       #AUTH_KEY:
+      # Set a fixed root password. If not set a random will be generated on first start
+      #INITIAL_ROOT_PASSWORD:
     labels:
       - traefik.enable=true
-      - traefik.http.routers.brettbutler-backend.rule=PathPrefix(`/rest`)
+      - traefik.http.routers.roborush-backend.rule=PathPrefix(`/rest`)
 
   database:
     image: postgres:16-alpine
