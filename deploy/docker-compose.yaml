@@ -10,12 +10,21 @@ services:
       - --ping.entrypoint=websecure
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=proxy
+      # Specify the network name of this docker-compose file, if traefik is used
+      #- --providers.docker.network=rr_default
 
       - --entrypoints.web.address=:80
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certResolver=letsencrypt
+
+      # Set your letsencrypt email in the .env file, also the domain for which your certificate should be created
+      - --certificatesresolvers.letsencrypt.acme.email=${letsencrypt_email}
+      - --certificatesresolvers.letsencrypt.acme.storage=/acme/acme.json
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      # Comment out next line to get letsencrypt production certificates
+      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
 
       #- '--log.level=DEBUG'
     ports:
@@ -27,15 +36,13 @@ services:
     labels:
       - traefik.enable=true
       # since Traefik don't allow to change the api path the referer is used as rule (https://github.com/traefik/traefik/issues/5853)
-      - traefik.http.routers.dashboard.rule=(PathPrefix(`/traefik/dashboard`) || HeadersRegexp(`Referer`, `.*\/traefik\/dashboard\/.*`))
-      - traefik.http.routers.dashboard.priority=20
+      - traefik.http.routers.dashboard.rule=Host(`${domain}`) && (PathPrefix(`/traefik/dashboard`) || HeadersRegexp(`Referer`, `.*\/traefik\/dashboard\/.*`))
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.middlewares=strip-prefix-traefik
       - traefik.http.middlewares.strip-prefix-traefik.stripprefix.prefixes=/traefik
 
       - traefik.http.routers.dashboard-redirect.rule=PathPrefix(`/traefik`)
-      - traefik.http.routers.dashboard-redirect.priority=10
       - traefik.http.routers.dashboard-redirect.service=noop@internal
       - traefik.http.routers.dashboard-redirect.entrypoints=websecure
       - traefik.http.routers.dashboard-redirect.middlewares=dashboard-redirect
@@ -50,7 +57,8 @@ services:
     #  PLAUSIBLE_API_HOST: https://plausible.io
     labels:
       - traefik.enable=true
-      - traefik.http.routers.roborush-frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.roborush-frontend.rule=Host(`${domain}`) && PathPrefix(`/`)
+      - traefik.http.routers.roborush-frontend.entrypoints=websecure
 
   backend:
     image: ghcr.io/poeschl/roborush:backend
@@ -71,7 +79,8 @@ services:
       #INITIAL_ROOT_PASSWORD:
     labels:
       - traefik.enable=true
-      - traefik.http.routers.roborush-backend.rule=PathPrefix(`/rest`)
+      - traefik.http.routers.roborush-backend.rule=Host(`${domain}`) && PathPrefix(`/api`)
+      - traefik.http.routers.roborush-backend.entrypoints=websecure
 
   database:
     image: postgres:16-alpine
