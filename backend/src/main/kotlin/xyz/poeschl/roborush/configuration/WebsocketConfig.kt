@@ -22,7 +22,7 @@ class WebsocketConfig(private val websocketConnectAuthInterceptor: WebsocketConn
   }
 
   override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-    registry.addEndpoint("/ws")
+    registry.addEndpoint("/ws").setAllowedOriginPatterns("*")
   }
 
   override fun configureClientInboundChannel(registration: ChannelRegistration) {

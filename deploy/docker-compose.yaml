@@ -8,6 +8,7 @@ services:
       - --api.dashboard=true
       - --ping=true
       - --ping.entrypoint=websecure
+      - --providers.file.directory=/config
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       # Specify the network name of this docker-compose file, if traefik is used
@@ -27,12 +28,14 @@ services:
       - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
 
       #- '--log.level=DEBUG'
+      #- - --accesslog=true
     ports:
       - 80:80
       - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - acme-store:/acme
+      - ./tls.yaml:/config/tls.yaml
     labels:
       - traefik.enable=true
       # since Traefik don't allow to change the api path the referer is used as rule (https://github.com/traefik/traefik/issues/5853)

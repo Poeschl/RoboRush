@@ -4,11 +4,14 @@ services:
   traefik:
     image: traefik:v2.10.3
     command:
-      - --log.level=DEBUG
       - --ping.entrypoint=web
       - --providers.file.directory=/config
       - --entrypoints.web.address=:8888
-      - --accesslog=true
+      - --entrypoints.websecure.address=:8889
+      - --entrypoints.websecure.http.tls=true
+
+      - --log.level=DEBUG
+      #- --accesslog=true
     network_mode: host
     volumes:
       - ./config:/config
