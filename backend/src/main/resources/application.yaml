@@ -32,6 +32,7 @@ server:
       enabled: false
   tomcat:
     max-http-form-post-size: 10MB
+  forward-headers-strategy: framework
 
 logging:
   level:
