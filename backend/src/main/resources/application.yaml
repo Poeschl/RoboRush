@@ -38,6 +38,7 @@ logging:
     xyz.poeschl.roborush: debug
     # org.springframework.messaging.simp.broker: DEBUG # Set this to debug to see Websocket messages
     # org.springframework.security.messaging.web.socket: DEBUG # More websocket security output
+    # org.springframework.web: DEBUG # Get all web-related output. WARNING: Thats a lot
     # org.hibernate.SQL: debug # Show sql statements
 
 ---
