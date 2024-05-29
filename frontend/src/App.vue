@@ -63,7 +63,7 @@ gameStore.initWebsocket(
 );
 configStore.initWebsocket(webSocketService);
 
-if (userStore.loggedIn) {
+if (userStore.loggedIn && !userStore.isAdmin) {
   gameStore.retrieveUserRobotState();
   gameStore.updateUserRobotKnownPositions();
 }
