@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
-import type { ActiveRobot, PublicRobot } from "@/models/Robot";
+import type { ActiveRobot, PublicRobot, ScoreboardEntry } from "@/models/Robot";
 import type { PlaygroundMap } from "@/models/Map";
 import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
 import type { User } from "@/models/User";
@@ -24,6 +24,7 @@ export const useGameStore = defineStore("gameStore", () => {
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalRobots: Ref<{ data: PublicRobot[] }> = ref({ data: [] });
+  const scoreBoard: Ref<{ data: ScoreboardEntry[] }> = ref({ data: [] });
 
   const userRobot = ref<ActiveRobot | undefined>();
   const userRobotActive = computed<boolean>(() => {
@@ -96,6 +97,10 @@ export const useGameStore = defineStore("gameStore", () => {
     gameService.getCurrentGame().then((gameInfo) => (currentGame.value = gameInfo));
   };
 
+  const updateScoreBoard = () => {
+    robotService.getTop10Robots().then((newScoreboard) => (scoreBoard.value.data = newScoreboard));
+  };
+
   const updateGameStateTo = (gameState: GameState) => {
     const previousGameState = currentGame.value.currentState;
     currentGame.value.currentState = gameState;
@@ -110,6 +115,7 @@ export const useGameStore = defineStore("gameStore", () => {
       updateMap();
     }
     if (gameState === GameState.ENDED) {
+      updateScoreBoard();
       updateGameInfo();
     }
   };
@@ -166,5 +172,7 @@ export const useGameStore = defineStore("gameStore", () => {
     refuelRobot,
     isSolarChargePossible,
     solarCharge,
+    updateScoreBoard,
+    scoreBoard,
   };
 });

@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { ActiveRobot, Move, PublicRobot, Scan } from "@/models/Robot";
+import type { ActiveRobot, Move, PublicRobot, Scan, ScoreboardEntry } from "@/models/Robot";
 import { correctTypesFromJson } from "@/models/Robot";
 import Color from "@/models/Color";
 import axiosWithAuth from "@/config/axiosWithAuth";
@@ -8,7 +8,7 @@ export default function useRobotService() {
   const baseRobotUrl = "/api/robot";
 
   const getRobots = (): Promise<PublicRobot[]> => {
-    return axios.get(`${baseRobotUrl}/all`).then((response) =>
+    return axios.get(`${baseRobotUrl}/all/active`).then((response) =>
       response.data.map((origin: PublicRobot) => {
         return { id: origin.id, name: origin.name, position: origin.position, color: new Color(origin.color.r, origin.color.g, origin.color.b) } as PublicRobot;
       }),
@@ -50,5 +50,13 @@ export default function useRobotService() {
     return axiosWithAuth.post(`${baseRobotUrl}/action/solarCharge`);
   };
 
-  return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot, waitOnRobot, refuelRobot, solarChargeRobot };
+  const getTop10Robots = (): Promise<ScoreboardEntry[]> => {
+    return axios.get(`${baseRobotUrl}/all/scores`).then((response) =>
+      response.data.map((origin: ScoreboardEntry) => {
+        return { name: origin.name, color: new Color(origin.color.r, origin.color.g, origin.color.b), score: origin.score } as ScoreboardEntry;
+      }),
+    );
+  };
+
+  return { getRobots, getUserRobot, registerCurrentRobotForGame, moveRobot, scanOnRobot, waitOnRobot, refuelRobot, solarChargeRobot, getTop10Robots };
 }

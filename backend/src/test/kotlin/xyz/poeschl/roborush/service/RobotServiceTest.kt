@@ -14,6 +14,7 @@ import xyz.poeschl.roborush.gamelogic.actions.RefuelAction
 import xyz.poeschl.roborush.gamelogic.actions.ScanAction
 import xyz.poeschl.roborush.gamelogic.actions.WaitAction
 import xyz.poeschl.roborush.models.PublicRobot
+import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.repositories.RobotRepository
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
@@ -208,5 +209,21 @@ class RobotServiceTest {
     verify {
       gameHandler.nextActionForRobot(robotId, RefuelAction())
     }
+  }
+
+  @Test
+  fun getTopRobots() {
+    // WHEN
+    val robot1 = a(`$Robot`().withUser(a(`$User`().withUsername("Hans"))).withScore(100))
+    val robot2 = a(`$Robot`().withUser(a(`$User`().withUsername("Hänschen"))).withScore(50))
+
+    every { robotRepository.findTop10Robots() } returns listOf(robot1, robot2)
+
+    // THEN
+    val result = robotService.getTopRobots()
+
+    // VERIFY
+    assertThat(result[0]).isEqualTo(ScoreboardEntry(robot1.user.username, robot1.color, robot1.score))
+    assertThat(result[1]).isEqualTo(ScoreboardEntry(robot2.user.username, robot2.color, robot2.score))
   }
 }

@@ -8,6 +8,7 @@ import xyz.poeschl.roborush.gamelogic.actions.*
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
 import xyz.poeschl.roborush.models.PublicRobot
+import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.repositories.Robot
 import xyz.poeschl.roborush.repositories.RobotRepository
 import xyz.poeschl.roborush.security.repository.User
@@ -64,5 +65,10 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
 
   fun scheduleSolarCharge(robotId: Long) {
     gameHandler.nextActionForRobot(robotId, SolarChargeAction())
+  }
+
+  fun getTopRobots(): List<ScoreboardEntry> {
+    return robotRepository.findTop10Robots()
+      .map { ScoreboardEntry(it.user.username, it.color, it.score) }
   }
 }

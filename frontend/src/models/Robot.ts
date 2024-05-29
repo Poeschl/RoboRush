@@ -37,6 +37,12 @@ export interface ActiveRobot {
   lastResult: string | undefined;
 }
 
+export interface ScoreboardEntry {
+  name: string;
+  color: Color;
+  score: number;
+}
+
 export function correctTypesFromJson(activeBot: ActiveRobot): ActiveRobot {
   const correctRobot = activeBot;
   correctRobot.color = new Color(correctRobot.color.r, correctRobot.color.g, correctRobot.color.b);

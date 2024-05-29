@@ -10,11 +10,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ActiveRobot, PublicRobot } from "@/models/Robot";
+import type { ActiveRobot, PublicRobot, ScoreboardEntry } from "@/models/Robot";
 import { computed } from "vue";
 
 const props = defineProps<{
-  robot: PublicRobot | ActiveRobot | undefined;
+  robot: PublicRobot | ActiveRobot | ScoreboardEntry | undefined;
 }>();
 
 const tagColor = computed<string | undefined>(() => props.robot?.color.toHex());
