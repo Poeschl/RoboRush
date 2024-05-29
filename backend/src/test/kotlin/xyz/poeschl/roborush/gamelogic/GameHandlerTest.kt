@@ -19,7 +19,6 @@ import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.service.ConfigService
 import xyz.poeschl.roborush.service.MapService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
-import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.b
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$DurationSetting`
@@ -272,7 +271,7 @@ class GameHandlerTest {
     val state = a(`$GameState`())
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
-    val robot = b(`$Robot`())
+    val robot = a(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
@@ -300,7 +299,7 @@ class GameHandlerTest {
     val state = a(`$GameState`())
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
-    val robot = b(`$Robot`())
+    val robot = a(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
@@ -382,7 +381,7 @@ class GameHandlerTest {
     val state = a(`$GameState`())
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
-    val robot = b(`$Robot`())
+    val robot = a(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target

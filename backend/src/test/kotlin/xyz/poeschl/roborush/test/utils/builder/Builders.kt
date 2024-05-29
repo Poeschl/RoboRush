@@ -17,15 +17,6 @@ class Builders {
     }
 
     /***
-     * This builds an instance of the given builder or null
-     * @param builder A builder (prefixed with '$'
-     * @return A created instance or null
-     */
-    fun <T> b(builder: Builder<T>?): T? {
-      return builder?.build()
-    }
-
-    /***
      * This builds a single list with one element in it, the created instance.
      * @param builder A builder (prefixed with '$'
      * @return A list with one element and the built instance in it.
