@@ -1,5 +1,5 @@
 <template xmlns="http://www.w3.org/1999/html">
-  <div data-theme="dark" class="mb-5">
+  <div data-theme="dark" :class="{ 'mb-5': route.meta.noContainer != true }">
     <NavBar v-if="route.meta.hideNavBar != true" class="mb-5" />
     <main :class="{ container: route.meta.noContainer != true }">
       <GlobalNotification />
