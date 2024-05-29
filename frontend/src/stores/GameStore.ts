@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot } from "@/models/Robot";
-import type { PlaygroundMap, Tile } from "@/models/Map";
+import type { PlaygroundMap } from "@/models/Map";
 import { useWebSocket, WebSocketTopic } from "@/services/WebsocketService";
 import type { User } from "@/models/User";
 import { useGameService } from "@/services/GameService";
@@ -103,10 +103,14 @@ export const useGameStore = defineStore("gameStore", () => {
     if (previousGameState == GameState.ENDED && gameState === GameState.PREPARE) {
       // Reset robot list on prepare stage
       internalRobots.value.data = [];
+      updateGameInfo();
     }
     if (previousGameState == GameState.PREPARE && gameState === GameState.WAIT_FOR_PLAYERS) {
       // Update map data after game preparations
       updateMap();
+    }
+    if (gameState === GameState.ENDED) {
+      updateGameInfo();
     }
   };
 

@@ -2,7 +2,8 @@
   <FullScreenInfoBar class="mb-5" />
   <div class="fullscreen-container ml-4 mr-4">
     <div class="columns">
-      <div class="column is-flex is-justify-content-center is-align-items-start">
+      <div class="column is-flex is-align-items-center is-flex-direction-column pr-5">
+        <WinnerBanner />
         <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="height: 100%" />
       </div>
       <div class="column is-one-fifth is-flex-direction-column is-narrow data-column">
@@ -21,6 +22,7 @@ import GameStateBox from "@/components/GameStateBox.vue";
 import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 import FullScreenInfoBar from "@/components/FullScreenInfoBar.vue";
+import WinnerBanner from "@/components/WinnerBanner.vue";
 
 const gameStore = useGameStore();
 </script>

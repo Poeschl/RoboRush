@@ -5,6 +5,7 @@ export interface Game {
   currentTurn: number;
   solarChargePossible: boolean;
   targetPosition?: Position;
+  nameOfWinningRobot?: string;
 }
 
 export enum GameState {

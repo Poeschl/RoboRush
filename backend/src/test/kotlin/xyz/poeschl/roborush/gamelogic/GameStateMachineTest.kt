@@ -21,6 +21,7 @@ class GameStateMachineTest {
       Arguments.of(listOf<GameState>(), GameState.WAIT_FOR_PLAYERS, false),
       Arguments.of(listOf<GameState>(), GameState.WAIT_FOR_ACTION, false),
       Arguments.of(listOf<GameState>(), GameState.ACTION, false),
+      Arguments.of(listOf<GameState>(), GameState.ENDED, false),
       Arguments.of(listOf(GameState.PREPARE), GameState.WAIT_FOR_PLAYERS, true),
       Arguments.of(listOf(GameState.PREPARE), GameState.WAIT_FOR_ACTION, false),
       Arguments.of(listOf(GameState.PREPARE), GameState.ACTION, false),
@@ -56,6 +57,11 @@ class GameStateMachineTest {
         listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED),
         GameState.PREPARE,
         true
+      ),
+      Arguments.of(
+        listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED),
+        GameState.WAIT_FOR_PLAYERS,
+        false
       ),
       Arguments.of(
         listOf(GameState.PREPARE, GameState.WAIT_FOR_PLAYERS, GameState.WAIT_FOR_ACTION, GameState.ACTION, GameState.ENDED),

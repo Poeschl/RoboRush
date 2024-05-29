@@ -1,6 +1,7 @@
 <template>
   <div class="columns">
-    <div class="column is-flex is-justify-content-center is-align-items-start mb-5">
+    <div class="column is-flex is-align-items-center is-flex-direction-column">
+      <WinnerBanner />
       <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="width: 90%" />
     </div>
     <div class="column is-one-half is-one-quarter-desktop is-flex-direction-column is-narrow-mobile">
@@ -26,6 +27,7 @@ import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useRouter } from "vue-router";
+import WinnerBanner from "@/components/WinnerBanner.vue";
 
 const gameStore = useGameStore();
 

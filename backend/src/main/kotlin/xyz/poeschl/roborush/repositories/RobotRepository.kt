@@ -19,5 +19,6 @@ interface RobotRepository : CrudRepository<Robot, Long> {
 data class Robot(
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(insertable = false) val id: Long?,
   @Column(name = "color") val color: Color,
+  @Column(name = "score") var score: Long,
   @OneToOne val user: User
 )

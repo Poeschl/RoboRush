@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic.internal
 
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.CacheEvict
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.exceptions.GameStateException
 import xyz.poeschl.roborush.gamelogic.GameHandler
@@ -10,6 +11,7 @@ import xyz.poeschl.roborush.gamelogic.actions.MoveAction
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Position
+import xyz.poeschl.roborush.repositories.Robot
 import xyz.poeschl.roborush.repositories.RobotRepository
 
 @GameLogic
@@ -25,6 +27,10 @@ class RobotHandler(
   private var initialRobotMaxFuel = 0
 
   private val activeRobots = mutableSetOf<ActiveRobot>()
+
+  private var winningRobot: Robot? = null
+
+  fun getWinningRobot() = winningRobot
 
   fun registerRobotForGame(robotId: Long, startPosition: Position): ActiveRobot? {
     if (!gameStateService.isInState(GameState.WAIT_FOR_PLAYERS)) {
@@ -54,6 +60,7 @@ class RobotHandler(
 
   fun clearActiveRobots() {
     activeRobots.clear()
+    winningRobot = null
   }
 
   fun setNextMove(robotId: Long, gameHandler: GameHandler, nextAction: RobotAction<*>): ActiveRobot? {
@@ -116,5 +123,14 @@ class RobotHandler(
       .forEach { positionsAfterNextActions.add(it) }
 
     return positionsAfterNextActions.none { it == position }
+  }
+
+  @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
+  fun wonTheCurrentRound(robot: ActiveRobot) {
+    val actualRobot = robotRepository.findById(robot.id)
+    actualRobot.ifPresent {
+      it.score += 1
+      winningRobot = robotRepository.save(it)
+    }
   }
 }
