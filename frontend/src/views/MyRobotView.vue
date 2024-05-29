@@ -2,7 +2,7 @@
   <div class="columns">
     <div class="column is-flex is-align-items-center is-flex-direction-column">
       <WinnerBanner />
-      <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="width: 90%" />
+      <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" :positions-to-draw="shownTiles" style="width: 90%" />
     </div>
     <div class="column is-one-half is-one-quarter-desktop is-flex-direction-column is-narrow-mobile mobile">
       <GameFlags />
@@ -21,8 +21,25 @@ import GameStateBox from "@/components/GameStateBox.vue";
 import GameFlags from "@/components/GameFlags.vue";
 import RobotDetails from "@/components/RobotDetails.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
+import { computed } from "vue";
+import type { Position } from "@/models/Map";
+import { useConfigStore } from "@/stores/ConfigStore";
 
+const configStore = useConfigStore();
 const gameStore = useGameStore();
+
+const shownTiles = computed<{ data: Position[] } | undefined>(() => {
+  if (configStore.clientSettings.useFogOfWar) {
+    const positions = gameStore.userRobotKnownPositions;
+
+    if (gameStore.currentGame.targetPosition !== undefined) {
+      positions.data.push(gameStore.currentGame.targetPosition);
+    }
+    return positions;
+  } else {
+    return undefined;
+  }
+});
 </script>
 
 <style scoped>

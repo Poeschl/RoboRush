@@ -6,7 +6,7 @@
       </div>
       <div class="column is-flex is-align-items-center is-flex-direction-column pr-5">
         <WinnerBanner />
-        <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="height: 100%" />
+        <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" :positions-to-draw="shownTiles" style="height: 100%" />
       </div>
       <div class="column is-one-fifth is-flex-direction-column is-narrow data-column">
         <RobotScoreBoard />
@@ -25,8 +25,25 @@ import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 import FullScreenInfoBox from "@/components/FullScreenInfoBox.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
+import { computed } from "vue";
+import type { Position } from "@/models/Map";
+import { useConfigStore } from "@/stores/ConfigStore";
 
+const configStore = useConfigStore();
 const gameStore = useGameStore();
+
+const shownTiles = computed<{ data: Position[] } | undefined>(() => {
+  if (configStore.clientSettings.useFogOfWar) {
+    const positions = gameStore.globalKnownPositions;
+
+    if (gameStore.currentGame.targetPosition !== undefined) {
+      positions.data.push(gameStore.currentGame.targetPosition);
+    }
+    return positions;
+  } else {
+    return undefined;
+  }
+});
 </script>
 
 <style scoped lang="scss">

@@ -66,7 +66,7 @@ class GameLoop(
           gameStateService.setGameState(GameState.ENDED)
         } else {
           LOGGER.debug("Execute robot actions")
-          gameHandler.executeAllRobotMoves()
+          gameHandler.executeAllRobotActions()
 
           val winningRobot = gameHandler.getActiveRobots().find { robot ->
             robot.position == gameHandler.getTargetPosition()

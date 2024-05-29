@@ -36,6 +36,7 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
 
     robot.fuel -= fuelCost
     robot.position = newPosition
+    robot.knownPositions.add(newPosition)
     LOGGER.debug("Moved robot {} {} -> {}", robot.id, currentPosition, newPosition)
     gameHandler.sendRobotUpdate(robot)
 

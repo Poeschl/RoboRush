@@ -20,7 +20,9 @@ data class ActiveRobot(
       MoveAction::class, ScanAction::class, WaitAction::class, RefuelAction::class, SolarChargeAction::class
     ]
   ) var nextAction: RobotAction<*>? = null,
-  var lastResult: Any? = null
+  var lastResult: Any? = null,
+  @JsonIgnore
+  val knownPositions: MutableSet<Position> = mutableSetOf()
 ) {
 
   val maxFuel = fuel

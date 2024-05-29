@@ -29,7 +29,7 @@ class DBMigrationIntegrityTest {
     .withHashAlgorithm(HashAlgorithm.MD5)
     .withHashPair("V1_000__create_user_schemas.sql", "5982877bb3946da9beea4e57f4d1f57e")
     .withHashPair("V1_001__create_robot_schemas.sql", "1cf42c0d26713eb7b6d42894118b82e1")
-    .withHashPair("V1_002__create_config_schemas.sql", "536f4e48da2794ab9df48f2bb9670da3")
+    .withHashPair("V1_002__create_config_schemas.sql", "e1d94480bbcd84b669c7d8a68fd8ef63")
     .withHashPair("V1_003__create_map_schemas.sql", "1241f041234a0e4b6a62e9f0b2b4ba20")
     .withHashPair("V1_004__add_map_icon_map.sql", "2aa3f876a708aaf32eb95b8f6cec980a")
     .withHashPair("V1_005__add_map_easy.sql", "66975341559c243797bcd6871b0a49dd")

@@ -2,7 +2,7 @@
   <div class="columns">
     <div class="column is-flex is-align-items-center is-flex-direction-column">
       <WinnerBanner />
-      <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="width: 90%" />
+      <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" :positions-to-draw="shownTiles" style="width: 90%" />
     </div>
     <div class="column is-one-half is-one-quarter-desktop is-flex-direction-column is-narrow-mobile">
       <RobotActiveList />
@@ -25,13 +25,29 @@ import { useGameStore } from "@/stores/GameStore";
 import GameStateBox from "@/components/GameStateBox.vue";
 import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
+import { computed } from "vue";
+import type { Position } from "@/models/Map";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useRouter } from "vue-router";
 import WinnerBanner from "@/components/WinnerBanner.vue";
+import { useConfigStore } from "@/stores/ConfigStore";
 
+const configStore = useConfigStore();
 const gameStore = useGameStore();
-
 const router = useRouter();
+
+const shownTiles = computed<{ data: Position[] } | undefined>(() => {
+  if (configStore.clientSettings.useFogOfWar) {
+    const positions = gameStore.globalKnownPositions;
+
+    if (gameStore.currentGame.targetPosition !== undefined) {
+      positions.data.push(gameStore.currentGame.targetPosition);
+    }
+    return positions;
+  } else {
+    return undefined;
+  }
+});
 
 const forwardToFullscreen = () => {
   router.push({ path: "/fullscreen" });

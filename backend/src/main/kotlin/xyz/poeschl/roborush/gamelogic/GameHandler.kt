@@ -71,6 +71,8 @@ class GameHandler(
   fun sendRobotUpdate(activeRobot: ActiveRobot) {
     websocketController.sendRobotUpdate(activeRobot)
     websocketController.sendUserRobotData(activeRobot)
+    websocketController.sendKnownPositionsUpdate(activeRobot)
+    websocketController.sendGlobalKnownPositionsUpdate(robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toSet())
   }
 
   fun getFuelCostForMove(current: Position, next: Position): Int {
@@ -96,7 +98,7 @@ class GameHandler(
 
   fun robotMovesReceived(): Boolean = robotHandler.countPendingRobotActions() > 0
 
-  fun executeAllRobotMoves() {
+  fun executeAllRobotActions() {
     robotHandler.executeRobotActions(this)
     setGameTurn(currentTurn + 1)
   }
@@ -107,9 +109,12 @@ class GameHandler(
 
     if (startPosition != null) {
       val activeRobot = robotHandler.registerRobotForGame(robotId, startPosition)
-      activeRobot?.let {
-        websocketController.sendRobotUpdate(activeRobot)
-        websocketController.sendUserRobotData(activeRobot)
+      activeRobot?.let { registeredRobot ->
+        registeredRobot.knownPositions.add(startPosition)
+        websocketController.sendRobotUpdate(registeredRobot)
+        websocketController.sendUserRobotData(registeredRobot)
+        websocketController.sendKnownPositionsUpdate(registeredRobot)
+        websocketController.sendGlobalKnownPositionsUpdate(robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toSet())
       }
     } else {
       throw PositionNotAllowedException("Could not place robot at a empty start position.")
@@ -128,6 +133,7 @@ class GameHandler(
     robotHandler.setRobotMaxFuel(map.maxRobotFuel)
     robotHandler.clearActiveRobots()
     setGameTurn(0)
+    websocketController.sendGlobalKnownPositionsUpdate(emptySet())
   }
 
   @Cacheable("gameInfoCache")

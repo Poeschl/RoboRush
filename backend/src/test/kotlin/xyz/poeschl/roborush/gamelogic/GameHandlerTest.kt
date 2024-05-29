@@ -124,12 +124,18 @@ class GameHandlerTest {
   fun sendRobotUpdate() {
     // WHEN
     val robot = a(`$ActiveRobot`())
+    val knownPositions = setWithOne(`$Position`())
+    val robots = setWithOne(`$ActiveRobot`().withKnownPositions(knownPositions))
+    every { robotHandler.getAllActiveRobots() } returns robots
 
     // THEN
     gameHandler.sendRobotUpdate(robot)
 
     // VERIFY
     verify { websocketController.sendRobotUpdate(robot) }
+    verify { websocketController.sendUserRobotData(robot) }
+    verify { websocketController.sendKnownPositionsUpdate(robot) }
+    verify { websocketController.sendGlobalKnownPositionsUpdate(knownPositions) }
   }
 
   @Test
@@ -205,14 +211,15 @@ class GameHandlerTest {
   }
 
   @Test
-  fun executeAllRobotMoves() {
+  fun executeAllRobotActions() {
     // WHEN
 
     // THEN
-    gameHandler.executeAllRobotMoves()
+    gameHandler.executeAllRobotActions()
 
     // VERIFY
     verify { robotHandler.executeRobotActions(gameHandler) }
+    verify(exactly = 1) { websocketController.sendTurnUpdate(any()) }
   }
 
   @Test
@@ -221,16 +228,22 @@ class GameHandlerTest {
     val possibleStart = listOf(Position(0, 0))
     val startPosition = Position(0, 2)
     val registeredRobot = a(`$ActiveRobot`())
+    val existingRobots = setWithOne(`$ActiveRobot`())
+
     every { mapHandler.getStartPositions() } returns possibleStart
     every { robotHandler.getACurrentlyFreePosition(possibleStart) } returns startPosition
     every { robotHandler.registerRobotForGame(1, startPosition) } returns registeredRobot
+    every { robotHandler.getAllActiveRobots() } returns existingRobots
 
     // THEN
     gameHandler.registerRobotForNextGame(1)
 
     // VERIFY
+    assertThat(registeredRobot.knownPositions).containsExactly(startPosition)
     verify { robotHandler.registerRobotForGame(1, startPosition) }
     verify { websocketController.sendRobotUpdate(registeredRobot) }
+    verify { websocketController.sendKnownPositionsUpdate(registeredRobot) }
+    verify { websocketController.sendGlobalKnownPositionsUpdate(any()) }
   }
 
   @Test
@@ -263,6 +276,8 @@ class GameHandlerTest {
     // VERIFY
     verify { mapHandler.loadNewMap(map) }
     verify { robotHandler.clearActiveRobots() }
+    verify(exactly = 1) { websocketController.sendTurnUpdate(0) }
+    verify(exactly = 1) { websocketController.sendGlobalKnownPositionsUpdate(setOf()) }
   }
 
   @Test
@@ -349,9 +364,12 @@ class GameHandlerTest {
   fun currentGameTurn_changesWithActions() {
     // WHEN
     val previousTurn = getCurrentTurn()
+    val robots = setWithOne(`$ActiveRobot`())
+
+    every { robotHandler.getAllActiveRobots() } returns robots
 
     // THEN
-    gameHandler.executeAllRobotMoves()
+    gameHandler.executeAllRobotActions()
 
     // VERIFY
     val currentTurn = getCurrentTurn()
@@ -362,10 +380,12 @@ class GameHandlerTest {
   fun currentGameTurn_resetOnPrepare() {
     // WHEN
     val map = a(`$Map`())
+    val robots = setWithOne(`$ActiveRobot`())
 
     every { mapService.getNextChallengeMap() } returns map
+    every { robotHandler.getAllActiveRobots() } returns robots
 
-    gameHandler.executeAllRobotMoves()
+    gameHandler.executeAllRobotActions()
     val previousTurn = getCurrentTurn()
 
     // THEN

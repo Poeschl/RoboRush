@@ -1,5 +1,7 @@
 package xyz.poeschl.roborush.models.settings
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 abstract class Setting<T>(val key: SettingKey, val value: T) {
   abstract val type: SettingType
 
@@ -24,12 +26,13 @@ abstract class Setting<T>(val key: SettingKey, val value: T) {
   }
 }
 
-enum class SettingKey {
+enum class SettingKey(@JsonIgnore val isFrontendSetting: Boolean = false) {
   TIMEOUT_WAIT_FOR_PLAYERS,
   TIMEOUT_WAIT_FOR_ACTION,
   TIMEOUT_GAME_END,
   THRESHOLD_NO_ROBOT_ACTION_END_GAME,
-  TARGET_POSITION_IN_GAMEINFO
+  TARGET_POSITION_IN_GAMEINFO,
+  USE_FOG_OF_WAR(isFrontendSetting = true)
 }
 
 enum class SettingType {
@@ -38,4 +41,4 @@ enum class SettingType {
   BOOLEAN
 }
 
-data class ClientSettings(val globalNotificationText: String)
+data class ClientSettings(val globalNotificationText: String, val useFogOfWar: Boolean)

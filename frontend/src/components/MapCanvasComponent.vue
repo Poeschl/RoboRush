@@ -1,5 +1,11 @@
 <template>
-  <div ref="container" class="has-background-white map-container" :style="{ 'aspect-ratio': mapAspectRatio }">
+  <div ref="container" class="box map-container p-0" :style="{ 'aspect-ratio': mapAspectRatio }">
+    <div class="fog-container">
+      <div class="fog">
+        <div class="fog-image1"></div>
+        <div class="fog-image2"></div>
+      </div>
+    </div>
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
     <canvas id="displayPath" ref="displayPathCanvas" />
@@ -35,11 +41,13 @@ const props = withDefaults(
     robots?: { data: PublicRobot[] } | undefined;
     drawablePath?: boolean;
     pathToDisplay?: Path | undefined;
+    positionsToDraw?: { data: Position[] } | undefined;
   }>(),
   {
     robots: undefined,
     drawablePath: false,
     pathToDisplay: undefined,
+    positionsToDraw: undefined,
   },
 );
 
@@ -64,6 +72,8 @@ const heightMap = computed<Tile[]>(() => {
   }
 });
 const currentPath = ref<Path>({ points: [] });
+const mapTileMinHeight = ref<number>(0);
+const mapTileMaxHeight = ref<number>(255);
 
 const emits = defineEmits<{
   (e: "pathUpdate", path: Path): void;
@@ -75,6 +85,9 @@ onMounted(() => {
   }
   if (props.pathToDisplay) {
     watch(() => props.pathToDisplay!.points, drawDisplayPath);
+  }
+  if (props.positionsToDraw) {
+    watch(() => props.positionsToDraw?.data, drawMapTiles);
   }
   watch(
     () => props.drawablePath,
@@ -168,22 +181,41 @@ const updateCanvasSize = () => {
 const drawMap = () => {
   const tiles = heightMap.value;
   if (mapCanvas.value && mapDrawContext.value && tiles.length > 0) {
-    const drawContext = mapDrawContext.value;
-    log.debug("Draw terrain");
+    log.debug("Draw whole map");
 
-    const maxHeight = Math.max(...tiles.map((t) => t.height));
-    const minHeight = Math.min(...tiles.map((t) => t.height));
+    const maxHeight = Math.max(...[...tiles].map((t) => t.height));
+    const minHeight = Math.min(...[...tiles].map((t) => t.height));
 
     log.debug("Max height: ", maxHeight, "Min height: ", minHeight);
+    mapTileMinHeight.value = minHeight;
+    mapTileMaxHeight.value = maxHeight;
+
+    drawMapTiles();
+  }
+};
+
+const drawMapTiles = () => {
+  const drawContext = mapDrawContext.value;
+  const tiles = heightMap.value;
+
+  if (drawContext && tiles.length > 0) {
+    log.debug("Draw map tiles");
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const index in tiles) {
-      const tile: Tile = tiles[index];
+    const searchSet = new Set(props.positionsToDraw?.data.map((pos) => `${pos.x}|${pos.y}`));
+    let filteredTiles;
+    if (props.positionsToDraw != undefined) {
+      filteredTiles = tiles.filter((tile) => searchSet.has(`${tile.position.x}|${tile.position.y}`));
+    } else {
+      filteredTiles = tiles;
+    }
+
+    for (const tile of filteredTiles) {
       drawContext.save();
       drawContext.translate(tile.position.x * fullTileSize, tile.position.y * fullTileSize);
 
-      const heightInPercentage = (tile.height - minHeight) / (maxHeight - minHeight);
+      const heightInPercentage = (tile.height - mapTileMinHeight.value) / (mapTileMaxHeight.value - mapTileMinHeight.value);
       drawTile(drawContext, mapColor.enlightenWithPercentage(heightInPercentage));
 
       if (tile.type == TileType.TARGET_TILE) {
@@ -317,11 +349,67 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
 </script>
 
 <style scoped lang="scss">
+@keyframes fog_opacity {
+  0% {
+    opacity: 0.2;
+  }
+  22% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.28;
+  }
+  58% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.16;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes fog_move {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
 .map-container {
   position: relative;
   min-width: 200px;
   width: auto;
   height: auto;
+
+  .fog-container {
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    filter: blur(4px) grayscale(0.2) saturate(1.2) sepia(0.2);
+
+    .fog {
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      animation:
+        fog_opacity 20s linear infinite,
+        fog_move 15s linear infinite;
+
+      .fog-image1,
+      .fog-image2 {
+        background: url("/img/fog.png") repeat-x center left transparent;
+        background-size: 180%;
+        width: 50%;
+        height: 100%;
+        float: left;
+      }
+    }
+  }
 
   canvas {
     position: absolute;
