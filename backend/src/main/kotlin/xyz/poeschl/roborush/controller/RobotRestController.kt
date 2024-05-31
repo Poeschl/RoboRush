@@ -64,7 +64,6 @@ class RobotRestController(private val robotService: RobotService) {
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
   @PreAuthorize("hasRole('${User.ROLE_USER}')")
   fun getActiveUserRobot(auth: Authentication): ActiveRobot {
-    LOGGER.debug("Get active user robot")
     return robotService.getActiveRobotByUser(auth.principal as User) ?: throw RobotNotActiveException("Your robot is not active right now")
   }
 
