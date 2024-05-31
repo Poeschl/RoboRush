@@ -99,6 +99,28 @@ class MapServiceTest {
   }
 
   @Test
+  fun newMapFromHeightMap_multipleTarget() {
+    // WHEN
+    val inputImageStream = this::class.java.getResourceAsStream("/maps/multiple-target.png")!!
+    val name = a(`$String`("name"))
+
+    // THEN
+    val genResult = mapService.createNewMapFromHeightMap(name, inputImageStream)
+
+    // VERIFY
+    assertThat(genResult.errors).hasSize(1)
+    assertThat(genResult.map.size).isEqualTo(Size(2, 2))
+    assertThat(genResult.map.mapData).isEqualTo(
+      listOf(
+        Tile(null, Position(0, 0), 128, TileType.START_TILE),
+        Tile(null, Position(1, 0), 128, TileType.DEFAULT_TILE),
+        Tile(null, Position(0, 1), 128, TileType.TARGET_TILE),
+        Tile(null, Position(1, 1), 128, TileType.DEFAULT_TILE)
+      )
+    )
+  }
+
+  @Test
   fun newMapFromHeightMap_fuelTile() {
     // WHEN
     val inputImageStream = this::class.java.getResourceAsStream("/maps/with-fuel.png")!!

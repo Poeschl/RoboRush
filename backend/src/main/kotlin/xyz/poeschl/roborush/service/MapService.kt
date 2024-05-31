@@ -132,6 +132,7 @@ class MapService(private val mapRepository: MapRepository) {
               LOGGER.debug("Detected target point at ({},{})", pos.x, pos.y)
             } else {
               errors.add("Multiple target positions detected. Using first one (%d,%d) and skip all others!".format(pos.x, pos.y))
+              tiles.add(Tile(null, pos, tileData.height, TileType.DEFAULT_TILE))
             }
           }
         }
