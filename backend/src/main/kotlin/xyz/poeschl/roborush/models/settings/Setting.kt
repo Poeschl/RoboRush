@@ -32,7 +32,8 @@ enum class SettingKey(@JsonIgnore val isFrontendSetting: Boolean = false) {
   TIMEOUT_GAME_END,
   THRESHOLD_NO_ROBOT_ACTION_END_GAME,
   TARGET_POSITION_IN_GAMEINFO,
-  USE_FOG_OF_WAR(isFrontendSetting = true)
+  USE_FOG_OF_WAR(isFrontendSetting = true),
+  ENABLE_DUMMY_ROBOTS
 }
 
 enum class SettingType {
