@@ -40,6 +40,11 @@ export const router = createRouter({
       component: FullScreenView,
       meta: { hideFooter: true, hideNavBar: true, noContainer: true },
     },
+    {
+      path: "/fullscreen/white",
+      component: FullScreenView,
+      meta: { hideFooter: true, hideNavBar: true, noContainer: true, lightMode: true },
+    },
   ],
 });
 

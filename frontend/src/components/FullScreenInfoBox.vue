@@ -1,6 +1,6 @@
 <template>
   <div class="box has-background-primary is-flex is-flex-direction-column">
-    <a href="/">
+    <a href="/" class="is-align-self-center">
       <img class="mr-2" src="/img/icon_white.png" alt="Logo with two R's and a checkered flag" />
     </a>
     <a class="is-size-4" href="https://chaos.social/tags/RoboRush" target="_blank">

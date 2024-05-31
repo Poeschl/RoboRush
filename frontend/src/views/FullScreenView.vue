@@ -1,12 +1,19 @@
 <template>
-  <div class="fullscreen-container ml-4 mr-4">
+  <div class="fullscreen-container pl-4 pr-4" :class="{ 'has-background-grey': lightMode }">
     <div class="columns">
       <div class="column is-one-fifth">
         <FullScreenInfoBox />
+        <div class="is-flex is-justify-content-flex-start hidden-unless-mouse">
+          <button class="button is-text is-hidden-touch" title="Switch Dark/White" @click="toggleLightMode">
+            <div class="icon">
+              <FontAwesomeIcon icon="fa-solid fa-circle-half-stroke" />
+            </div>
+          </button>
+        </div>
       </div>
-      <div class="column is-flex is-align-items-center is-flex-direction-column pr-5">
+      <div class="column is-flex is-align-items-center is-flex-direction-column">
         <WinnerBanner />
-        <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" :positions-to-draw="shownTiles" style="height: 100%" />
+        <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" :positions-to-draw="shownTiles" style="max-height: 100%; width: 100%" />
       </div>
       <div class="column is-one-fifth is-flex-direction-column is-narrow data-column">
         <RobotScoreBoard />
@@ -25,12 +32,22 @@ import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 import FullScreenInfoBox from "@/components/FullScreenInfoBox.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import type { Position } from "@/models/Map";
 import { useConfigStore } from "@/stores/ConfigStore";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useRoute } from "vue-router";
+import { light } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 const configStore = useConfigStore();
 const gameStore = useGameStore();
+
+const route = useRoute();
+const lightMode = ref<boolean>(false);
+
+onMounted(() => {
+  lightMode.value = route.meta.lightMode == true;
+});
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
   if (configStore.clientSettings.useFogOfWar) {
@@ -44,6 +61,10 @@ const shownTiles = computed<{ data: Position[] } | undefined>(() => {
     return undefined;
   }
 });
+
+const toggleLightMode = () => {
+  lightMode.value = !lightMode.value;
+};
 </script>
 
 <style scoped lang="scss">
@@ -57,11 +78,15 @@ const shownTiles = computed<{ data: Position[] } | undefined>(() => {
 }
 
 .data-column {
-  $scale: 1.2;
   transform-origin: top right;
-  transform: scale($scale);
   height: fit-content;
-  width: calc((20% - var(--bulma-column-gap) / 2) * 1 / $scale);
-  margin-left: calc(var(--bulma-column-gap) * 3);
+}
+
+.hidden-unless-mouse {
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>
