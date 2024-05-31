@@ -15,6 +15,7 @@ import {
   faCaretUp,
   faChalkboard,
   faCheck,
+  faCircleHalfStroke,
   faClipboard,
   faCode,
   faEdit,
@@ -83,6 +84,7 @@ library.add(
   faCode,
   faExpand,
   faEraser,
+  faCircleHalfStroke,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

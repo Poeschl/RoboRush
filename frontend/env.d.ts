@@ -11,5 +11,6 @@ declare module "vue-router" {
     requiresAdmin?: boolean;
     hideNavBar?: boolean;
     noContainer?: boolean;
+    lightMode?: boolean;
   }
 }

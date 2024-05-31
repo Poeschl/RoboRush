@@ -415,6 +415,7 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
     position: absolute;
     width: 100%;
     height: 100%;
+    border-radius: var(--bulma-radius);
   }
 }
 </style>
