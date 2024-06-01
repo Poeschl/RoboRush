@@ -34,6 +34,7 @@ class DBMigrationIntegrityTest {
     .withHashPair("V1_004__add_map_icon_map.sql", "2aa3f876a708aaf32eb95b8f6cec980a")
     .withHashPair("V1_005__add_map_easy.sql", "66975341559c243797bcd6871b0a49dd")
     .withHashPair("V1_006__add_map_climb-up.sql", "b0e362ce9f195b2b3ab1cfc8aa4e44e3")
+    .withHashPair("V1_007__add_additional_settings.sql", "03a7108b0313503e3986b88afb917113")
 
   @ParameterizedTest(name = "{1}")
   @MethodSource("filesProvider")
