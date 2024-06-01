@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Game } from "@/models/Game";
-import type { PlaygroundMap, Tile } from "@/models/Map";
+import type { PlaygroundMap } from "@/models/Map";
 
 export function useGameService() {
   const baseGameUrl = "/api/game";

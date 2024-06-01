@@ -33,7 +33,8 @@ enum class SettingKey(@JsonIgnore val isFrontendSetting: Boolean = false) {
   THRESHOLD_NO_ROBOT_ACTION_END_GAME,
   TARGET_POSITION_IN_GAMEINFO,
   USE_FOG_OF_WAR(isFrontendSetting = true),
-  ENABLE_DUMMY_ROBOTS
+  ENABLE_DUMMY_ROBOTS,
+  ENABLE_WEB_ROBOT_CONTROL(isFrontendSetting = true)
 }
 
 enum class SettingType {
@@ -42,4 +43,4 @@ enum class SettingType {
   BOOLEAN
 }
 
-data class ClientSettings(val globalNotificationText: String, val useFogOfWar: Boolean)
+data class ClientSettings(val globalNotificationText: String, val useFogOfWar: Boolean, val enableWebRobotControl: Boolean)

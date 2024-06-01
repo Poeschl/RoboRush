@@ -11,7 +11,7 @@ export const useConfigStore = defineStore("configStore", () => {
 
   const currentConfig = ref<Map<string, Setting>>(new Map());
   const availableMaps = ref<{ maps: PlaygroundMap[] }>({ maps: [] });
-  const clientSettings = ref<ClientSettings>({ globalNotificationText: "", useFogOfWar: true });
+  const clientSettings = ref<ClientSettings>({ globalNotificationText: "", useFogOfWar: true, enableWebRobotControl: true });
 
   const initWebsocket = (webSocketInstance: { initWebsocket: Function; registerForTopicCallback: Function }) => {
     websocketService.value = webSocketInstance;

@@ -8,7 +8,7 @@
       <GameFlags />
       <GameStateBox />
       <RobotDetails />
-      <RobotControl />
+      <RobotControl v-if="showRobotControl" />
     </div>
   </div>
 </template>
@@ -27,6 +27,8 @@ import { useConfigStore } from "@/stores/ConfigStore";
 
 const configStore = useConfigStore();
 const gameStore = useGameStore();
+
+const showRobotControl = computed<boolean>(() => configStore.clientSettings.enableWebRobotControl);
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
   if (configStore.clientSettings.useFogOfWar) {
