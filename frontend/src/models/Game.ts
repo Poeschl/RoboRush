@@ -1,4 +1,4 @@
-import type { Position } from "@/models/Map";
+import type { Position, Size } from "@/models/Map";
 
 export interface Game {
   currentState: GameState;

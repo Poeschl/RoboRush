@@ -11,7 +11,8 @@ data class Game(
   val targetPosition: Position?,
   val solarChargePossible: Boolean,
   val gameTimeoutsInMillis: GameTimeouts,
-  val nameOfWinningRobot: String?
+  val nameOfWinningRobot: String?,
+  val mapSize: Any
 )
 
 data class GameTimeouts(val waitForPlayers: Long, val waitForAction: Long, val gameEnd: Long)
