@@ -19,7 +19,7 @@ class MapHandler {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapHandler::class.java)
     private const val STATIC_FUEL_COST = 1
-    private const val TILE_SCAN_COST = 0.15
+    private const val TILE_SCAN_COST = 0.1
   }
 
   fun getCurrentMap(): Map {

@@ -121,8 +121,8 @@ class MapHandlerTest {
       Tile(null, Position(3, 1), 8),
       Tile(null, Position(2, 2), 11)
     )
-    // Calculation is roundUp ((3 * 3) * 0,15)
-    assertThat(scans.second).isEqualTo(ceil((3 * 3) * 0.15).toInt())
+    // Calculation is roundUp ((3 * 3) * 0,1)
+    assertThat(scans.second).isEqualTo(ceil((3 * 3) * 0.1).toInt())
   }
 
   @Test
@@ -142,8 +142,8 @@ class MapHandlerTest {
     val scans = mapHandler.getTilesInDistance(Position(2, 2), 2)
 
     // VERIFY
-    // Calculation is roundUp ((5 * 5) * 0,15)
-    assertThat(scans.second).isEqualTo(ceil((5 * 5) * 0.15).toInt())
+    // Calculation is roundUp ((5 * 5) * 0,1)
+    assertThat(scans.second).isEqualTo(ceil((5 * 5) * 0.1).toInt())
   }
 
   @Test
