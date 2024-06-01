@@ -139,7 +139,7 @@
           </div>
           <div class="doc-title">Starting tiles</div>
           <div>
-            Every map has several starting points. New participating robots are placed there during the <code>WAITING_FOR_PLAYERS</code> game state. They can be
+            Every map has several starting points. New participating robots are placed there during the <code>WAIT_FOR_PLAYERS</code> game state. They can be
             identified with an <span style="color: rgb(210, 110, 0)">orange</span> tile border. The count of starting tiles also defines the maximum number of
             players for a map. If more robots take part than there are tiles available, <span class="highlighted">only the early ones</span> will get a place.
           </div>
