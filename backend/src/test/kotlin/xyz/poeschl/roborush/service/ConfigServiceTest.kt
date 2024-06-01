@@ -47,20 +47,26 @@ class ConfigServiceTest {
   @Test
   fun saveSetting_frontendSetting() {
     // WHEN
-    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
-    val convertedEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
-    val settingDto = SaveSettingDto(settingEntity.key, "true")
+    val fogSettingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val fogConvertedEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val fogDto = SaveSettingDto(fogSettingEntity.key, "true")
 
-    every { configRepository.findByKey(settingEntity.key) } returns settingEntity
-    every { settingEntityMapper.toEntity(settingEntity, settingDto) } returns convertedEntity
-    every { configRepository.save(convertedEntity) } returns convertedEntity
+    val controlSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL).withType(SettingType.BOOLEAN).withValue("true"))
+    val controlConvertedEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL).withType(SettingType.BOOLEAN).withValue("true"))
+
+    every { configRepository.findByKey(fogSettingEntity.key) } returns fogSettingEntity
+    every { settingEntityMapper.toEntity(fogSettingEntity, fogDto) } returns fogConvertedEntity
+    every { configRepository.save(fogConvertedEntity) } returns fogConvertedEntity
+    every { configRepository.findByKey(controlSettingEntity.key) } returns fogSettingEntity
+    every { settingEntityMapper.toEntity(controlSettingEntity, fogDto) } returns controlConvertedEntity
+    every { configRepository.save(controlConvertedEntity) } returns controlConvertedEntity
     every { settingEntityMapper.fromEntity(any()) } answers { callOriginal() }
 
     // THEN
-    val setting = configService.saveSetting(settingDto)
+    val setting = configService.saveSetting(fogDto)
 
     // VERIFY
-    assertThat(setting.key).isEqualTo(settingEntity.key)
+    assertThat(setting.key).isEqualTo(fogSettingEntity.key)
     assertThat(setting.type).isEqualTo(SettingType.BOOLEAN)
     assertThat(setting.value).isEqualTo(true)
 
@@ -159,6 +165,7 @@ class ConfigServiceTest {
     val settingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
 
     every { configRepository.findByKey(SettingKey.USE_FOG_OF_WAR) } returns settingEntity
+    every { configRepository.findByKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL) } returns settingEntity
     every { settingEntityMapper.fromEntity(settingEntity) } answers { callOriginal() }
 
     // THEN

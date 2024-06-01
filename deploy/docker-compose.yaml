@@ -69,8 +69,7 @@ services:
     depends_on:
       - database
     environment:
-      # Activate dummy bots with random movement
-      # SPRING_PROFILES_ACTIVE: "prod, dummybots"
+      # SPRING_PROFILES_ACTIVE: "prod"
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: superSecret

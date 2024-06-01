@@ -122,10 +122,11 @@ class GameHandler(
   }
 
   fun prepareNewGame() {
-    LOGGER.info("Load new map")
+    LOGGER.info("Select new map")
     val map: Map
     val loadDuration = measureTime {
       map = mapService.getNextChallengeMap()
+      LOGGER.info("Load map {}", map.mapName)
       mapHandler.loadNewMap(map)
     }
     LOGGER.info("Loaded map '{}' in {} ms", map.mapName, loadDuration.inWholeMilliseconds)

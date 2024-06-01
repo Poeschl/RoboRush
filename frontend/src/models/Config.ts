@@ -22,4 +22,5 @@ export interface MapGenerationResult {
 export interface ClientSettings {
   globalNotificationText: string;
   useFogOfWar: boolean;
+  enableWebRobotControl: boolean;
 }

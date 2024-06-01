@@ -1,26 +1,25 @@
 package xyz.poeschl.roborush.gamelogic.dummybots
 
-import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.GameStateMachine
 import xyz.poeschl.roborush.models.Color
+import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Robot
 import xyz.poeschl.roborush.repositories.RobotRepository
 import xyz.poeschl.roborush.security.repository.User
 import xyz.poeschl.roborush.security.repository.UserRepository
+import xyz.poeschl.roborush.service.ConfigService
 import java.util.concurrent.TimeUnit
 
 @GameLogic
-@Profile(
-  "dummybots | !prod"
-) // The dummy bots are only available when the profile "dummybots" is set, or it's not a prod environment (like inside the docker image)
 class DummyBots(
   gameHandler: GameHandler,
   private val robotRepository: RobotRepository,
   private val userRepository: UserRepository,
-  private val gameStateService: GameStateMachine
+  private val gameStateService: GameStateMachine,
+  private val configService: ConfigService
 ) {
 
   companion object {
@@ -37,7 +36,9 @@ class DummyBots(
 
   @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
   fun dummyRobots() {
-    bots.forEach { it.doSomething(gameStateService.getCurrentState()) }
+    if (configService.getBooleanSetting(SettingKey.ENABLE_DUMMY_ROBOTS).value) {
+      bots.forEach { it.doSomething(gameStateService.getCurrentState()) }
+    }
   }
 
   private fun createOrGetRobot(username: String, score: Long = 0): Robot {
