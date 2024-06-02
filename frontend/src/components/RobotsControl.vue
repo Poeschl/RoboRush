@@ -56,7 +56,6 @@
                   class="input"
                   type="number"
                   min="0"
-                  :disabled="!controlsEnabled"
                   placeholder="Scan distance"
                   @input="(event) => (scanNumber = parseInt((event.target as HTMLInputElement)?.value))"
                 />
