@@ -18,6 +18,7 @@ import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.service.ConfigService
 import xyz.poeschl.roborush.service.MapService
+import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
@@ -39,9 +40,10 @@ class GameHandlerTest {
   private val websocketController = mockk<WebsocketController>(relaxUnitFun = true)
   private val gameStateMachine = mockk<GameStateMachine>(relaxUnitFun = true)
   private val configService = mockk<ConfigService>(relaxUnitFun = true)
+  private val playedGamesService = mockk<PlayedGamesService>(relaxUnitFun = true)
   private val mapService = mockk<MapService>(relaxUnitFun = true)
 
-  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService, mapService)
+  private val gameHandler = GameHandler(mapHandler, robotHandler, websocketController, gameStateMachine, configService, playedGamesService, mapService)
 
   @Test
   fun getCurrentMap() {
@@ -278,6 +280,32 @@ class GameHandlerTest {
     verify { robotHandler.clearActiveRobots() }
     verify(exactly = 1) { websocketController.sendTurnUpdate(0) }
     verify(exactly = 1) { websocketController.sendGlobalKnownPositionsUpdate(setOf()) }
+  }
+
+  @Test
+  fun endingRound() {
+    // WHEN
+    val winningRobot = a(`$ActiveRobot`())
+
+    // THEN
+    gameHandler.endingRound(winningRobot)
+
+    // VERIFY
+    verify { robotHandler.setRoundWinner(winningRobot) }
+    verify { playedGamesService.insertPlayedGame(winningRobot, any()) }
+  }
+
+  @Test
+  fun endingRound_noWinner() {
+    // WHEN
+    val winningRobot = null
+
+    // THEN
+    gameHandler.endingRound(winningRobot)
+
+    // VERIFY
+    verify(exactly = 0) { robotHandler.setRoundWinner(any()) }
+    verify { playedGamesService.insertPlayedGame(winningRobot, any()) }
   }
 
   @Test

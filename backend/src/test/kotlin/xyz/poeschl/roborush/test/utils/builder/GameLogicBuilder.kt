@@ -5,6 +5,7 @@ import xyz.poeschl.roborush.configuration.Builder
 import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.models.*
 import xyz.poeschl.roborush.repositories.MapBuilder
+import xyz.poeschl.roborush.repositories.PlayedGameBuilder
 import xyz.poeschl.roborush.repositories.RobotBuilder
 import xyz.poeschl.roborush.repositories.TileBuilder
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
@@ -13,6 +14,7 @@ import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Id`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Int`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$String`
 import xyz.poeschl.roborush.test.utils.builder.SecurityBuilder.Companion.`$User`
+import java.time.ZonedDateTime
 
 @Disabled("Marking this file as a test class, to allow a relaxed linting")
 class GameLogicBuilder {
@@ -67,5 +69,11 @@ class GameLogicBuilder {
     fun `$Direction`() = Builder { Direction.entries.random() }
 
     fun `$GameState`() = Builder { GameState.entries.random() }
+
+    fun `$PlayedGame`() = PlayedGameBuilder()
+      .withId(a(`$Id`()))
+      .withWinnerRobot(null)
+      .withTurnsTaken(a(`$Int`()))
+      .withEndedAt(ZonedDateTime.now())
   }
 }

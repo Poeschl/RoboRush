@@ -40,7 +40,7 @@ class UserDetailsService(
   fun registerNewUser(username: String, password: String) {
     val encodedPassword = passwordEncoder.encode(password)
     val user = userRepository.save(User(username, encodedPassword))
-    robotRepository.save(Robot(null, Color.randomColor(), 0, user))
+    robotRepository.save(Robot(null, Color.randomColor(), user))
   }
 
   fun loadUserByToken(token: String): UserDetails? {

@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic
 
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
@@ -18,6 +19,7 @@ import xyz.poeschl.roborush.repositories.Map
 import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.service.ConfigService
 import xyz.poeschl.roborush.service.MapService
+import xyz.poeschl.roborush.service.PlayedGamesService
 import kotlin.time.measureTime
 
 @GameLogic
@@ -27,6 +29,7 @@ class GameHandler(
   private val websocketController: WebsocketController,
   private val gameStateMachine: GameStateMachine,
   private val configService: ConfigService,
+  private val playedGamesService: PlayedGamesService,
   private val mapService: MapService
 ) {
 
@@ -87,8 +90,12 @@ class GameHandler(
     return robotHandler.getActiveRobot(robotId)
   }
 
-  fun wonTheCurrentRound(robot: ActiveRobot) {
-    robotHandler.wonTheCurrentRound(robot)
+  @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
+  fun endingRound(winningRobot: ActiveRobot?) {
+    if (winningRobot != null) {
+      robotHandler.setRoundWinner(winningRobot)
+    }
+    playedGamesService.insertPlayedGame(winningRobot, currentTurn)
   }
 
   fun nextActionForRobot(robotId: Long, action: RobotAction<*>) {
