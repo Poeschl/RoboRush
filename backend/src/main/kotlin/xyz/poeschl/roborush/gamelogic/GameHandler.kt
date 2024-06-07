@@ -149,7 +149,8 @@ class GameHandler(
         waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value.inWholeMilliseconds,
         gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
       ),
-      nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username
+      nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username,
+      mapSize = mapHandler.getCurrentMap().size
     )
   }
 

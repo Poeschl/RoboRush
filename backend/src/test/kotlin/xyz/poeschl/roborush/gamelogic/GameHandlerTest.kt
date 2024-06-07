@@ -285,11 +285,13 @@ class GameHandlerTest {
     // WHEN
     val state = a(`$GameState`())
     val target = a(`$Position`())
+    val map = a(`$Map`())
     val chargingPossible = a(`$Boolean`())
     val robot = a(`$Robot`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
+    every { mapHandler.getCurrentMap() } returns map
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
@@ -306,6 +308,7 @@ class GameHandlerTest {
     assertThat(game.solarChargePossible).isEqualTo(chargingPossible)
     assertThat(game.currentTurn).isEqualTo(0)
     assertThat(game.nameOfWinningRobot).isEqualTo(robot?.user!!.username)
+    assertThat(game.mapSize).isEqualTo(map.size)
   }
 
   @Test
@@ -315,10 +318,12 @@ class GameHandlerTest {
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
     val robot = a(`$Robot`())
+    val map = a(`$Map`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
+    every { mapHandler.getCurrentMap() } returns map
     every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
@@ -365,8 +370,10 @@ class GameHandlerTest {
     // WHEN
     val previousTurn = getCurrentTurn()
     val robots = setWithOne(`$ActiveRobot`())
+    val map = a(`$Map`())
 
     every { robotHandler.getAllActiveRobots() } returns robots
+    every { mapHandler.getCurrentMap() } returns map
 
     // THEN
     gameHandler.executeAllRobotActions()
@@ -384,6 +391,7 @@ class GameHandlerTest {
 
     every { mapService.getNextChallengeMap() } returns map
     every { robotHandler.getAllActiveRobots() } returns robots
+    every { mapHandler.getCurrentMap() } returns map
 
     gameHandler.executeAllRobotActions()
     val previousTurn = getCurrentTurn()
@@ -402,10 +410,12 @@ class GameHandlerTest {
     val target = a(`$Position`())
     val chargingPossible = a(`$Boolean`())
     val robot = a(`$Robot`())
+    val map = a(`$Map`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
+    every { mapHandler.getCurrentMap() } returns map
     every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())

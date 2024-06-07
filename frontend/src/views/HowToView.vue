@@ -77,7 +77,7 @@
             very fuel-consuming on large patches, since the cost is the distance squared. The results are available on the robot status endpoint after the
             execution phase. Like on the movement action via the <code>lastResult</code> attribute.
           </div>
-          <div>Cost: <code>distance * distance</code></div>
+          <div>Cost: <code>ceil(0.1 * (distance * distance))</code></div>
           <div class="doc-title">Wait</div>
           <div>Let your robot skip the next turn. Just chilling...</div>
           <div>Gain: <code>Nothing</code></div>
@@ -153,7 +153,7 @@
           <div>Tile type: <code>TARGET_TILE</code></div>
           <div class="doc-title">Fuel stations</div>
           <div>
-            TThe map can contain fuel stations which allow your robot to use the refuel action on this special tile. A
+            The map can contain fuel stations which allow your robot to use the refuel action on this special tile. A
             <span style="color: rgb(210, 0, 130)">magenta</span> border shows the locations on the webpage maps.
           </div>
           <div>Tile type: <code>FUEL_TILE</code></div>
