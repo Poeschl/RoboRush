@@ -60,7 +60,6 @@ class GameLoop(
           noRobotActionCounter = 0
         }
 
-        // TODO: Add target tile check
         if (noRobotActionCounter >= configService.getIntSetting(THRESHOLD_NO_ROBOT_ACTION_END_GAME).value) {
           LOGGER.debug("No robot actions received.")
           gameStateService.setGameState(GameState.ENDED)
@@ -68,12 +67,12 @@ class GameLoop(
           LOGGER.debug("Execute robot actions")
           gameHandler.executeAllRobotActions()
 
-          val winningRobot = gameHandler.getActiveRobots().find { robot ->
+          val robotOnTarget = gameHandler.getActiveRobots().find { robot ->
             robot.position == gameHandler.getTargetPosition()
           }
 
-          if (winningRobot != null) {
-            gameHandler.wonTheCurrentRound(winningRobot)
+          if (robotOnTarget != null) {
+            gameHandler.endingRound(robotOnTarget)
             gameStateService.setGameState(GameState.ENDED)
           } else {
             gameStateService.setGameState(GameState.WAIT_FOR_ACTION)

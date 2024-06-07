@@ -31,7 +31,7 @@ data class ActiveRobot(
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class PublicRobot(val id: Long, val name: String, val color: Color, var position: Position)
 
-data class ScoreboardEntry(val name: String, val color: Color, val score: Long)
+data class ScoreboardEntry(val name: String, val color: Color, val score: Int)
 
 enum class Direction {
   NORTH,

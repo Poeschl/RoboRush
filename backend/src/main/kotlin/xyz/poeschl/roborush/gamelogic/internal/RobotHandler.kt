@@ -1,7 +1,6 @@
 package xyz.poeschl.roborush.gamelogic.internal
 
 import org.slf4j.LoggerFactory
-import org.springframework.cache.annotation.CacheEvict
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.exceptions.GameStateException
 import xyz.poeschl.roborush.gamelogic.GameHandler
@@ -13,9 +12,12 @@ import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.repositories.Robot
 import xyz.poeschl.roborush.repositories.RobotRepository
+import xyz.poeschl.roborush.service.PlayedGamesService
 
 @GameLogic
 class RobotHandler(
+  private val playedGamesService: PlayedGamesService,
+  // Should be a service as well, but difficult because of a dependency loop
   private val robotRepository: RobotRepository,
   private val gameStateService: GameStateMachine
 ) {
@@ -125,12 +127,10 @@ class RobotHandler(
     return positionsAfterNextActions.none { it == position }
   }
 
-  @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
-  fun wonTheCurrentRound(robot: ActiveRobot) {
+  fun setRoundWinner(robot: ActiveRobot) {
     val actualRobot = robotRepository.findById(robot.id)
     actualRobot.ifPresent {
-      it.score += 1
-      winningRobot = robotRepository.save(it)
+      winningRobot = it
     }
   }
 }

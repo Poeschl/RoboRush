@@ -21,11 +21,12 @@ import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.security.repository.User
+import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.service.RobotService
 
 @RestController
 @RequestMapping("/robot")
-class RobotRestController(private val robotService: RobotService) {
+class RobotRestController(private val robotService: RobotService, private val playedGamesService: PlayedGamesService) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(RobotRestController::class.java)
   }
@@ -38,7 +39,7 @@ class RobotRestController(private val robotService: RobotService) {
 
   @GetMapping("/all/scores", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getScoreboard(): List<ScoreboardEntry> {
-    return robotService.getTopRobots()
+    return playedGamesService.getGameScoreBoard()
   }
 
   @GetMapping("/all/knownPositions", produces = [MediaType.APPLICATION_JSON_VALUE])

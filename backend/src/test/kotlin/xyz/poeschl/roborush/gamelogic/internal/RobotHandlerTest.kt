@@ -15,6 +15,7 @@ import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.repositories.RobotRepository
+import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
@@ -24,9 +25,10 @@ import java.util.*
 class RobotHandlerTest {
 
   private val robotRepository = mockk<RobotRepository>()
+  private val playedGamesService = mockk<PlayedGamesService>()
   private val gameStateMachine = mockk<GameStateMachine>()
   private val gameHandler = mockk<GameHandler>()
-  private val robotHandler = RobotHandler(robotRepository, gameStateMachine)
+  private val robotHandler = RobotHandler(playedGamesService, robotRepository, gameStateMachine)
 
   @Test
   fun registerRobot() {
