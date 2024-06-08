@@ -14,3 +14,5 @@ class RobotNotActiveException(message: String) : ResponseStatusException(HttpSta
 class WrongTileTypeException(message: String) : ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, message)
 
 class ActionDeniedByConfig(message: String) : ResponseStatusException(HttpStatus.PRECONDITION_FAILED, message)
+
+class TankFullException(message: String) : ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, message)

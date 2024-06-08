@@ -5,6 +5,7 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.exceptions.WrongTileTypeException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.models.Position
@@ -20,7 +21,9 @@ class RefuelActionTest {
   @Test
   fun refuelCheck() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withPosition(Position(1, 1)))
+    val robot = a(`$ActiveRobot`().withPosition(Position(1, 1)).withFuel(100))
+    // Simulate tank depletion
+    robot.fuel = 10
     val action = RefuelAction()
 
     every { gameHandler.getTileAtPosition(Position(1, 1)) } returns a(`$Tile`().withType(TileType.FUEL_TILE))
@@ -48,9 +51,27 @@ class RefuelActionTest {
   }
 
   @Test
+  fun refuelCheck_tankFull() {
+    // WHEN
+    val robot = a(`$ActiveRobot`().withPosition(Position(1, 1)))
+    val action = RefuelAction()
+
+    every { gameHandler.getTileAtPosition(Position(1, 1)) } returns a(`$Tile`().withType(TileType.FUEL_TILE))
+
+    // THEN
+    assertThrows<TankFullException> {
+      action.check(robot, gameHandler)
+    }
+
+    // VERIFY by no exception
+  }
+
+  @Test
   fun refuelAction() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withFuel(10))
+    val robot = a(`$ActiveRobot`().withFuel(300))
+    // Simulate tank depletion
+    robot.fuel = 10
     val maxRobotFuel = 300
     val action = RefuelAction()
 

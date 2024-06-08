@@ -2,6 +2,7 @@ package xyz.poeschl.roborush.gamelogic.actions
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import org.slf4j.LoggerFactory
+import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.exceptions.WrongTileTypeException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.models.ActiveRobot
@@ -15,14 +16,17 @@ class RefuelAction @JsonCreator constructor() : RobotAction<Int> {
 
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
     val currentTileType = gameHandler.getTileAtPosition(robot.position).type
-
     if (currentTileType != TileType.FUEL_TILE) {
       throw WrongTileTypeException("The robot is not on a fuel tile!")
+    }
+
+    if (!robot.canRetrieveFuel()) {
+      throw TankFullException("Fuel tank is already full")
     }
   }
 
   override fun action(robot: ActiveRobot, gameHandler: GameHandler): Int {
-    robot.fuel = gameHandler.getRobotMaxFuel()
+    robot.addFuel(gameHandler.getRobotMaxFuel())
     LOGGER.debug("Refuel robot {} to {}", robot.id, robot.fuel)
     return robot.fuel
   }
