@@ -20,6 +20,11 @@ data class ActiveRobot(
       MoveAction::class, ScanAction::class, WaitAction::class, RefuelAction::class, SolarChargeAction::class
     ]
   ) var nextAction: RobotAction<*>? = null,
+  @Schema(
+    anyOf = [
+      Position::class, Int::class, ScanAction.ScanResult::class
+    ]
+  )
   var lastResult: Any? = null,
   @JsonIgnore
   val knownPositions: MutableSet<Position> = mutableSetOf()

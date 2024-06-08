@@ -6,7 +6,7 @@ import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.repositories.Tile
 
-class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<Tile>> {
+class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanAction.ScanResult> {
 
   override fun check(robot: ActiveRobot, gameHandler: GameHandler) {
     val scanResult = gameHandler.getTilesInDistance(robot.position, distance)
@@ -17,7 +17,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): List<Tile> {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): ScanResult {
     val scanResult = gameHandler.getTilesInDistance(robot.position, distance)
     val fuelCost = scanResult.second
     val tileList = scanResult.first
@@ -25,7 +25,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<
     robot.fuel -= fuelCost
     robot.knownPositions.addAll(tileList.map { it.position })
     gameHandler.sendRobotUpdate(robot)
-    return tileList
+    return ScanResult(tileList)
   }
 
   override fun toString(): String {
@@ -44,4 +44,6 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<List<
   override fun hashCode(): Int {
     return distance
   }
+
+  data class ScanResult(val tiles: List<Tile>)
 }
