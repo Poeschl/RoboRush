@@ -3,6 +3,7 @@ package xyz.poeschl.roborush.gamelogic.dummybots
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
+import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
 import xyz.poeschl.roborush.gamelogic.actions.SolarChargeAction
@@ -34,8 +35,11 @@ class TargetBot(private val gameHandler: GameHandler, robot: Robot) : Bot(gameHa
         } catch (_: PositionOutOfMapException) {
           continue
         } catch (_: InsufficientFuelException) {
-          gameHandler.nextActionForRobot(activeRobot.id, SolarChargeAction())
-          moveValid = true
+          try {
+            gameHandler.nextActionForRobot(activeRobot.id, SolarChargeAction())
+            moveValid = true
+          } catch (_: TankFullException) {
+          }
         }
         triesLeft--
       }

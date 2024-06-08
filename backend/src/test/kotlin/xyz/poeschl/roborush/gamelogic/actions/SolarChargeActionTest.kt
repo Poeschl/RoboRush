@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import xyz.poeschl.roborush.exceptions.ActionDeniedByConfig
+import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
@@ -17,7 +18,9 @@ class SolarChargeActionTest {
   @Test
   fun chargeCheck() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withFuel(10))
+    val robot = a(`$ActiveRobot`().withFuel(100))
+    // Simulate tank depletion
+    robot.fuel = 10
     val action = SolarChargeAction()
 
     every { gameHandler.isSolarChargePossible() } returns true
@@ -38,6 +41,22 @@ class SolarChargeActionTest {
 
     // THEN
     assertThrows<ActionDeniedByConfig> {
+      action.check(robot, gameHandler)
+    }
+
+    // VERIFY by no exception
+  }
+
+  @Test
+  fun chargeCheck_tankFull() {
+    // WHEN
+    val robot = a(`$ActiveRobot`().withFuel(10))
+    val action = SolarChargeAction()
+
+    every { gameHandler.isSolarChargePossible() } returns true
+
+    // THEN
+    assertThrows<TankFullException> {
       action.check(robot, gameHandler)
     }
 

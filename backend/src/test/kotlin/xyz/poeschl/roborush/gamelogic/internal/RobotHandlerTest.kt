@@ -11,6 +11,7 @@ import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.gamelogic.GameStateMachine
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
+import xyz.poeschl.roborush.gamelogic.actions.WaitAction
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
 import xyz.poeschl.roborush.models.Position
@@ -416,7 +417,7 @@ class RobotHandlerTest {
   }
 
   @Test
-  fun countPendingRobotActions() {
+  fun isEveryRobotIdle() {
     // WHEN
     val robot1 = createSingleActiveRobot(1)
     val robot2 = createSingleActiveRobot(2)
@@ -425,10 +426,40 @@ class RobotHandlerTest {
     robot2.nextAction = MoveAction(a(`$Direction`()))
 
     // THEN
-    val pending = robotHandler.countPendingRobotActions()
+    val idle = robotHandler.isEveryRobotIdle()
 
     // VERIFY
-    assertThat(pending).isEqualTo(2)
+    assertThat(idle).isFalse()
+  }
+
+  @Test
+  fun isEveryRobotIdle_idle() {
+    // WHEN
+    val robot1 = createSingleActiveRobot(1)
+    val robot2 = createSingleActiveRobot(2)
+    robot1.nextAction = null
+    robot2.nextAction = null
+
+    // THEN
+    val idle = robotHandler.isEveryRobotIdle()
+
+    // VERIFY
+    assertThat(idle).isTrue()
+  }
+
+  @Test
+  fun isEveryRobotIdle_waitAction() {
+    // WHEN
+    val robot1 = createSingleActiveRobot(1)
+    val robot2 = createSingleActiveRobot(2)
+    robot1.nextAction = WaitAction()
+    robot2.nextAction = null
+
+    // THEN
+    val idle = robotHandler.isEveryRobotIdle()
+
+    // VERIFY
+    assertThat(idle).isTrue()
   }
 
   /***

@@ -26,6 +26,12 @@ data class ActiveRobot(
 ) {
 
   val maxFuel = fuel
+
+  fun canRetrieveFuel() = fuel < maxFuel
+
+  fun addFuel(addedFuel: Int) {
+    fuel = (fuel + addedFuel).coerceAtMost(maxFuel)
+  }
 }
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)

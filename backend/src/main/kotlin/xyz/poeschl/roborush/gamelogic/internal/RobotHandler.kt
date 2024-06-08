@@ -8,6 +8,7 @@ import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.gamelogic.GameStateMachine
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
+import xyz.poeschl.roborush.gamelogic.actions.WaitAction
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.repositories.Robot
@@ -91,8 +92,8 @@ class RobotHandler(
     }
   }
 
-  fun countPendingRobotActions(): Int {
-    return activeRobots.map { it.nextAction }.count { it != null }
+  fun isEveryRobotIdle(): Boolean {
+    return activeRobots.none { it.nextAction != null && it.nextAction !is WaitAction }
   }
 
   fun getActiveRobot(robotId: Long): ActiveRobot? {

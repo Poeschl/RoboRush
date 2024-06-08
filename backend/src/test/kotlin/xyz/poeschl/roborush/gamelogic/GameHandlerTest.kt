@@ -23,6 +23,7 @@ import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$DurationSetting`
+import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$IntSetting`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$GameState`
@@ -31,7 +32,6 @@ import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Posi
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Boolean`
-import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Int`
 
 class GameHandlerTest {
 
@@ -369,28 +369,47 @@ class GameHandlerTest {
   }
 
   @Test
-  fun robotMovesReceived() {
+  fun isGameIdle() {
     // WHEN
-    val count = a(`$Int`(1, Int.MAX_VALUE))
-    every { robotHandler.countPendingRobotActions() } returns count
+    every { robotHandler.isEveryRobotIdle() } returns true
+    every { configService.getIntSetting(SettingKey.THRESHOLD_IDLE_TURNS_FOR_ENDING_GAME) } returns a(`$IntSetting`().withValue(3))
+
+    for (i in 0..2) {
+      gameHandler.checkForIdleRound()
+    }
 
     // THEN
-    val pending = gameHandler.robotMovesReceived()
+    val result = gameHandler.isGameIdle()
 
     // VERIFY
-    assertThat(pending).isTrue()
+    assertThat(result).isTrue()
   }
 
   @Test
-  fun robotMovesReceived_none() {
+  fun isGameIdle_not() {
     // WHEN
-    every { robotHandler.countPendingRobotActions() } returns 0
+    every { configService.getIntSetting(SettingKey.THRESHOLD_IDLE_TURNS_FOR_ENDING_GAME) } returns a(`$IntSetting`().withValue(3))
 
     // THEN
-    val pending = gameHandler.robotMovesReceived()
+    val result = gameHandler.isGameIdle()
 
     // VERIFY
-    assertThat(pending).isFalse()
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun isGameIdle_reset() {
+    // WHEN
+    every { robotHandler.isEveryRobotIdle() } returns false
+    every { configService.getIntSetting(SettingKey.THRESHOLD_IDLE_TURNS_FOR_ENDING_GAME) } returns a(`$IntSetting`().withValue(1))
+
+    gameHandler.checkForIdleRound()
+
+    // THEN
+    val result = gameHandler.isGameIdle()
+
+    // VERIFY
+    assertThat(result).isFalse()
   }
 
   @Test
