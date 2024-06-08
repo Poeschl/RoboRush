@@ -8,9 +8,11 @@ CREATE TABLE config
   PRIMARY KEY (id)
 );
 
-INSERT INTO config (key, type, value) values ('TIMEOUT_WAIT_FOR_PLAYERS', 'DURATION', 'PT1M');
+INSERT INTO config (key, type, value) values ('TIMEOUT_WAIT_FOR_PLAYERS', 'DURATION', 'PT10S');
 INSERT INTO config (key, type, value) values ('TIMEOUT_WAIT_FOR_ACTION', 'DURATION', 'PT1S');
-INSERT INTO config (key, type, value) values ('TIMEOUT_GAME_END', 'DURATION', 'PT2M');
+INSERT INTO config (key, type, value) values ('TIMEOUT_GAME_END', 'DURATION', 'PT20S');
 INSERT INTO config (key, type, value) values ('THRESHOLD_NO_ROBOT_ACTION_END_GAME', 'INT', '3');
 INSERT INTO config (key, type, value) values ('TARGET_POSITION_IN_GAMEINFO', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('USE_FOG_OF_WAR', 'BOOLEAN', 'true');
+INSERT INTO config (key, type, value) values ('ENABLE_DUMMY_ROBOTS', 'BOOLEAN', 'true');
+INSERT INTO config (key, type, value) values ('ENABLE_WEB_ROBOT_CONTROL', 'BOOLEAN', 'true');

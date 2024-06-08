@@ -1,5 +1,5 @@
 INSERT INTO map (id, map_name, size, possible_start_positions, target_position, active, max_robot_fuel, solar_charge_rate)
-VALUES  (1, 'icon_map', '32x32', '1,9|2,9|3,9|4,9|5,9|6,9|7,9|1,10|2,10|3,10|2,11|3,11', '30,22', true, 200, 0.02);
+VALUES  (1, 'icon_map', '32x32', '1,9|2,9|3,9|4,9|5,9|6,9|7,9|1,10|2,10|3,10|2,11|3,11', '30,22', true, 230, 0.01);
 
 ALTER SEQUENCE map_id_seq RESTART WITH 2;
 
