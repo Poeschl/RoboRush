@@ -35,7 +35,7 @@ class TargetBot(private val gameHandler: GameHandler, robot: Robot) : Bot(gameHa
           continue
         } catch (_: InsufficientFuelException) {
           gameHandler.nextActionForRobot(activeRobot.id, SolarChargeAction())
-          continue
+          moveValid = true
         }
         triesLeft--
       }
