@@ -38,6 +38,7 @@ class GameHandler(
   }
 
   private var currentTurn = 0
+  private var detectedIdleTurns = 0
 
   fun getCurrentMap(): Map {
     return mapHandler.getCurrentMap()
@@ -103,7 +104,15 @@ class GameHandler(
     activeRobot?.let { websocketController.sendUserRobotData(activeRobot) }
   }
 
-  fun robotMovesReceived(): Boolean = robotHandler.countPendingRobotActions() > 0
+  fun isGameIdle() = detectedIdleTurns >= configService.getIntSetting(SettingKey.THRESHOLD_IDLE_TURNS_FOR_ENDING_GAME).value
+
+  fun checkForIdleRound() {
+    if (robotHandler.isEveryRobotIdle()) {
+      detectedIdleTurns++
+    } else {
+      detectedIdleTurns = 0
+    }
+  }
 
   fun executeAllRobotActions() {
     robotHandler.executeRobotActions(this)

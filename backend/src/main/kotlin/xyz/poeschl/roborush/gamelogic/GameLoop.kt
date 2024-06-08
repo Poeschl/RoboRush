@@ -18,8 +18,6 @@ class GameLoop(
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
   }
 
-  private var noRobotActionCounter = 0
-
   @EventListener(ApplicationReadyEvent::class)
   fun startGameLoop() {
     thread(start = true, isDaemon = true) {
@@ -54,13 +52,9 @@ class GameLoop(
       }
 
       GameState.ACTION -> {
-        if (!gameHandler.robotMovesReceived()) {
-          noRobotActionCounter++
-        } else {
-          noRobotActionCounter = 0
-        }
+        gameHandler.checkForIdleRound()
 
-        if (noRobotActionCounter >= configService.getIntSetting(THRESHOLD_NO_ROBOT_ACTION_END_GAME).value) {
+        if (gameHandler.isGameIdle()) {
           LOGGER.debug("No robot actions received.")
           gameStateService.setGameState(GameState.ENDED)
         } else {
