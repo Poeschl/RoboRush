@@ -37,6 +37,25 @@ data class ActiveRobot(
   fun addFuel(addedFuel: Int) {
     fuel = (fuel + addedFuel).coerceAtMost(maxFuel)
   }
+
+  fun hasSufficientFuel(expectedFuel: Int) = expectedFuel <= fuel
+
+  fun useFuel(usedFuel: Int) {
+    fuel -= usedFuel
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as ActiveRobot
+
+    return id == other.id
+  }
+
+  override fun hashCode(): Int {
+    return id.hashCode()
+  }
 }
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)

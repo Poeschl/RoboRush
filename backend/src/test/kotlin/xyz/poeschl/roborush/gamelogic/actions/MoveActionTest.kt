@@ -109,13 +109,13 @@ class MoveActionTest {
     val action = MoveAction(direction)
 
     // THEN
-    val newPosition = action.action(robot, gameHandler)
+    val moveResult = action.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(newPosition).isEqualTo(expectedPosition)
-    assertThat(robot.fuel).isEqualTo(90)
-    assertThat(robot.position).isEqualTo(expectedPosition)
-    assertThat(robot.knownPositions).containsExactly(newPosition)
+    assertThat(moveResult.result).isEqualTo(expectedPosition)
+    assertThat(moveResult.updatedRobot.fuel).isEqualTo(90)
+    assertThat(moveResult.updatedRobot.position).isEqualTo(expectedPosition)
+    assertThat(moveResult.updatedRobot.knownPositions).containsExactly(moveResult.result)
 
     verify { gameHandler.sendRobotUpdate(robot) }
   }

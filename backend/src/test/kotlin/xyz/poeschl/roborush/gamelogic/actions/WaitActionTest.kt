@@ -22,9 +22,9 @@ class WaitActionTest {
     val waitAction = WaitAction()
 
     // THEN
-    val result = waitAction.action(robot, gameHandler)
+    val actionResult = waitAction.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(result).isEqualTo(position)
+    assertThat(actionResult.result).isEqualTo(position)
   }
 }

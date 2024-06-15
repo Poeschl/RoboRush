@@ -25,10 +25,10 @@ class RefuelAction @JsonCreator constructor() : RobotAction<Int> {
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): Int {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Int> {
     robot.addFuel(gameHandler.getRobotMaxFuel())
     LOGGER.debug("Refuel robot {} to {}", robot.id, robot.fuel)
-    return robot.fuel
+    return RobotActionResult(robot, robot.fuel)
   }
 
   override fun toString(): String {

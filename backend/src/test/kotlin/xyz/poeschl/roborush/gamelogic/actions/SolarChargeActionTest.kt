@@ -13,7 +13,7 @@ import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Acti
 
 class SolarChargeActionTest {
 
-  private val gameHandler = mockk<GameHandler>()
+  private val gameHandler = mockk<GameHandler>(relaxUnitFun = true)
 
   @Test
   fun chargeCheck() {
@@ -77,12 +77,12 @@ class SolarChargeActionTest {
     every { gameHandler.getSolarChargeRate() } returns chargeRate
 
     // THEN
-    val currentFuel = action.action(robot, gameHandler)
+    val actionResult = action.action(robot, gameHandler)
 
     // VERIFY
     val expectedFuel = (10 + chargeRate * maxRobotFuel).toInt()
-    assertThat(robot.fuel).isEqualTo(expectedFuel)
-    assertThat(currentFuel).isEqualTo(expectedFuel)
+    assertThat(actionResult.updatedRobot.fuel).isEqualTo(expectedFuel)
+    assertThat(actionResult.result).isEqualTo(expectedFuel)
   }
 
   @Test
@@ -99,10 +99,10 @@ class SolarChargeActionTest {
     every { gameHandler.getSolarChargeRate() } returns chargeRate
 
     // THEN
-    val currentFuel = action.action(robot, gameHandler)
+    val actionResult = action.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(robot.fuel).isEqualTo(maxRobotFuel)
-    assertThat(currentFuel).isEqualTo(maxRobotFuel)
+    assertThat(actionResult.updatedRobot.fuel).isEqualTo(maxRobotFuel)
+    assertThat(actionResult.result).isEqualTo(maxRobotFuel)
   }
 }

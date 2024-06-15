@@ -22,25 +22,25 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
     gameHandler.checkIfPositionIsValidForMove(newPosition)
 
     val fuelCost = gameHandler.getFuelCostForMove(currentPosition, newPosition)
-    if (fuelCost > robot.fuel) {
+    if (!robot.hasSufficientFuel(fuelCost)) {
       throw InsufficientFuelException("The available fuel (${robot.fuel}) is insufficient for the journey. Required fuel: $fuelCost ")
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): Position {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Position> {
     val currentPosition = robot.position
     val newPosition = getResultPosition(currentPosition)
     LOGGER.debug("{} -> {}", currentPosition, newPosition)
 
     val fuelCost = gameHandler.getFuelCostForMove(currentPosition, newPosition)
 
-    robot.fuel -= fuelCost
+    robot.useFuel(fuelCost)
     robot.position = newPosition
     robot.knownPositions.add(newPosition)
     LOGGER.debug("Moved robot {} {} -> {}", robot.id, currentPosition, newPosition)
     gameHandler.sendRobotUpdate(robot)
 
-    return newPosition
+    return RobotActionResult(robot, newPosition)
   }
 
   fun getResultPosition(currentPosition: Position) = when (direction) {

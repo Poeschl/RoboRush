@@ -64,12 +64,12 @@ class ScanActionTest {
     val action = ScanAction(2)
 
     // THEN
-    val result = action.action(robot, gameHandler)
+    val actionResult = action.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(result.tiles).containsAll(scannedTiles)
-    assertThat(robot.fuel).isEqualTo(90)
-    assertThat(robot.knownPositions).containsAll(scannedTiles.map { it.position })
+    assertThat(actionResult.result.tiles).containsAll(scannedTiles)
+    assertThat(actionResult.updatedRobot.fuel).isEqualTo(90)
+    assertThat(actionResult.updatedRobot.knownPositions).containsAll(scannedTiles.map { it.position })
     verify { gameHandler.sendRobotUpdate(robot) }
   }
 

@@ -3,6 +3,7 @@ package xyz.poeschl.roborush.gamelogic.actions
 import com.fasterxml.jackson.annotation.JsonCreator
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.gamelogic.GameHandler
+import xyz.poeschl.roborush.gamelogic.actions.SolarChargeAction.Companion.LOGGER
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.repositories.Tile
 
@@ -12,20 +13,21 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanA
     val scanResult = gameHandler.getTilesInDistance(robot.position, distance)
     val fuelCost = scanResult.second
 
-    if (fuelCost > robot.fuel) {
+    if (!robot.hasSufficientFuel(fuelCost)) {
       throw InsufficientFuelException("The available fuel (${robot.fuel}) is insufficient for the requested scan. Required fuel: $fuelCost ")
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): ScanResult {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<ScanResult> {
     val scanResult = gameHandler.getTilesInDistance(robot.position, distance)
     val fuelCost = scanResult.second
     val tileList = scanResult.first
 
-    robot.fuel -= fuelCost
+    robot.useFuel(fuelCost)
     robot.knownPositions.addAll(tileList.map { it.position })
+    LOGGER.debug("Robot {} scanned for distance {}", robot.id, distance)
     gameHandler.sendRobotUpdate(robot)
-    return ScanResult(tileList)
+    return RobotActionResult(robot, ScanResult(tileList))
   }
 
   override fun toString(): String {

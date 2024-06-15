@@ -16,9 +16,9 @@ class WaitAction @JsonCreator constructor() : RobotAction<Position> {
     // Waiting is always successful
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): Position {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Position> {
     // Doing nothing
-    return robot.position
+    return RobotActionResult(robot, robot.position)
   }
 
   override fun equals(other: Any?): Boolean {

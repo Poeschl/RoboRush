@@ -13,11 +13,9 @@ import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.repositories.Robot
 import xyz.poeschl.roborush.repositories.RobotRepository
-import xyz.poeschl.roborush.service.PlayedGamesService
 
 @GameLogic
 class RobotHandler(
-  private val playedGamesService: PlayedGamesService,
   // Should be a service as well, but difficult because of a dependency loop
   private val robotRepository: RobotRepository,
   private val gameStateService: GameStateMachine
@@ -29,7 +27,7 @@ class RobotHandler(
 
   private var initialRobotMaxFuel = 0
 
-  private val activeRobots = mutableSetOf<ActiveRobot>()
+  private val activeRobots = mutableListOf<ActiveRobot>()
 
   private var winningRobot: Robot? = null
 
@@ -74,6 +72,7 @@ class RobotHandler(
       // If all checks are successful, the action will be saved
       nextAction.check(robot, gameHandler)
       robot.nextAction = nextAction
+      updateActiveRobot(robot)
       LOGGER.info("Robot {} will do {} next", robot.id, nextAction)
       return robot
     }
@@ -86,9 +85,13 @@ class RobotHandler(
     }
     activeRobots.forEach { robot ->
       // Execute action for every robot with action
-      val result = robot.nextAction?.action(robot, gameHandler)
-      robot.nextAction = null
-      robot.lastResult = result
+      val actionResult = robot.nextAction?.action(robot, gameHandler)
+
+      if (actionResult != null) {
+        robot.nextAction = null
+        robot.lastResult = actionResult.result
+        updateActiveRobot(robot)
+      }
     }
   }
 
@@ -97,11 +100,18 @@ class RobotHandler(
   }
 
   fun getActiveRobot(robotId: Long): ActiveRobot? {
-    return activeRobots.firstOrNull { it.id == robotId }
+    // Return a copy of the real robot to avoid reference side effects
+    return activeRobots.firstOrNull { it.id == robotId }?.copy()
   }
 
   fun getAllActiveRobots(): Set<ActiveRobot> {
     return activeRobots.toSet()
+  }
+
+  private fun updateActiveRobot(activeRobot: ActiveRobot) {
+    // Replace the existing active robot
+    val replaceIndex = activeRobots.indexOfFirst { it.id == activeRobot.id }
+    activeRobots[replaceIndex] = activeRobot
   }
 
   fun getACurrentlyFreePosition(positions: List<Position>): Position? {

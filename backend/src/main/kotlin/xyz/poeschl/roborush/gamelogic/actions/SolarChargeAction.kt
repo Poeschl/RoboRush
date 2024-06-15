@@ -24,12 +24,12 @@ class SolarChargeAction @JsonCreator constructor() : RobotAction<Int> {
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): Int {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Int> {
     val addedFuel = ceil(gameHandler.getRobotMaxFuel() * gameHandler.getSolarChargeRate()).toInt()
     robot.addFuel(addedFuel)
     LOGGER.debug("Solar charge robot {} to {}", robot.id, robot.fuel)
 
-    return robot.fuel
+    return RobotActionResult(robot, robot.fuel)
   }
 
   override fun toString(): String {
