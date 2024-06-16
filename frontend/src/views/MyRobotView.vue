@@ -31,7 +31,7 @@ const gameStore = useGameStore();
 const showRobotControl = computed<boolean>(() => configStore.clientSettings.enableWebRobotControl);
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
-  if (configStore.clientSettings.useFogOfWar) {
+  if (configStore.clientSettings.enableFogOfWar) {
     const positions = gameStore.userRobotKnownPositions;
 
     if (gameStore.currentGame.targetPosition !== undefined) {

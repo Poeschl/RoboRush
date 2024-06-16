@@ -37,7 +37,7 @@ const gameStore = useGameStore();
 const router = useRouter();
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
-  if (configStore.clientSettings.useFogOfWar) {
+  if (configStore.clientSettings.enableFogOfWar) {
     const positions = gameStore.globalKnownPositions;
 
     if (gameStore.currentGame.targetPosition !== undefined) {
