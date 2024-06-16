@@ -34,7 +34,8 @@ enum class SettingKey(@JsonIgnore val isFrontendSetting: Boolean = false) {
   TARGET_POSITION_IN_GAMEINFO,
   ENABLE_FOG_OF_WAR(isFrontendSetting = true),
   ENABLE_DUMMY_ROBOTS,
-  ENABLE_WEB_ROBOT_CONTROL(isFrontendSetting = true)
+  ENABLE_WEB_ROBOT_CONTROL(isFrontendSetting = true),
+  DISTANCE_ROBOT_SIGHT_ON_MOVE
 }
 
 enum class SettingType {

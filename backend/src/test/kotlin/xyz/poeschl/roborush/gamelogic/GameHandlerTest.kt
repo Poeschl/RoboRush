@@ -14,6 +14,7 @@ import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.settings.BooleanSetting
+import xyz.poeschl.roborush.models.settings.IntSetting
 import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.service.ConfigService
@@ -104,6 +105,23 @@ class GameHandlerTest {
     }
 
     // VERIFY
+  }
+
+  @Test
+  fun getTilesForMovementOnPosition() {
+    // WHEN
+    val tiles = listOf(Tile(null, Position(0, 1), 1))
+    val position = Position(1, 2)
+    val distance = 2
+
+    every { configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE) } returns IntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE, distance)
+    every { mapHandler.getTilesInDistance(position, distance) } returns Pair(tiles, 23)
+
+    // THEN
+    val result = gameHandler.getTilesForMovementOnPosition(position)
+
+    // VERIFY
+    assertThat(result).isEqualTo(tiles)
   }
 
   @Test

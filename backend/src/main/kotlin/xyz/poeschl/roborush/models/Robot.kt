@@ -22,7 +22,7 @@ data class ActiveRobot(
   ) var nextAction: RobotAction<*>? = null,
   @Schema(
     anyOf = [
-      Position::class, Int::class, ScanAction.ScanResult::class
+      Int::class, ScanAction.ScanResult::class
     ]
   )
   var lastResult: Any? = null,

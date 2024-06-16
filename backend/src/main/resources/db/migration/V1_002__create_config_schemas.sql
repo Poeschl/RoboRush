@@ -16,3 +16,4 @@ INSERT INTO config (key, type, value) values ('TARGET_POSITION_IN_GAMEINFO', 'BO
 INSERT INTO config (key, type, value) values ('ENABLE_FOG_OF_WAR', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('ENABLE_DUMMY_ROBOTS', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('ENABLE_WEB_ROBOT_CONTROL', 'BOOLEAN', 'true');
+INSERT INTO config (key, type, value) values ('DISTANCE_ROBOT_SIGHT_ON_MOVE', 'INT', '2');

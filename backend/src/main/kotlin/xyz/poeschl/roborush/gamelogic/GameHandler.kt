@@ -68,6 +68,10 @@ class GameHandler(
     }
   }
 
+  fun getTilesForMovementOnPosition(position: Position): List<Tile> {
+    return mapHandler.getTilesInDistance(position, configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE).value).first
+  }
+
   fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
     return mapHandler.getTilesInDistance(position, distance)
   }
