@@ -130,7 +130,9 @@ class GameHandler(
     if (startPosition != null) {
       val activeRobot = robotHandler.registerRobotForGame(robotId, startPosition)
       activeRobot?.let { registeredRobot ->
-        registeredRobot.knownPositions.add(startPosition)
+        val knownTiles = getTilesForMovementOnPosition(startPosition)
+        registeredRobot.knownPositions.addAll(knownTiles.map(Tile::position))
+        registeredRobot.lastResult = knownTiles
         websocketController.sendRobotUpdate(registeredRobot)
         websocketController.sendUserRobotData(registeredRobot)
         websocketController.sendKnownPositionsUpdate(registeredRobot)

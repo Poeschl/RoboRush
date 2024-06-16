@@ -249,17 +249,21 @@ class GameHandlerTest {
     val startPosition = Position(0, 2)
     val registeredRobot = a(`$ActiveRobot`())
     val existingRobots = setWithOne(`$ActiveRobot`())
+    val neighborTiles = listOf(a(`$Tile`()), a(`$Tile`()), a(`$Tile`()))
 
     every { mapHandler.getStartPositions() } returns possibleStart
+    every { mapHandler.getTilesInDistance(startPosition, 2) } returns Pair(neighborTiles, 0)
     every { robotHandler.getACurrentlyFreePosition(possibleStart) } returns startPosition
     every { robotHandler.registerRobotForGame(1, startPosition) } returns registeredRobot
     every { robotHandler.getAllActiveRobots() } returns existingRobots
+    every { configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE) } returns a(`$IntSetting`().withValue(2))
 
     // THEN
     gameHandler.registerRobotForNextGame(1)
 
     // VERIFY
-    assertThat(registeredRobot.knownPositions).containsExactly(startPosition)
+    assertThat(registeredRobot.knownPositions).containsAll(neighborTiles.map(Tile::position))
+    assertThat(registeredRobot.lastResult as List<*>).containsAll(neighborTiles)
     verify { robotHandler.registerRobotForGame(1, startPosition) }
     verify { websocketController.sendRobotUpdate(registeredRobot) }
     verify { websocketController.sendKnownPositionsUpdate(registeredRobot) }
