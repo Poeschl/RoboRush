@@ -16,7 +16,7 @@ import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Tile
 
 class RefuelActionTest {
 
-  private val gameHandler = mockk<GameHandler>()
+  private val gameHandler = mockk<GameHandler>(relaxUnitFun = true)
 
   @Test
   fun refuelCheck() {
@@ -78,10 +78,10 @@ class RefuelActionTest {
     every { gameHandler.getRobotMaxFuel() } returns maxRobotFuel
 
     // THEN
-    val currentFuel = action.action(robot, gameHandler)
+    val actionResult = action.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(robot.fuel).isEqualTo(maxRobotFuel)
-    assertThat(currentFuel).isEqualTo(maxRobotFuel)
+    assertThat(actionResult.updatedRobot.fuel).isEqualTo(maxRobotFuel)
+    assertThat(actionResult.result).isEqualTo(maxRobotFuel)
   }
 }

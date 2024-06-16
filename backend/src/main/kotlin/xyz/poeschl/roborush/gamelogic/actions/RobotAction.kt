@@ -33,8 +33,10 @@ interface RobotAction<T> {
    * Calling this method will execute the stored action immediately.
    * @return Any result of the executed action.
    */
-  fun action(robot: ActiveRobot, gameHandler: GameHandler): T
+  fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<T>
 
   override fun equals(other: Any?): Boolean
   override fun hashCode(): Int
 }
+
+data class RobotActionResult<T>(val updatedRobot: ActiveRobot, val result: T)

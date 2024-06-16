@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic.internal
 
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -11,12 +12,12 @@ import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.gamelogic.GameStateMachine
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
+import xyz.poeschl.roborush.gamelogic.actions.RobotActionResult
 import xyz.poeschl.roborush.gamelogic.actions.WaitAction
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.repositories.RobotRepository
-import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
@@ -26,10 +27,9 @@ import java.util.*
 class RobotHandlerTest {
 
   private val robotRepository = mockk<RobotRepository>()
-  private val playedGamesService = mockk<PlayedGamesService>()
   private val gameStateMachine = mockk<GameStateMachine>()
   private val gameHandler = mockk<GameHandler>()
-  private val robotHandler = RobotHandler(playedGamesService, robotRepository, gameStateMachine)
+  private val robotHandler = RobotHandler(robotRepository, gameStateMachine)
 
   @Test
   fun registerRobot() {
@@ -173,10 +173,10 @@ class RobotHandlerTest {
     val action = mockk<MoveAction>(relaxUnitFun = true)
 
     // THEN
-    robotHandler.setNextMove(robot.id, gameHandler, action)
+    val updatedRobot = robotHandler.setNextMove(robot.id, gameHandler, action)
 
     // VERIFY
-    assertThat(robot.nextAction).isEqualTo(action)
+    assertThat(updatedRobot?.nextAction).isEqualTo(action)
     verify {
       action.check(robot, gameHandler)
     }
@@ -218,18 +218,21 @@ class RobotHandlerTest {
     val robot = createSingleActiveRobot()
     val action = mockk<MoveAction>()
     val returnValue = Position(1, 2)
-    robot.nextAction = action
 
     every { gameStateMachine.isInState(GameState.ACTION) } returns true
-    every { action.action(robot, gameHandler) } returns returnValue
+    every { action.action(robot, gameHandler) } returns RobotActionResult(robot, returnValue)
+    justRun { action.check(robot, gameHandler) }
+
+    robotHandler.setNextMove(robot.id, gameHandler, action)
 
     // THEN
     robotHandler.executeRobotActions(gameHandler)
 
     // VERIFY
     verify { action.action(robot, gameHandler) }
-    assertThat(robot.nextAction).isNull()
-    assertThat(robot.lastResult).isEqualTo(returnValue)
+    val updatedRobot = robotHandler.getActiveRobot(robot.id)
+    assertThat(updatedRobot?.nextAction).isNull()
+    assertThat(updatedRobot?.lastResult).isEqualTo(returnValue)
   }
 
   @Test
@@ -237,9 +240,11 @@ class RobotHandlerTest {
     // WHEN
     val robot = createSingleActiveRobot()
     val action = mockk<MoveAction>()
-    robot.nextAction = action
 
     every { gameStateMachine.isInState(GameState.ACTION) } returns false
+    justRun { action.check(robot, gameHandler) }
+
+    robotHandler.setNextMove(robot.id, gameHandler, action)
 
     // THEN
     assertThrows<GameStateException> {
@@ -248,7 +253,6 @@ class RobotHandlerTest {
 
     // VERIFY
     verify(exactly = 0) { action.action(robot, gameHandler) }
-    assertThat(robot.nextAction).isEqualTo(action)
   }
 
   @Test
@@ -389,8 +393,13 @@ class RobotHandlerTest {
     // WHEN
     // movingRobot will start at position (4,4)
     val movingRobot = createSingleActiveRobot(2)
+    val action = MoveAction(Direction.NORTH)
+
+    every { gameHandler.getFuelCostForMove(any(), any()) } returns 0
+    justRun { gameHandler.checkIfPositionIsValidForMove(any()) }
+
     // movingRobot moves to (4,3)
-    movingRobot.nextAction = MoveAction(Direction.NORTH)
+    robotHandler.setNextMove(movingRobot.id, gameHandler, action)
 
     // THEN
     val isFree = robotHandler.isPositionFreeAfterActions(Position(4, 4))
@@ -405,8 +414,13 @@ class RobotHandlerTest {
     // WHEN
     // movingRobot will start at position (4,4)
     val movingRobot = createSingleActiveRobot(2)
+    val action = MoveAction(Direction.NORTH)
+
+    every { gameHandler.getFuelCostForMove(any(), any()) } returns 0
+    justRun { gameHandler.checkIfPositionIsValidForMove(any()) }
+
     // movingRobot moves to (4,3)
-    movingRobot.nextAction = MoveAction(Direction.NORTH)
+    robotHandler.setNextMove(movingRobot.id, gameHandler, action)
 
     // THEN
     val isFree = robotHandler.isPositionFreeAfterActions(Position(4, 3))
@@ -422,8 +436,15 @@ class RobotHandlerTest {
     val robot1 = createSingleActiveRobot(1)
     val robot2 = createSingleActiveRobot(2)
     createSingleActiveRobot(3)
-    robot1.nextAction = MoveAction(a(`$Direction`()))
-    robot2.nextAction = MoveAction(a(`$Direction`()))
+    val action1 = MoveAction(a(`$Direction`()))
+    val action2 = MoveAction(a(`$Direction`()))
+
+    justRun { action1.check(robot1, gameHandler) }
+    justRun { action2.check(robot2, gameHandler) }
+    every { gameHandler.getFuelCostForMove(any(), any()) } returns 0
+
+    robotHandler.setNextMove(robot1.id, gameHandler, action1)
+    robotHandler.setNextMove(robot2.id, gameHandler, action2)
 
     // THEN
     val idle = robotHandler.isEveryRobotIdle()
@@ -452,8 +473,8 @@ class RobotHandlerTest {
     // WHEN
     val robot1 = createSingleActiveRobot(1)
     val robot2 = createSingleActiveRobot(2)
-    robot1.nextAction = WaitAction()
-    robot2.nextAction = null
+    robotHandler.setNextMove(robot1.id, gameHandler, WaitAction())
+    robotHandler.setNextMove(robot2.id, gameHandler, WaitAction())
 
     // THEN
     val idle = robotHandler.isEveryRobotIdle()
@@ -480,6 +501,11 @@ class RobotHandlerTest {
     robotHandler.registerRobotForGame(robotId, position)
     val savedRobot = robotHandler.getActiveRobot(robotId)!!
     assertThat(savedRobot).isNotNull()
+
+    // Prepare for actions in tests
+    every { gameStateMachine.isInState(GameState.WAIT_FOR_ACTION) } returns true
+    every { gameStateMachine.isInState(GameState.ACTION) } returns true
+
     return savedRobot
   }
 }
