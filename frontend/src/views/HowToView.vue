@@ -114,7 +114,8 @@
           <div class="doc-title">How the robot sees the map</div>
           <div>
             The map on the main webpage shows all tiles which where seen by any robot. A single robot sees way less than that. Robots start without any
-            knowledge of the surrounding tiles. To retrieve information about neighbor tiles including attributes, it requires a scan action.
+            knowledge of the surrounding tiles. They can only see some tiles and their attributes around their current position. To retrieve more information
+            about further neighbor tiles, it requires a scan action.
           </div>
           <div>
             To see the known tiles of your robot use the personal "My Robot" page. There, only tiles which where visited or scanned by your robot are shown.
