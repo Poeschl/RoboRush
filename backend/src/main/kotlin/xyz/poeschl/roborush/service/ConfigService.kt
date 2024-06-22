@@ -62,7 +62,7 @@ class ConfigService(
     websocketController.sendClientSettingsUpdate(
       ClientSettings(
         globalNotificationText,
-        getBooleanSetting(SettingKey.USE_FOG_OF_WAR).value,
+        getBooleanSetting(SettingKey.ENABLE_FOG_OF_WAR).value,
         getBooleanSetting(SettingKey.ENABLE_WEB_ROBOT_CONTROL).value
       )
     )

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import org.slf4j.LoggerFactory
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.gamelogic.GameHandler
+import xyz.poeschl.roborush.gamelogic.actions.ScanAction.ScanResult
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
 import xyz.poeschl.roborush.models.Position
+import xyz.poeschl.roborush.repositories.Tile
 
-class MoveAction @JsonCreator constructor(val direction: Direction) : RobotAction<Position> {
+class MoveAction @JsonCreator constructor(val direction: Direction) : RobotAction<ScanResult> {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MoveAction::class.java)
@@ -27,7 +29,7 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Position> {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<ScanResult> {
     val currentPosition = robot.position
     val newPosition = getResultPosition(currentPosition)
     LOGGER.debug("{} -> {}", currentPosition, newPosition)
@@ -36,11 +38,13 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
 
     robot.useFuel(fuelCost)
     robot.position = newPosition
-    robot.knownPositions.add(newPosition)
+    val seenTiles = gameHandler.getTilesForMovementOnPosition(newPosition)
+    robot.knownPositions.addAll(seenTiles.map(Tile::position))
+
     LOGGER.debug("Moved robot {} {} -> {}", robot.id, currentPosition, newPosition)
     gameHandler.sendRobotUpdate(robot)
 
-    return RobotActionResult(robot, newPosition)
+    return RobotActionResult(robot, ScanResult(seenTiles))
   }
 
   fun getResultPosition(currentPosition: Position) = when (direction) {

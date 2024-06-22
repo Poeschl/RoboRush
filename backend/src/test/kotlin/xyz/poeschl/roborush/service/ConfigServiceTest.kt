@@ -47,8 +47,8 @@ class ConfigServiceTest {
   @Test
   fun saveSetting_frontendSetting() {
     // WHEN
-    val fogSettingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
-    val fogConvertedEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val fogSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val fogConvertedEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
     val fogDto = SaveSettingDto(fogSettingEntity.key, "true")
 
     val controlSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL).withType(SettingType.BOOLEAN).withValue("true"))
@@ -162,9 +162,9 @@ class ConfigServiceTest {
   fun setGlobalNotificationText() {
     // WHEN
     val text = a(`$String`("text"))
-    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.USE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
 
-    every { configRepository.findByKey(SettingKey.USE_FOG_OF_WAR) } returns settingEntity
+    every { configRepository.findByKey(SettingKey.ENABLE_FOG_OF_WAR) } returns settingEntity
     every { configRepository.findByKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL) } returns settingEntity
     every { settingEntityMapper.fromEntity(settingEntity) } answers { callOriginal() }
 

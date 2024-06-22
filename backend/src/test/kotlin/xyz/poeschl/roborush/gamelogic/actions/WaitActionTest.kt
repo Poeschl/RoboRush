@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
-import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 
 class WaitActionTest {
 
@@ -17,14 +16,13 @@ class WaitActionTest {
   @Test
   fun action() {
     // WHEN
-    val position = a(`$Position`())
-    val robot = a(`$ActiveRobot`().withPosition(position))
+    val robot = a(`$ActiveRobot`())
     val waitAction = WaitAction()
 
     // THEN
     val actionResult = waitAction.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(actionResult.result).isEqualTo(position)
+    assertThat(actionResult.result).isEqualTo(0)
   }
 }

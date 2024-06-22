@@ -13,14 +13,17 @@ import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.gamelogic.GameStateMachine
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
 import xyz.poeschl.roborush.gamelogic.actions.RobotActionResult
+import xyz.poeschl.roborush.gamelogic.actions.ScanAction
 import xyz.poeschl.roborush.gamelogic.actions.WaitAction
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.Direction
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.repositories.RobotRepository
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Direction`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Robot`
+import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
 import xyz.poeschl.roborush.test.utils.builder.SecurityBuilder.Companion.`$User`
 import java.util.*
 
@@ -217,7 +220,7 @@ class RobotHandlerTest {
     // WHEN
     val robot = createSingleActiveRobot()
     val action = mockk<MoveAction>()
-    val returnValue = Position(1, 2)
+    val returnValue = ScanAction.ScanResult(listWithOne(`$Tile`()))
 
     every { gameStateMachine.isInState(GameState.ACTION) } returns true
     every { action.action(robot, gameHandler) } returns RobotActionResult(robot, returnValue)

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import org.slf4j.LoggerFactory
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.models.ActiveRobot
-import xyz.poeschl.roborush.models.Position
 
-class WaitAction @JsonCreator constructor() : RobotAction<Position> {
+class WaitAction @JsonCreator constructor() : RobotAction<Int> {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(WaitAction::class.java)
@@ -16,9 +15,9 @@ class WaitAction @JsonCreator constructor() : RobotAction<Position> {
     // Waiting is always successful
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Position> {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Int> {
     // Doing nothing
-    return RobotActionResult(robot, robot.position)
+    return RobotActionResult(robot, 0)
   }
 
   override fun equals(other: Any?): Boolean {

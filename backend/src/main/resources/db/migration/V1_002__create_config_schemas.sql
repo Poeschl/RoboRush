@@ -13,6 +13,7 @@ INSERT INTO config (key, type, value) values ('TIMEOUT_WAIT_FOR_ACTION', 'DURATI
 INSERT INTO config (key, type, value) values ('TIMEOUT_GAME_END', 'DURATION', 'PT20S');
 INSERT INTO config (key, type, value) values ('THRESHOLD_IDLE_TURNS_FOR_ENDING_GAME', 'INT', '10');
 INSERT INTO config (key, type, value) values ('TARGET_POSITION_IN_GAMEINFO', 'BOOLEAN', 'true');
-INSERT INTO config (key, type, value) values ('USE_FOG_OF_WAR', 'BOOLEAN', 'true');
+INSERT INTO config (key, type, value) values ('ENABLE_FOG_OF_WAR', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('ENABLE_DUMMY_ROBOTS', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('ENABLE_WEB_ROBOT_CONTROL', 'BOOLEAN', 'true');
+INSERT INTO config (key, type, value) values ('DISTANCE_ROBOT_SIGHT_ON_MOVE', 'INT', '2');

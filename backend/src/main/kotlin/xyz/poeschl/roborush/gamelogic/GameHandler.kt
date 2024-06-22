@@ -68,6 +68,10 @@ class GameHandler(
     }
   }
 
+  fun getTilesForMovementOnPosition(position: Position): List<Tile> {
+    return mapHandler.getTilesInDistance(position, configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE).value).first
+  }
+
   fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
     return mapHandler.getTilesInDistance(position, distance)
   }
@@ -126,7 +130,9 @@ class GameHandler(
     if (startPosition != null) {
       val activeRobot = robotHandler.registerRobotForGame(robotId, startPosition)
       activeRobot?.let { registeredRobot ->
-        registeredRobot.knownPositions.add(startPosition)
+        val knownTiles = getTilesForMovementOnPosition(startPosition)
+        registeredRobot.knownPositions.addAll(knownTiles.map(Tile::position))
+        registeredRobot.lastResult = knownTiles
         websocketController.sendRobotUpdate(registeredRobot)
         websocketController.sendUserRobotData(registeredRobot)
         websocketController.sendKnownPositionsUpdate(registeredRobot)

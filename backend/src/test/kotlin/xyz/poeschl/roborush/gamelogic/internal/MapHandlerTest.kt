@@ -126,6 +126,24 @@ class MapHandlerTest {
   }
 
   @Test
+  fun getTilesInDistance_zeroDistance() {
+    // WHEN
+    // 1  2  3  4
+    // 5  6  7  8
+    // 9 10 11 12
+    val map = createNewPresetMap(Size(4, 3), listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), Position(0, 0), Position(3, 2))
+    mapHandler.loadNewMap(map)
+
+    // THEN
+    val scans = mapHandler.getTilesInDistance(Position(2, 1), 0)
+
+    // VERIFY
+    assertThat(scans.first).contains(Tile(null, Position(2, 1), 7))
+    // Calculation is roundUp (0 * 0,1)
+    assertThat(scans.second).isEqualTo(ceil((3 * 3) * 0.1).toInt())
+  }
+
+  @Test
   fun getTilesInDistance_bigger() {
     // WHEN
     //  1  2  3  4  5  6  7
