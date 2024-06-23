@@ -6,6 +6,7 @@ export interface Game {
   solarChargePossible: boolean;
   targetPosition?: Position;
   nameOfWinningRobot?: string;
+  fullMapScanPossible: boolean;
 }
 
 export enum GameState {

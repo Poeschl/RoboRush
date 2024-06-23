@@ -47,6 +47,10 @@ export default function useRobotService() {
     return axiosWithAuth.post(`${baseRobotUrl}/action/scan`, { distance: distance } as Scan);
   };
 
+  const fullMapScan = (): Promise<void> => {
+    return axiosWithAuth.post(`${baseRobotUrl}/action/fullScan`);
+  };
+
   const waitOnRobot = (): Promise<void> => {
     return axiosWithAuth.post(`${baseRobotUrl}/action/wait`);
   };
@@ -73,6 +77,7 @@ export default function useRobotService() {
     registerCurrentRobotForGame,
     moveRobot,
     scanOnRobot,
+    fullMapScan,
     waitOnRobot,
     refuelRobot,
     solarChargeRobot,

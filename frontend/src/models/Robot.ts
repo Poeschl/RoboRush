@@ -26,6 +26,8 @@ export interface Refuel extends Action {}
 
 export interface SolarCharge extends Action {}
 
+export interface FullScan extends Action {}
+
 export interface ActiveRobot {
   id: number;
   name: string;
@@ -57,6 +59,8 @@ export function correctTypesFromJson(activeBot: ActiveRobot): ActiveRobot {
     correctRobot.nextAction = correctRobot.nextAction as Refuel;
   } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "solarCharge") {
     correctRobot.nextAction = correctRobot.nextAction as SolarCharge;
+  } else if (correctRobot.nextAction != null && correctRobot.nextAction.type == "fullScan") {
+    correctRobot.nextAction = correctRobot.nextAction as FullScan;
   } else {
     correctRobot.nextAction = undefined;
   }

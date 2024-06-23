@@ -19,6 +19,15 @@
           <FontAwesomeIcon icon="fa-regular fa-square" v-else />
         </div>
       </div>
+      <div class="level mb-1">
+        <div class="level-left">
+          <div class="level-item">Full map scan possible</div>
+        </div>
+        <div class="level-right">
+          <FontAwesomeIcon icon="fa-solid fa-square-check" v-if="currentGame.fullMapScanPossible" />
+          <FontAwesomeIcon icon="fa-regular fa-square" v-else />
+        </div>
+      </div>
     </div>
   </InfoBoxTemplate>
 </template>

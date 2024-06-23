@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="column">
-            <div class="field has-addons is-scan-action">
+            <div v-if="!fullScanPossible" class="field has-addons is-scan-action">
               <div class="control">
                 <input
                   class="input"
@@ -64,6 +64,21 @@
                 <button class="button" title="Scan the give distance" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightScan }" @click="scan">
                   <div class="icon">
                     <FontAwesomeIcon icon="fa-solid fa-satellite-dish" class="fa-xl" />
+                  </div>
+                </button>
+              </div>
+            </div>
+            <div v-else class="columns is-multiline additional-actions is-variable is-1">
+              <div class="column">
+                <button
+                  class="button"
+                  :disabled="!controlsEnabled"
+                  :class="{ 'is-selected': highlightFullScan }"
+                  @click="fullScan()"
+                  title="Scan the whole map"
+                >
+                  <div class="icon">
+                    <FontAwesomeIcon icon="fa-solid fa-satellite" class="fa-lg" />
                   </div>
                 </button>
               </div>
@@ -103,6 +118,7 @@
               <p v-if="robot?.nextAction?.type == 'wait'">Wait the next turn</p>
               <p v-if="robot?.nextAction?.type == 'refuel'">Refuel the robot</p>
               <p v-if="robot?.nextAction?.type == 'solarCharge'">Solar recharge</p>
+              <p v-if="robot?.nextAction?.type == 'fullScan'">Full map scan</p>
             </div>
             <div>
               <p class="mb-1">Last result:</p>
@@ -154,7 +170,8 @@ const participationEnabled = computed<boolean>(() => gameStore.currentGame.curre
 const refuelPossible = computed<boolean>(
   () => gameStore.currentMap?.mapData.find((tile) => tile.position == robot.value?.position)?.type == TileType.FUEL_TILE,
 );
-const solarChargePossible = computed<boolean>(() => gameStore.isSolarChargePossible());
+const solarChargePossible = computed<boolean>(() => gameStore.currentGame.solarChargePossible);
+const fullScanPossible = computed<boolean>(() => gameStore.currentGame.fullMapScanPossible);
 
 const highlightUp = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "NORTH"));
 const highlightRight = computed<boolean>(() => isMovementInDirection(robot.value?.nextAction, "EAST"));
@@ -164,6 +181,7 @@ const highlightScan = computed<boolean>(() => isType(robot.value?.nextAction, "s
 const highlightWait = computed<boolean>(() => isType(robot.value?.nextAction, "wait"));
 const highlightRefuel = computed<boolean>(() => isType(robot.value?.nextAction, "refuel"));
 const highlightSolarRecharge = computed<boolean>(() => isType(robot.value?.nextAction, "solarCharge"));
+const highlightFullScan = computed<boolean>(() => isType(robot.value?.nextAction, "fullScan"));
 
 const isMovementInDirection = (action: Action | undefined, direction: string) => {
   return action?.type == "move" && (action as Move).direction == direction;
@@ -183,6 +201,10 @@ const move = (direction: string) => {
 
 const scan = () => {
   handleControlInput(gameStore.scanAroundRobot(scanNumber.value));
+};
+
+const fullScan = () => {
+  handleControlInput(gameStore.fullMapScan());
 };
 
 const wait = () => {

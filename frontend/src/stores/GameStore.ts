@@ -18,7 +18,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const websocketService = ref<{ initWebsocket: Function; registerForTopicCallback: Function } | undefined>();
   const gameService = useGameService();
 
-  const currentGame = ref<Game>({ currentState: GameState.ENDED, currentTurn: 0, solarChargePossible: false });
+  const currentGame = ref<Game>({ currentState: GameState.ENDED, currentTurn: 0, solarChargePossible: false, fullMapScanPossible: false });
 
   const internalMap = ref<PlaygroundMap>();
   const globalKnownPositions: Ref<{ data: Position[] }> = ref({ data: [] });
@@ -161,16 +161,16 @@ export const useGameStore = defineStore("gameStore", () => {
     return robotService.scanOnRobot(distance);
   };
 
+  const fullMapScan = (): Promise<void> => {
+    return robotService.fullMapScan();
+  };
+
   const waitThatRobot = (): Promise<void> => {
     return robotService.waitOnRobot();
   };
 
   const refuelRobot = (): Promise<void> => {
     return robotService.refuelRobot();
-  };
-
-  const isSolarChargePossible = (): boolean => {
-    return currentGame.value.solarChargePossible;
   };
 
   const solarCharge = (): Promise<void> => {
@@ -190,10 +190,10 @@ export const useGameStore = defineStore("gameStore", () => {
     registerRobotOnGame,
     moveRobotInDirection,
     scanAroundRobot,
+    fullMapScan,
     userRobotActive,
     waitThatRobot,
     refuelRobot,
-    isSolarChargePossible,
     solarCharge,
     updateScoreBoard,
     scoreBoard,

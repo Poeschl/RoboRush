@@ -78,6 +78,13 @@
             execution phase. Like on the movement action via the <code>lastResult</code> attribute.
           </div>
           <div>Cost: <code>ceil(0.1 * (distance * distance))</code></div>
+          <div class="doc-title">Full map scan</div>
+          <div>
+            In case the <span class="highlighted">current map allows</span> your robot to do a full map scan, you will get all tiles of the map in the next
+            turn. Check the game info API endpoint for the indication flag. The results are available on the robot status endpoint after the execution phase.
+            Like on the movement action via the <code>lastResult</code> attribute.
+          </div>
+          <div>Cost: <code>free, if enabled</code></div>
           <div class="doc-title">Wait</div>
           <div>Let your robot skip the next turn. Just chilling...</div>
           <div>Gain: <code>Nothing</code></div>
