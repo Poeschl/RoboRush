@@ -151,4 +151,20 @@ class RobotRestController(private val robotService: RobotService, private val pl
       robotService.scheduleSolarCharge(it)
     }
   }
+
+  @Operation(
+    summary = """
+      Tell your robot to do a full map scan. This is only possible if 'fullMapScanPossible' is true in the game infos.
+      Can only be called during the 'waiting for input' phase.
+      """,
+    extensions = [Extension(name = VISIBILITY_KEY, properties = [ExtensionProperty(name = VISIBILITY_KEY, value = VISIBILITY_PUBLIC)])]
+  )
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PostMapping("/action/fullScan")
+  fun fullScan(auth: Authentication) {
+    LOGGER.debug("Called full scan")
+    robotService.executeWithActiveRobotIdOfUser(auth.principal as User) {
+      robotService.scheduleFullScan(it)
+    }
+  }
 }

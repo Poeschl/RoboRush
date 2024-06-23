@@ -19,7 +19,8 @@ import xyz.poeschl.roborush.models.ActiveRobot
   Type(value = ScanAction::class, name = "scan"),
   Type(value = WaitAction::class, name = "wait"),
   Type(value = RefuelAction::class, name = "refuel"),
-  Type(value = SolarChargeAction::class, name = "solarCharge")
+  Type(value = SolarChargeAction::class, name = "solarCharge"),
+  Type(value = FullMapScanAction::class, name = "fullScan")
 )
 interface RobotAction<T> {
 

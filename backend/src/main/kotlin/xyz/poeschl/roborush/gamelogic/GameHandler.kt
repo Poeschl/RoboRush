@@ -172,7 +172,8 @@ class GameHandler(
         gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
       ),
       nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username,
-      mapSize = mapHandler.getCurrentMap().size
+      mapSize = mapHandler.getCurrentMap().size,
+      fullMapScanPossible = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
     )
   }
 
@@ -192,4 +193,6 @@ class GameHandler(
     currentTurn = turn
     websocketController.sendTurnUpdate(currentTurn)
   }
+
+  fun isFullMapScanPossible() = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
 }
