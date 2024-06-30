@@ -50,16 +50,12 @@ onMounted(() => {
 });
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
-  if (configStore.clientSettings.enableFogOfWar) {
-    const positions = gameStore.globalKnownPositions;
+  const positions = gameStore.globalKnownPositions;
 
-    if (gameStore.currentGame.targetPosition !== undefined) {
-      positions.data.push(gameStore.currentGame.targetPosition);
-    }
-    return positions;
-  } else {
-    return undefined;
+  if (gameStore.currentGame.targetPosition !== undefined) {
+    positions.data.push(gameStore.currentGame.targetPosition);
   }
+  return positions;
 });
 
 const toggleLightMode = () => {

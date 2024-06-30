@@ -12,7 +12,8 @@ data class Game(
   val solarChargePossible: Boolean,
   val gameTimeoutsInMillis: GameTimeouts,
   val nameOfWinningRobot: String?,
-  val mapSize: Any
+  val mapSize: Any,
+  val fullMapScanPossible: Boolean
 )
 
 data class GameTimeouts(val waitForPlayers: Long, val waitForAction: Long, val gameEnd: Long)

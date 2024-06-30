@@ -30,23 +30,17 @@ import type { Position } from "@/models/Map";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useRouter } from "vue-router";
 import WinnerBanner from "@/components/WinnerBanner.vue";
-import { useConfigStore } from "@/stores/ConfigStore";
 
-const configStore = useConfigStore();
 const gameStore = useGameStore();
 const router = useRouter();
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
-  if (configStore.clientSettings.enableFogOfWar) {
-    const positions = gameStore.globalKnownPositions;
+  const positions = gameStore.globalKnownPositions;
 
-    if (gameStore.currentGame.targetPosition !== undefined) {
-      positions.data.push(gameStore.currentGame.targetPosition);
-    }
-    return positions;
-  } else {
-    return undefined;
+  if (gameStore.currentGame.targetPosition !== undefined) {
+    positions.data.push(gameStore.currentGame.targetPosition);
   }
+  return positions;
 });
 
 const forwardToFullscreen = () => {

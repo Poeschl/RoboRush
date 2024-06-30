@@ -23,6 +23,7 @@ import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
+import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$BooleanSetting`
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$DurationSetting`
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$IntSetting`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
@@ -338,16 +339,18 @@ class GameHandlerTest {
     val map = a(`$Map`())
     val chargingPossible = a(`$Boolean`())
     val robot = a(`$Robot`())
+    val fullScanPossible = a(`$Boolean`())
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.getCurrentMap() } returns map
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { robotHandler.getWinningRobot() } returns robot
-    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, true)
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(true))
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END) } returns a(`$DurationSetting`())
+    every { configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN) } returns a(`$BooleanSetting`().withValue(fullScanPossible))
 
     // THEN
     val game = gameHandler.getPublicGameInfo()
@@ -359,6 +362,7 @@ class GameHandlerTest {
     assertThat(game.currentTurn).isEqualTo(0)
     assertThat(game.nameOfWinningRobot).isEqualTo(robot?.user!!.username)
     assertThat(game.mapSize).isEqualTo(map.size)
+    assertThat(game.fullMapScanPossible).isEqualTo(fullScanPossible)
   }
 
   @Test
@@ -379,6 +383,7 @@ class GameHandlerTest {
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END) } returns a(`$DurationSetting`())
+    every { configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN) } returns a(`$BooleanSetting`())
 
     // THEN
     val game = gameHandler.getPublicGameInfo()
@@ -490,6 +495,7 @@ class GameHandlerTest {
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION) } returns a(`$DurationSetting`())
     every { configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END) } returns a(`$DurationSetting`())
+    every { configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN) } returns a(`$BooleanSetting`())
 
     return gameHandler.getPublicGameInfo().currentTurn
   }

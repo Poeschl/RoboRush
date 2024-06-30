@@ -12,4 +12,6 @@ constructor(key: SettingKey, value: Boolean) : Setting<Boolean>(key, value) {
   override fun toString(): String {
     return "BooleanSetting(key=$key, value=$value)"
   }
+
+  fun invertedValue() = !value
 }

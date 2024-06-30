@@ -51,6 +51,10 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
     gameHandler.nextActionForRobot(robotId, ScanAction(distance))
   }
 
+  fun scheduleFullScan(robotId: Long) {
+    gameHandler.nextActionForRobot(robotId, FullMapScanAction())
+  }
+
   fun scheduleMove(robotId: Long, direction: Direction) {
     gameHandler.nextActionForRobot(robotId, MoveAction(direction))
   }

@@ -31,16 +31,12 @@ const gameStore = useGameStore();
 const showRobotControl = computed<boolean>(() => configStore.clientSettings.enableWebRobotControl);
 
 const shownTiles = computed<{ data: Position[] } | undefined>(() => {
-  if (configStore.clientSettings.enableFogOfWar) {
-    const positions = gameStore.userRobotKnownPositions;
+  const positions = gameStore.userRobotKnownPositions;
 
-    if (gameStore.currentGame.targetPosition !== undefined) {
-      positions.data.push(gameStore.currentGame.targetPosition);
-    }
-    return positions;
-  } else {
-    return undefined;
+  if (gameStore.currentGame.targetPosition !== undefined) {
+    positions.data.push(gameStore.currentGame.targetPosition);
   }
+  return positions;
 });
 </script>
 

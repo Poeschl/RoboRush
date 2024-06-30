@@ -47,26 +47,24 @@ class ConfigServiceTest {
   @Test
   fun saveSetting_frontendSetting() {
     // WHEN
-    val fogSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
-    val fogConvertedEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
-    val fogDto = SaveSettingDto(fogSettingEntity.key, "true")
-
     val controlSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL).withType(SettingType.BOOLEAN).withValue("true"))
     val controlConvertedEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL).withType(SettingType.BOOLEAN).withValue("true"))
+    val controlDto = SaveSettingDto(controlSettingEntity.key, "true")
 
-    every { configRepository.findByKey(fogSettingEntity.key) } returns fogSettingEntity
-    every { settingEntityMapper.toEntity(fogSettingEntity, fogDto) } returns fogConvertedEntity
-    every { configRepository.save(fogConvertedEntity) } returns fogConvertedEntity
-    every { configRepository.findByKey(controlSettingEntity.key) } returns fogSettingEntity
-    every { settingEntityMapper.toEntity(controlSettingEntity, fogDto) } returns controlConvertedEntity
+    val enableFullScanSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FULL_MAP_SCAN).withType(SettingType.BOOLEAN).withValue("true"))
+
+    every { configRepository.findByKey(enableFullScanSettingEntity.key) } returns enableFullScanSettingEntity
+    every { configRepository.findByKey(controlSettingEntity.key) } returns controlSettingEntity
+
+    every { settingEntityMapper.toEntity(controlSettingEntity, controlDto) } returns controlConvertedEntity
     every { configRepository.save(controlConvertedEntity) } returns controlConvertedEntity
     every { settingEntityMapper.fromEntity(any()) } answers { callOriginal() }
 
     // THEN
-    val setting = configService.saveSetting(fogDto)
+    val setting = configService.saveSetting(controlDto)
 
     // VERIFY
-    assertThat(setting.key).isEqualTo(fogSettingEntity.key)
+    assertThat(setting.key).isEqualTo(controlSettingEntity.key)
     assertThat(setting.type).isEqualTo(SettingType.BOOLEAN)
     assertThat(setting.value).isEqualTo(true)
 
@@ -162,9 +160,9 @@ class ConfigServiceTest {
   fun setGlobalNotificationText() {
     // WHEN
     val text = a(`$String`("text"))
-    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FOG_OF_WAR).withType(SettingType.BOOLEAN).withValue("true"))
+    val settingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FULL_MAP_SCAN).withType(SettingType.BOOLEAN).withValue("true"))
 
-    every { configRepository.findByKey(SettingKey.ENABLE_FOG_OF_WAR) } returns settingEntity
+    every { configRepository.findByKey(SettingKey.ENABLE_FULL_MAP_SCAN) } returns settingEntity
     every { configRepository.findByKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL) } returns settingEntity
     every { settingEntityMapper.fromEntity(settingEntity) } answers { callOriginal() }
 
