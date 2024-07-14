@@ -21,7 +21,6 @@ import xyz.poeschl.roborush.service.ConfigService
 import xyz.poeschl.roborush.service.MapService
 import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
-import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.setWithOne
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$BooleanSetting`
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$DurationSetting`
@@ -50,11 +49,15 @@ class GameHandlerTest {
   @Test
   fun getCurrentMap() {
     // WHEN
-    val tiles = listWithOne(`$Tile`())
+    val tiles = listOf(a(`$Tile`()), a(`$Tile`()), a(`$Tile`()))
+    val positions = tiles.map { it.position }.toSet()
     val map = a(`$Map`())
     tiles.forEach { map.addTile(it) }
+    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positions))
+    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positions))
 
-    every { mapHandler.getCurrentMap() } returns map
+    every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+    every { mapHandler.getMapWithPositions(positions) } returns map
 
     // THEN
     val result = gameHandler.getCurrentMap()
@@ -343,7 +346,7 @@ class GameHandlerTest {
 
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
-    every { mapHandler.getCurrentMap() } returns map
+    every { mapHandler.getCurrentFullMap() } returns map
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
     every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(true))
@@ -377,7 +380,7 @@ class GameHandlerTest {
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
-    every { mapHandler.getCurrentMap() } returns map
+    every { mapHandler.getCurrentFullMap() } returns map
     every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())
@@ -447,7 +450,7 @@ class GameHandlerTest {
     val map = a(`$Map`())
 
     every { robotHandler.getAllActiveRobots() } returns robots
-    every { mapHandler.getCurrentMap() } returns map
+    every { mapHandler.getCurrentFullMap() } returns map
 
     // THEN
     gameHandler.executeAllRobotActions()
@@ -465,7 +468,7 @@ class GameHandlerTest {
 
     every { mapService.getNextChallengeMap() } returns map
     every { robotHandler.getAllActiveRobots() } returns robots
-    every { mapHandler.getCurrentMap() } returns map
+    every { mapHandler.getCurrentFullMap() } returns map
 
     gameHandler.executeAllRobotActions()
     val previousTurn = getCurrentTurn()
@@ -479,6 +482,56 @@ class GameHandlerTest {
     assertThat(currentTurn).isEqualTo(0)
   }
 
+  @Test
+  fun getKnownPositionsForRobot() {
+    // WHEN
+    val robotId = 1L
+    val knownPositions = setOf(a(`$Position`()))
+    val activeRobot = a(`$ActiveRobot`().withId(robotId).withKnownPositions(knownPositions))
+
+    every { robotHandler.getActiveRobot(robotId) } returns activeRobot
+
+    // THEN
+    val result = gameHandler.getKnownPositionsForRobot(robotId)
+
+    // VERIFY
+    assertThat(result).isEqualTo(knownPositions)
+  }
+
+  @Test
+  fun getKnownPositionsForRobot_notActive() {
+    // WHEN
+    val robotId = 1L
+
+    every { robotHandler.getActiveRobot(robotId) } returns null
+
+    // THEN
+    val result = gameHandler.getKnownPositionsForRobot(robotId)
+
+    // VERIFY
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun getKnownPositionsForAllRobots() {
+    // WHEN
+    val overlappingPos = a(`$Position`())
+    val positionsA = setOf(a(`$Position`()), overlappingPos)
+    val positionsB = setOf(a(`$Position`()), overlappingPos)
+    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positionsA))
+    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positionsB))
+
+    every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+
+    // THEN
+    val result = gameHandler.getGlobalKnownPositions()
+
+    // VERIFY
+    assertThat(result).containsAll(positionsA)
+    assertThat(result).containsAll(positionsB)
+    assertThat(result).containsOnlyOnce(overlappingPos)
+  }
+
   private fun getCurrentTurn(): Int {
     val state = a(`$GameState`())
     val target = a(`$Position`())
@@ -489,7 +542,7 @@ class GameHandlerTest {
     every { gameStateMachine.getCurrentState() } returns state
     every { mapHandler.getTargetPosition() } returns target
     every { mapHandler.isSolarChargePossible() } returns chargingPossible
-    every { mapHandler.getCurrentMap() } returns map
+    every { mapHandler.getCurrentFullMap() } returns map
     every { robotHandler.getWinningRobot() } returns robot
     every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns BooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO, false)
     every { configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS) } returns a(`$DurationSetting`())

@@ -40,8 +40,9 @@ class GameHandler(
   private var currentTurn = 0
   private var detectedIdleTurns = 0
 
+  @Cacheable("currentMap")
   fun getCurrentMap(): Map {
-    return mapHandler.getCurrentMap()
+    return mapHandler.getMapWithPositions(getGlobalKnownPositions())
   }
 
   fun getTileAtPosition(position: Position): Tile {
@@ -118,6 +119,7 @@ class GameHandler(
     }
   }
 
+  @CacheEvict(cacheNames = ["robotKnownPosition", "globalKnownPositions", "currentMap"], allEntries = true)
   fun executeAllRobotActions() {
     robotHandler.executeRobotActions(this)
     setGameTurn(currentTurn + 1)
@@ -172,7 +174,7 @@ class GameHandler(
         gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
       ),
       nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username,
-      mapSize = mapHandler.getCurrentMap().size,
+      mapSize = mapHandler.getCurrentFullMap().size,
       fullMapScanPossible = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
     )
   }
@@ -195,4 +197,14 @@ class GameHandler(
   }
 
   fun isFullMapScanPossible() = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
+
+  @Cacheable("robotKnownPosition", key = "robotId")
+  fun getKnownPositionsForRobot(robotId: Long): Set<Position>? {
+    return robotHandler.getActiveRobot(robotId)?.knownPositions
+  }
+
+  @Cacheable("globalKnownPositions")
+  fun getGlobalKnownPositions(): Set<Position> {
+    return robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toSet()
+  }
 }

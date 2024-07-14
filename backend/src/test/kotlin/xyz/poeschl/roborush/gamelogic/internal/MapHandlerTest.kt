@@ -10,6 +10,8 @@ import xyz.poeschl.roborush.models.Size
 import xyz.poeschl.roborush.models.TileType
 import xyz.poeschl.roborush.repositories.Map
 import xyz.poeschl.roborush.repositories.Tile
+import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
+import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import java.util.stream.IntStream
 import java.util.stream.Stream
 import kotlin.math.ceil
@@ -184,6 +186,36 @@ class MapHandlerTest {
     assertThat(mapHandler.getTileAtPosition(Position(3, 2))).isEqualTo(Tile(null, Position(3, 2), 12, TileType.TARGET_TILE))
   }
 
+  @Test
+  fun getMapWithPositions() {
+    // WHEN
+    // Map:
+    // 1 2
+    // 3 4
+    val map = createNewPresetMap(Size(2, 2), listOf(1, 2, 3, 4), Position(0, 0))
+    mapHandler.loadNewMap(map)
+    val positions = setOf(
+      a(`$Position`().withX(0).withY(0)),
+      a(`$Position`().withX(1).withY(1))
+    )
+
+    // THEN
+    val cutOfMap = mapHandler.getMapWithPositions(positions)
+
+    // VERIFY
+    // Make sure we only have the 2 tiles
+    assertThat(cutOfMap.mapData.map { it.position }).containsAll(positions)
+
+    assertThat(cutOfMap.id).isEqualTo(map.id)
+    assertThat(cutOfMap.mapName).isEqualTo(map.mapName)
+    assertThat(cutOfMap.size).isEqualTo(map.size)
+    assertThat(cutOfMap.possibleStartPositions).isEqualTo(map.possibleStartPositions)
+    assertThat(cutOfMap.targetPosition).isEqualTo(map.targetPosition)
+    assertThat(cutOfMap.maxRobotFuel).isEqualTo(map.maxRobotFuel)
+    assertThat(cutOfMap.solarChargeRate).isEqualTo(map.solarChargeRate)
+    assertThat(cutOfMap.active).isEqualTo(map.active)
+  }
+
   private fun createNewRandomMap(size: Size): Map {
     val randomHeights = IntStream.range(0, size.width * size.height)
       .map { Random.nextInt(0, 8) }.toList()
@@ -195,7 +227,7 @@ class MapHandlerTest {
   }
 
   private fun createNewPresetMap(size: Size, heights: List<Int>, start: Position, target: Position = Position(size.width - 1, size.height - 1)): Map {
-    val map = Map(null, "gen", size, listOf(start), target, 100)
+    val map = Map(1L, "gen", size, listOf(start), target, 100)
     createHeightMap(size, heights, listOf(start), target).forEach { map.addTile(it) }
     return map
   }

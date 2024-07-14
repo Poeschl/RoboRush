@@ -22,8 +22,24 @@ class MapHandler {
     private const val TILE_SCAN_COST = 0.1
   }
 
-  fun getCurrentMap(): Map {
+  fun getCurrentFullMap(): Map {
     return currentMap
+  }
+
+  fun getMapWithPositions(positions: Set<Position>): Map {
+    val reducedMap = Map(
+      currentMap.id,
+      currentMap.mapName,
+      currentMap.size,
+      currentMap.possibleStartPositions,
+      currentMap.targetPosition,
+      currentMap.maxRobotFuel,
+      currentMap.solarChargeRate,
+      currentMap.active
+    )
+
+    positions.forEach { pos -> reducedMap.addTile(getTileAtPosition(pos)) }
+    return reducedMap
   }
 
   fun getStartPositions(): List<Position> {
