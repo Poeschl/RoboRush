@@ -22,6 +22,7 @@ import xyz.poeschl.roborush.service.MapService
 import xyz.poeschl.roborush.service.PlayedGamesService
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.listWithOne
+import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$BooleanSetting`
 import xyz.poeschl.roborush.test.utils.builder.ConfigTypes.Companion.`$IntSetting`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Position`
@@ -53,6 +54,7 @@ class GamePlayTest {
     every { mapService.getNextChallengeMap() } returns createMapWithFuelStation()
     every { robotRepository.findById(robot.id!!) } returns Optional.of(robot)
     every { configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE) } returns a(`$IntSetting`().withValue(1))
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`())
 
     gameStateMachine.setGameState(GameState.PREPARE)
     gameHandler.prepareNewGame()

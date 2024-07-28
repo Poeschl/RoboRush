@@ -227,9 +227,8 @@ class RobotServiceTest {
     // WHEN
     val robotId = 1L
     val knownPositions = setOf(a(`$Position`()))
-    val activeRobot = a(`$ActiveRobot`().withId(robotId).withKnownPositions(knownPositions))
 
-    every { gameHandler.getActiveRobot(robotId) } returns activeRobot
+    every { gameHandler.getKnownPositionsForRobot(robotId) } returns knownPositions
 
     // THEN
     val result = robotService.getKnownPositionsForRobot(robotId)
@@ -242,10 +241,8 @@ class RobotServiceTest {
   fun getKnownPositionsForRobot_notActive() {
     // WHEN
     val robotId = 1L
-    val knownPositions = setOf(a(`$Position`()))
-    val activeRobot = a(`$ActiveRobot`().withId(robotId).withKnownPositions(knownPositions))
 
-    every { gameHandler.getActiveRobot(robotId) } returns null
+    every { gameHandler.getKnownPositionsForRobot(robotId) } returns null
 
     // THEN
     assertThrows<RobotNotActiveException> {
@@ -256,20 +253,14 @@ class RobotServiceTest {
   @Test
   fun getKnownPositionsForAllRobots() {
     // WHEN
-    val overlappingPos = a(`$Position`())
-    val positionsA = setOf(a(`$Position`()), overlappingPos)
-    val positionsB = setOf(a(`$Position`()), overlappingPos)
-    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positionsA))
-    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positionsB))
+    val positions = setOf(a(`$Position`()), a(`$Position`()))
 
-    every { gameHandler.getActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+    every { gameHandler.getGlobalKnownPositions() } returns positions
 
     // THEN
     val result = robotService.getKnownPositionsForAllRobots()
 
     // VERIFY
-    assertThat(result).containsAll(positionsA)
-    assertThat(result).containsAll(positionsB)
-    assertThat(result).containsOnlyOnce(overlappingPos)
+    assertThat(result).containsAll(positions)
   }
 }

@@ -72,10 +72,10 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
   }
 
   fun getKnownPositionsForRobot(robotId: Long): Set<Position> {
-    return gameHandler.getActiveRobot(robotId)?.knownPositions ?: throw RobotNotActiveException("No active Robot found")
+    return gameHandler.getKnownPositionsForRobot(robotId) ?: throw RobotNotActiveException("No active Robot found")
   }
 
   fun getKnownPositionsForAllRobots(): Set<Position> {
-    return gameHandler.getActiveRobots().map { it.knownPositions }.flatten().toSet()
+    return gameHandler.getGlobalKnownPositions()
   }
 }

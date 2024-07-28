@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import xyz.poeschl.roborush.configuration.OpenApiConfig
+import xyz.poeschl.roborush.controller.restmodels.PlaygroundMap
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.models.Game
-import xyz.poeschl.roborush.repositories.Map
 
 @RestController
 @RequestMapping("/game")
 class GameRestController(private val gameHandler: GameHandler) {
 
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getMap(): Map {
-    return gameHandler.getCurrentMap()
+  fun getMap(): PlaygroundMap {
+    return gameHandler.getCurrentPlaygroundMap()
   }
 
   @Operation(

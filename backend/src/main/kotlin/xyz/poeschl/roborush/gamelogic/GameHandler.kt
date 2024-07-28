@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
+import xyz.poeschl.roborush.controller.restmodels.PlaygroundMap
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
@@ -40,8 +41,19 @@ class GameHandler(
   private var currentTurn = 0
   private var detectedIdleTurns = 0
 
+  @Cacheable("knownMap")
   fun getCurrentMap(): Map {
-    return mapHandler.getCurrentMap()
+    return mapHandler.getMapWithPositions(getGlobalKnownPositions())
+  }
+
+  @Cacheable("playgroundMap")
+  fun getCurrentPlaygroundMap(): PlaygroundMap {
+    val fullMap = mapHandler.getCurrentFullMap()
+
+    val minHeight = fullMap.mapData.minOf { it.height }
+    val maxHeight = fullMap.mapData.maxOf { it.height }
+
+    return PlaygroundMap(getCurrentMap(), minHeight, maxHeight)
   }
 
   fun getTileAtPosition(position: Position): Tile {
@@ -80,7 +92,6 @@ class GameHandler(
     websocketController.sendRobotUpdate(activeRobot)
     websocketController.sendUserRobotData(activeRobot)
     websocketController.sendKnownPositionsUpdate(activeRobot)
-    websocketController.sendGlobalKnownPositionsUpdate(robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toSet())
   }
 
   fun getFuelCostForMove(current: Position, next: Position): Int {
@@ -118,9 +129,11 @@ class GameHandler(
     }
   }
 
+  @CacheEvict(cacheNames = ["knownMap", "playgroundMap"], allEntries = true)
   fun executeAllRobotActions() {
     robotHandler.executeRobotActions(this)
     setGameTurn(currentTurn + 1)
+    websocketController.sendMapTileUpdate(getCurrentMap())
   }
 
   fun registerRobotForNextGame(robotId: Long) {
@@ -136,7 +149,7 @@ class GameHandler(
         websocketController.sendRobotUpdate(registeredRobot)
         websocketController.sendUserRobotData(registeredRobot)
         websocketController.sendKnownPositionsUpdate(registeredRobot)
-        websocketController.sendGlobalKnownPositionsUpdate(robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toSet())
+        websocketController.sendMapTileUpdate(getCurrentMap())
       }
     } else {
       throw PositionNotAllowedException("Could not place robot at a empty start position.")
@@ -156,7 +169,6 @@ class GameHandler(
     robotHandler.setRobotMaxFuel(map.maxRobotFuel)
     robotHandler.clearActiveRobots()
     setGameTurn(0)
-    websocketController.sendGlobalKnownPositionsUpdate(emptySet())
   }
 
   @Cacheable("gameInfoCache")
@@ -172,7 +184,7 @@ class GameHandler(
         gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
       ),
       nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username,
-      mapSize = mapHandler.getCurrentMap().size,
+      mapSize = mapHandler.getCurrentFullMap().size,
       fullMapScanPossible = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
     )
   }
@@ -195,4 +207,18 @@ class GameHandler(
   }
 
   fun isFullMapScanPossible() = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
+
+  fun getKnownPositionsForRobot(robotId: Long): Set<Position>? {
+    return robotHandler.getActiveRobot(robotId)?.knownPositions
+  }
+
+  fun getGlobalKnownPositions(): Set<Position> {
+    val positions = robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toMutableSet()
+
+    if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) {
+      positions.add(mapHandler.getTargetPosition())
+    }
+
+    return positions
+  }
 }

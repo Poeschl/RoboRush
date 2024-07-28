@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import type { ComputedRef, Ref } from "vue";
 import { computed, ref } from "vue";
 import type { ActiveRobot, PublicRobot, ScoreboardEntry } from "@/models/Robot";
-import type { PlaygroundMap, Position } from "@/models/Map";
+import type { PlaygroundMap, Position, Tile } from "@/models/Map";
 import { WebSocketTopic } from "@/services/WebsocketService";
 import type { User } from "@/models/User";
 import { useGameService } from "@/services/GameService";
@@ -21,7 +21,6 @@ export const useGameStore = defineStore("gameStore", () => {
   const currentGame = ref<Game>({ currentState: GameState.ENDED, currentTurn: 0, solarChargePossible: false, fullMapScanPossible: false });
 
   const internalMap = ref<PlaygroundMap>();
-  const globalKnownPositions: Ref<{ data: Position[] }> = ref({ data: [] });
 
   // Needed workaround, since ref() don't detect updates on pure arrays.
   const internalRobots: Ref<{ data: PublicRobot[] }> = ref({ data: [] });
@@ -78,8 +77,8 @@ export const useGameStore = defineStore("gameStore", () => {
     websocketService.value.registerForTopicCallback(WebSocketTopic.PRIVATE_ROBOT_TOPIC, updateUserRobot);
     websocketService.value.registerForTopicCallback(WebSocketTopic.GAME_STATE_TOPIC, updateGameStateTo);
     websocketService.value.registerForTopicCallback(WebSocketTopic.GAME_TURN_TOPIC, updateGameTurnTo);
-    websocketService.value.registerForTopicCallback(WebSocketTopic.PUBLIC_KNOWN_POSITIONS_TOPIC, updateGlobalKnownPositionsTo);
     websocketService.value.registerForTopicCallback(WebSocketTopic.PRIVATE_KNOWN_POSITIONS_TOPIC, updateUserRobotKnownPositionsTo);
+    websocketService.value.registerForTopicCallback(WebSocketTopic.MAP_TILES_UPDATE, updateMapTiles);
   };
 
   const updateRobot = (updatedRobot: PublicRobot) => {
@@ -100,11 +99,6 @@ export const useGameStore = defineStore("gameStore", () => {
 
   const updateGameInfo = () => {
     gameService.getCurrentGame().then((gameInfo) => (currentGame.value = gameInfo));
-    updateGlobalKnownPositions();
-  };
-
-  const updateGlobalKnownPositions = () => {
-    robotService.getAllRobotsKnownPositions().then((positions) => updateGlobalKnownPositionsTo(positions));
   };
 
   const updateUserRobotKnownPositions = () => {
@@ -127,7 +121,6 @@ export const useGameStore = defineStore("gameStore", () => {
     if (previousGameState == GameState.PREPARE && gameState === GameState.WAIT_FOR_PLAYERS) {
       // Update map data after game preparations
       updateMap();
-      updateGlobalKnownPositions();
     }
     if (gameState === GameState.ENDED) {
       updateScoreBoard();
@@ -139,12 +132,15 @@ export const useGameStore = defineStore("gameStore", () => {
     currentGame.value.currentTurn = turnCount;
   };
 
-  const updateGlobalKnownPositionsTo = (positions: Position[]) => {
-    globalKnownPositions.value.data = positions;
-  };
-
   const updateUserRobotKnownPositionsTo = (positions: Position[]) => {
     userRobotKnownPositions.value.data = positions;
+  };
+
+  const updateMapTiles = (tiles: Tile[]) => {
+    if (internalMap.value != undefined && internalMap.value.mapData.length > 0) {
+      internalMap.value.mapData = [];
+      internalMap.value.mapData = tiles;
+    }
   };
 
   const registerRobotOnGame = (): Promise<void> => {
@@ -197,7 +193,6 @@ export const useGameStore = defineStore("gameStore", () => {
     solarCharge,
     updateScoreBoard,
     scoreBoard,
-    globalKnownPositions,
     userRobotKnownPositions,
     updateUserRobotKnownPositions,
   };

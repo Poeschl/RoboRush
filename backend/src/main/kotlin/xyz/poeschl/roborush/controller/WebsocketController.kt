@@ -4,9 +4,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import xyz.poeschl.roborush.gamelogic.GameState
 import xyz.poeschl.roborush.models.ActiveRobot
-import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.PublicRobot
 import xyz.poeschl.roborush.models.settings.ClientSettings
+import xyz.poeschl.roborush.repositories.Map
 
 @Controller
 class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
@@ -37,7 +37,7 @@ class WebsocketController(private val messageTemplate: SimpMessagingTemplate) {
     messageTemplate.convertAndSendToUser(user, "/queue/robot/knownPositions", robot.knownPositions)
   }
 
-  fun sendGlobalKnownPositionsUpdate(knownPositions: Set<Position>) {
-    messageTemplate.convertAndSend("/topic/robot/knownPositions", knownPositions)
+  fun sendMapTileUpdate(map: Map) {
+    messageTemplate.convertAndSend("/topic/map/tiles", map.mapData)
   }
 }
