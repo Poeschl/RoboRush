@@ -8,6 +8,8 @@ export interface PlaygroundMap {
   maxRobotFuel: number;
   solarChargeRate: number;
   mapData: Tile[];
+  minHeight: number;
+  maxHeight: number;
 }
 
 export interface PlaygroundMapAttributes {

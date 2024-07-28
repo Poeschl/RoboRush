@@ -58,6 +58,7 @@ class GameHandlerTest {
 
     every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
     every { mapHandler.getMapWithPositions(positions) } returns map
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(false))
 
     // THEN
     val result = gameHandler.getCurrentMap()
@@ -65,6 +66,37 @@ class GameHandlerTest {
     // VERIFY
     assertThat(result).isEqualTo(map)
     assertThat(result.mapData).containsAll(tiles)
+  }
+
+  @Test
+  fun getCurrentPlaygroundMap() {
+    // WHEN
+    val tiles = listOf(a(`$Tile`().withHeight(10)), a(`$Tile`().withHeight(50)), a(`$Tile`().withHeight(20)))
+    val positions = tiles.map { it.position }.toSet()
+    val map = a(`$Map`().withId(2))
+    tiles.forEach { map.addTile(it) }
+    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positions))
+    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positions))
+
+    every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+    every { mapHandler.getCurrentFullMap() } returns map
+    every { mapHandler.getMapWithPositions(positions) } returns map
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(false))
+
+    // THEN
+    val result = gameHandler.getCurrentPlaygroundMap()
+
+    // VERIFY
+    assertThat(result.id).isEqualTo(map.id)
+    assertThat(result.mapName).isEqualTo(map.mapName)
+    assertThat(result.possibleStartPositions).isEqualTo(map.possibleStartPositions)
+    assertThat(result.targetPosition).isEqualTo(map.targetPosition)
+    assertThat(result.active).isEqualTo(map.active)
+    assertThat(result.maxRobotFuel).isEqualTo(map.maxRobotFuel)
+    assertThat(result.solarChargeRate).isEqualTo(map.solarChargeRate)
+    assertThat(result.mapData).containsAll(tiles)
+    assertThat(result.minHeight).isEqualTo(10)
+    assertThat(result.maxHeight).isEqualTo(50)
   }
 
   @Test
@@ -159,7 +191,6 @@ class GameHandlerTest {
     verify { websocketController.sendRobotUpdate(robot) }
     verify { websocketController.sendUserRobotData(robot) }
     verify { websocketController.sendKnownPositionsUpdate(robot) }
-    verify { websocketController.sendGlobalKnownPositionsUpdate(knownPositions) }
   }
 
   @Test
@@ -237,6 +268,11 @@ class GameHandlerTest {
   @Test
   fun executeAllRobotActions() {
     // WHEN
+    val robots = setWithOne(`$ActiveRobot`())
+
+    every { robotHandler.getAllActiveRobots() } returns robots
+    every { mapHandler.getMapWithPositions(any()) } returns a(`$Map`())
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(false))
 
     // THEN
     gameHandler.executeAllRobotActions()
@@ -254,13 +290,17 @@ class GameHandlerTest {
     val registeredRobot = a(`$ActiveRobot`())
     val existingRobots = setWithOne(`$ActiveRobot`())
     val neighborTiles = listOf(a(`$Tile`()), a(`$Tile`()), a(`$Tile`()))
+    val map = a(`$Map`())
 
     every { mapHandler.getStartPositions() } returns possibleStart
     every { mapHandler.getTilesInDistance(startPosition, 2) } returns Pair(neighborTiles, 0)
+    every { mapHandler.getTargetPosition() } returns a(`$Position`())
+    every { mapHandler.getMapWithPositions(any()) } returns map
     every { robotHandler.getACurrentlyFreePosition(possibleStart) } returns startPosition
     every { robotHandler.registerRobotForGame(1, startPosition) } returns registeredRobot
     every { robotHandler.getAllActiveRobots() } returns existingRobots
     every { configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE) } returns a(`$IntSetting`().withValue(2))
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`())
 
     // THEN
     gameHandler.registerRobotForNextGame(1)
@@ -271,7 +311,7 @@ class GameHandlerTest {
     verify { robotHandler.registerRobotForGame(1, startPosition) }
     verify { websocketController.sendRobotUpdate(registeredRobot) }
     verify { websocketController.sendKnownPositionsUpdate(registeredRobot) }
-    verify { websocketController.sendGlobalKnownPositionsUpdate(any()) }
+    verify { websocketController.sendMapTileUpdate(map) }
   }
 
   @Test
@@ -305,7 +345,6 @@ class GameHandlerTest {
     verify { mapHandler.loadNewMap(map) }
     verify { robotHandler.clearActiveRobots() }
     verify(exactly = 1) { websocketController.sendTurnUpdate(0) }
-    verify(exactly = 1) { websocketController.sendGlobalKnownPositionsUpdate(setOf()) }
   }
 
   @Test
@@ -451,6 +490,7 @@ class GameHandlerTest {
 
     every { robotHandler.getAllActiveRobots() } returns robots
     every { mapHandler.getCurrentFullMap() } returns map
+    every { mapHandler.getMapWithPositions(any()) } returns map
 
     // THEN
     gameHandler.executeAllRobotActions()
@@ -469,6 +509,8 @@ class GameHandlerTest {
     every { mapService.getNextChallengeMap() } returns map
     every { robotHandler.getAllActiveRobots() } returns robots
     every { mapHandler.getCurrentFullMap() } returns map
+    every { mapHandler.getMapWithPositions(any()) } returns map
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(false))
 
     gameHandler.executeAllRobotActions()
     val previousTurn = getCurrentTurn()
@@ -520,8 +562,11 @@ class GameHandlerTest {
     val positionsB = setOf(a(`$Position`()), overlappingPos)
     val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positionsA))
     val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positionsB))
+    val targetPosition = a(`$Position`())
 
     every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+    every { mapHandler.getTargetPosition() } returns targetPosition
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(false))
 
     // THEN
     val result = gameHandler.getGlobalKnownPositions()
@@ -530,6 +575,31 @@ class GameHandlerTest {
     assertThat(result).containsAll(positionsA)
     assertThat(result).containsAll(positionsB)
     assertThat(result).containsOnlyOnce(overlappingPos)
+    assertThat(result).doesNotContain(targetPosition)
+  }
+
+  @Test
+  fun getKnownPositionsForAllRobots_withKnownTarget() {
+    // WHEN
+    val overlappingPos = a(`$Position`())
+    val positionsA = setOf(a(`$Position`()), overlappingPos)
+    val positionsB = setOf(a(`$Position`()), overlappingPos)
+    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positionsA))
+    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positionsB))
+    val targetPosition = a(`$Position`())
+
+    every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
+    every { mapHandler.getTargetPosition() } returns targetPosition
+    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(true))
+
+    // THEN
+    val result = gameHandler.getGlobalKnownPositions()
+
+    // VERIFY
+    assertThat(result).containsAll(positionsA)
+    assertThat(result).containsAll(positionsB)
+    assertThat(result).containsOnlyOnce(overlappingPos)
+    assertThat(result).contains(targetPosition)
   }
 
   private fun getCurrentTurn(): Int {

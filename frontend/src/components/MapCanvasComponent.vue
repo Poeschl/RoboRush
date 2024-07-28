@@ -86,9 +86,7 @@ onMounted(() => {
   if (props.pathToDisplay) {
     watch(() => props.pathToDisplay!.points, drawDisplayPath);
   }
-  if (props.positionsToDraw) {
-    watch(() => props.positionsToDraw?.data, drawMapTiles);
-  }
+  watch(() => props.map?.mapData, drawMapTiles);
   watch(
     () => props.drawablePath,
     (newValue) => {
@@ -147,14 +145,14 @@ const onPathCanvasClick = (event: MouseEvent) => {
 };
 
 const redraw = () => {
-  updateCanvasSize();
-  drawMap();
+  updateCanvasData();
+  drawMapTiles();
   drawRobots();
   drawDisplayPath();
   drawPathMarkers();
 };
 
-const updateCanvasSize = () => {
+const updateCanvasData = () => {
   if (props.map) {
     mapWidth.value = props.map.size.width * fullTileSize;
     mapHeight.value = props.map.size.height * fullTileSize;
@@ -175,22 +173,9 @@ const updateCanvasSize = () => {
       displayPathDrawContext.value.canvas.width = mapWidth.value;
       displayPathDrawContext.value.canvas.height = mapHeight.value;
     }
-  }
-};
 
-const drawMap = () => {
-  const tiles = heightMap.value;
-  if (mapCanvas.value && mapDrawContext.value && tiles.length > 0) {
-    log.debug("Draw whole map");
-
-    const maxHeight = Math.max(...[...tiles].map((t) => t.height));
-    const minHeight = Math.min(...[...tiles].map((t) => t.height));
-
-    log.debug("Max height: ", maxHeight, "Min height: ", minHeight);
-    mapTileMinHeight.value = minHeight;
-    mapTileMaxHeight.value = maxHeight;
-
-    drawMapTiles();
+    mapTileMinHeight.value = props.map.minHeight;
+    mapTileMaxHeight.value = props.map.maxHeight;
   }
 };
 

@@ -13,7 +13,7 @@
       </div>
       <div class="column is-flex is-align-items-center is-flex-direction-column">
         <WinnerBanner />
-        <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" :positions-to-draw="shownTiles" style="max-height: 100%; width: 100%" />
+        <MapCanvasComponent :robots="gameStore.robots" :map="gameStore.currentMap" style="max-height: 100%; width: 100%" />
       </div>
       <div class="column is-one-fifth is-flex-direction-column is-narrow data-column">
         <RobotScoreBoard />
@@ -47,15 +47,6 @@ const lightMode = ref<boolean>(false);
 
 onMounted(() => {
   lightMode.value = route.meta.lightMode == true;
-});
-
-const shownTiles = computed<{ data: Position[] } | undefined>(() => {
-  const positions = gameStore.globalKnownPositions;
-
-  if (gameStore.currentGame.targetPosition !== undefined) {
-    positions.data.push(gameStore.currentGame.targetPosition);
-  }
-  return positions;
 });
 
 const toggleLightMode = () => {
