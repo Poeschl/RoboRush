@@ -17,22 +17,6 @@
     <div class="subtitle">The given text will be displayed immediately on all open websites. It will be not persisted between backend restarts.</div>
     <ConfigNotificaionInputComponent />
   </div>
-  <div class="section">
-    <div class="title">Map Editor</div>
-    <div class="subtitle">
-      During the preparing phase of every game one of the active maps is chosen randomly and the fuel value becomes the robots max fuel
-    </div>
-    <div class="columns">
-      <div class="column">
-        <MapList />
-      </div>
-      <div class="column is-one-third">
-        <div class="box">
-          <MapUploadComponent />
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">

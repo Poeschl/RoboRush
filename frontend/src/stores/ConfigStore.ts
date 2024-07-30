@@ -22,7 +22,9 @@ export const useConfigStore = defineStore("configStore", () => {
     configService.getAllSettings().then((response) => {
       currentConfig.value = new Map(response.map((setting) => [setting.key, setting]));
     });
+  };
 
+  const updateMaps = () => {
     configService.getAvailableMaps().then((response) => {
       availableMaps.value.maps = response;
     });
@@ -50,7 +52,7 @@ export const useConfigStore = defineStore("configStore", () => {
 
   const uploadNewHeightmap = (file: File): Promise<MapGenerationResult> => {
     return configService.uploadNewHeightmap(file).then((result) => {
-      updateConfig();
+      updateMaps();
       return result;
     });
   };
@@ -79,6 +81,7 @@ export const useConfigStore = defineStore("configStore", () => {
     currentConfig,
     availableMaps,
     updateConfig,
+    updateMaps,
     save,
     uploadNewHeightmap,
     setMapActive,

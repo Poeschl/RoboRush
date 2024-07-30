@@ -5,7 +5,6 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
-import xyz.poeschl.roborush.controller.restmodels.PlaygroundMap
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
@@ -44,16 +43,6 @@ class GameHandler(
   @Cacheable("knownMap")
   fun getCurrentMap(): Map {
     return mapHandler.getMapWithPositions(getGlobalKnownPositions())
-  }
-
-  @Cacheable("playgroundMap")
-  fun getCurrentPlaygroundMap(): PlaygroundMap {
-    val fullMap = mapHandler.getCurrentFullMap()
-
-    val minHeight = fullMap.mapData.minOf { it.height }
-    val maxHeight = fullMap.mapData.maxOf { it.height }
-
-    return PlaygroundMap(getCurrentMap(), minHeight, maxHeight)
   }
 
   fun getTileAtPosition(position: Position): Tile {
@@ -129,7 +118,7 @@ class GameHandler(
     }
   }
 
-  @CacheEvict(cacheNames = ["knownMap", "playgroundMap"], allEntries = true)
+  @CacheEvict(cacheNames = ["knownMap"], allEntries = true)
   fun executeAllRobotActions() {
     robotHandler.executeRobotActions(this)
     setGameTurn(currentTurn + 1)
