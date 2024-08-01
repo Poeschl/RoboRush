@@ -1,6 +1,6 @@
 plugins {
-  id 'org.springframework.boot' version '3.3.1'
-  id 'io.spring.dependency-management' version '1.1.5'
+  id 'org.springframework.boot' version '3.3.2'
+  id 'io.spring.dependency-management' version '1.1.6'
   id 'org.jetbrains.kotlin.jvm' version '2.0.0'
   id 'org.jetbrains.kotlin.plugin.spring' version '2.0.0'
   id 'org.jetbrains.kotlin.plugin.noarg' version "2.0.0"
@@ -43,7 +43,7 @@ dependencies {
   }
   testImplementation 'org.testcontainers:junit-jupiter'
   testImplementation 'org.testcontainers:postgresql'
-  testImplementation 'io.mockk:mockk:1.13.11'
+  testImplementation 'io.mockk:mockk:1.13.12'
   testImplementation 'de.pixel.mcc:MigrationChange-Checker:1.2.1'
 }
 
