@@ -24,8 +24,8 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
-  const updateMaps = () => {
-    configService.getAvailableMaps().then((response) => {
+  const updateMaps = (): Promise<void> => {
+    return configService.getAvailableMaps().then((response) => {
       availableMaps.value.maps = response;
     });
   };
