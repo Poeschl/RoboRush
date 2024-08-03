@@ -17,3 +17,4 @@ INSERT INTO config (key, type, value) values ('ENABLE_FULL_MAP_SCAN', 'BOOLEAN',
 INSERT INTO config (key, type, value) values ('ENABLE_DUMMY_ROBOTS', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('ENABLE_WEB_ROBOT_CONTROL', 'BOOLEAN', 'true');
 INSERT INTO config (key, type, value) values ('DISTANCE_ROBOT_SIGHT_ON_MOVE', 'INT', '2');
+INSERT INTO config (key, type, value) values ('ENABLE_USER_REGISTRATION', 'BOOLEAN', 'true');

@@ -1,6 +1,6 @@
 <template>
   <div class="navbar-item is-button" v-if="!userStore.loggedIn">
-    <button class="button" @click="openRegister">
+    <button class="button" @click="openRegister" :disabled="!registerEnabled">
       <span class="has-text-weight-semibold">Create a account</span>
     </button>
   </div>
@@ -18,13 +18,13 @@
   </a>
 
   <LoginForm v-if="loginIsShowing" :loading="loginLoading" @close="loginIsShowing = false" @login="loginUser" />
-  <RegisterForm v-if="registerIsShowing" :loading="registerLoading" @close="registerIsShowing = false" @register="registerUser" />
+  <RegisterForm v-if="registerIsShowing && registerEnabled" :loading="registerLoading" @close="registerIsShowing = false" @register="registerUser" />
   <UserModal v-if="userDetailsShown" @close="() => (userDetailsShown = false)" />
   <Toast v-if="toast.shown" :type="toast.type" :message="toast.message" @close="() => (toast.shown = false)" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import LoginForm from "@/components/LoginForm.vue";
 import type { LoginRequest, RegisterRequest } from "@/models/User";
 import RegisterForm from "@/components/RegisterForm.vue";
@@ -33,13 +33,16 @@ import Toast from "@/components/Toast.vue";
 import { ToastType } from "@/models/ToastType";
 import UserModal from "@/components/UserModal.vue";
 import log from "loglevel";
+import { useConfigStore } from "@/stores/ConfigStore";
 
 const userStore = useUserStore();
+const configStore = useConfigStore();
 
 const loginIsShowing = ref<boolean>(false);
 const loginLoading = ref<boolean>(false);
 const registerIsShowing = ref<boolean>(false);
 const registerLoading = ref<boolean>(false);
+const registerEnabled = computed<boolean>(() => configStore.clientSettings.enableUserRegistration);
 const toast = ref<{ shown: boolean; type: ToastType; message: string }>({ shown: false, type: ToastType.INFO, message: "" });
 const userDetailsShown = ref<boolean>(false);
 
@@ -68,8 +71,10 @@ const loginUser = (data: LoginRequest) => {
 };
 
 const openRegister = () => {
-  registerLoading.value = false;
-  registerIsShowing.value = true;
+  if (registerEnabled.value) {
+    registerLoading.value = false;
+    registerIsShowing.value = true;
+  }
 };
 
 const registerUser = (data: RegisterRequest) => {
