@@ -35,7 +35,8 @@ enum class SettingKey(@JsonIgnore val isFrontendSetting: Boolean = false) {
   ENABLE_FULL_MAP_SCAN,
   ENABLE_DUMMY_ROBOTS,
   ENABLE_WEB_ROBOT_CONTROL(isFrontendSetting = true),
-  DISTANCE_ROBOT_SIGHT_ON_MOVE
+  DISTANCE_ROBOT_SIGHT_ON_MOVE,
+  ENABLE_USER_REGISTRATION(isFrontendSetting = true)
 }
 
 enum class SettingType {
@@ -44,4 +45,4 @@ enum class SettingType {
   BOOLEAN
 }
 
-data class ClientSettings(val globalNotificationText: String, val enableWebRobotControl: Boolean)
+data class ClientSettings(val globalNotificationText: String, val enableWebRobotControl: Boolean, val enableUserRegistration: Boolean)

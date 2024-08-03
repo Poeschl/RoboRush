@@ -62,7 +62,8 @@ class ConfigService(
     websocketController.sendClientSettingsUpdate(
       ClientSettings(
         globalNotificationText,
-        getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
+        getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value,
+        getBooleanSetting(SettingKey.ENABLE_USER_REGISTRATION).value
       )
     )
   }

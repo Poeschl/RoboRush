@@ -52,9 +52,11 @@ class ConfigServiceTest {
     val controlDto = SaveSettingDto(controlSettingEntity.key, "true")
 
     val enableFullScanSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_FULL_MAP_SCAN).withType(SettingType.BOOLEAN).withValue("true"))
+    val enableUserRegisterSettingEntity = a(`$SettingEntity`().withKey(SettingKey.ENABLE_USER_REGISTRATION).withType(SettingType.BOOLEAN).withValue("true"))
 
     every { configRepository.findByKey(enableFullScanSettingEntity.key) } returns enableFullScanSettingEntity
     every { configRepository.findByKey(controlSettingEntity.key) } returns controlSettingEntity
+    every { configRepository.findByKey(enableUserRegisterSettingEntity.key) } returns enableUserRegisterSettingEntity
 
     every { settingEntityMapper.toEntity(controlSettingEntity, controlDto) } returns controlConvertedEntity
     every { configRepository.save(controlConvertedEntity) } returns controlConvertedEntity
@@ -164,6 +166,7 @@ class ConfigServiceTest {
 
     every { configRepository.findByKey(SettingKey.ENABLE_FULL_MAP_SCAN) } returns settingEntity
     every { configRepository.findByKey(SettingKey.ENABLE_WEB_ROBOT_CONTROL) } returns settingEntity
+    every { configRepository.findByKey(SettingKey.ENABLE_USER_REGISTRATION) } returns settingEntity
     every { settingEntityMapper.fromEntity(settingEntity) } answers { callOriginal() }
 
     // THEN

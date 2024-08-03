@@ -9,16 +9,22 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.security.service.UserDetailsService
 import xyz.poeschl.roborush.security.utils.JwtTokenProvider
+import xyz.poeschl.roborush.service.ConfigService
 
 @RestController
 @RequestMapping("/auth")
 class AuthRestController(
   private val authenticationManager: AuthenticationManager,
   private val jwtTokenProvider: JwtTokenProvider,
-  private val userDetailsService: UserDetailsService
+  private val userDetailsService: UserDetailsService,
+  private val configService: ConfigService
 ) {
 
   companion object {
@@ -40,12 +46,19 @@ class AuthRestController(
 
   @PostMapping("/register", produces = [MediaType.APPLICATION_JSON_VALUE], consumes = [MediaType.APPLICATION_JSON_VALUE])
   fun registerUser(@RequestBody registerRequest: RegisterRequest): ResponseEntity<Void> {
-    try {
-      userDetailsService.registerNewUser(registerRequest.username, registerRequest.password)
-    } catch (ex: DataIntegrityViolationException) {
-      LOGGER.warn("Username '${registerRequest.username}' is already taken. Registration not possible")
-      return ResponseEntity.status(HttpStatus.CONFLICT).build()
+    if (registerRequest.username.length > 3 &&
+      registerRequest.password.length > 8 &&
+      configService.getBooleanSetting(SettingKey.ENABLE_USER_REGISTRATION).value
+    ) {
+      try {
+        userDetailsService.registerNewUser(registerRequest.username, registerRequest.password)
+      } catch (ex: DataIntegrityViolationException) {
+        LOGGER.warn("Username '${registerRequest.username}' is already taken. Registration not possible")
+        return ResponseEntity.status(HttpStatus.CONFLICT).build()
+      }
+      return ResponseEntity.ok().build()
+    } else {
+      return ResponseEntity.badRequest().build()
     }
-    return ResponseEntity.ok().build()
   }
 }

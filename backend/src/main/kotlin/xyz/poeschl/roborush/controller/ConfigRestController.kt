@@ -125,7 +125,8 @@ class ConfigRestController(private val configService: ConfigService, private val
   fun getClientSettings(): ClientSettings {
     return ClientSettings(
       configService.getGlobalNotificationText(),
-      configService.getBooleanSetting(SettingKey.ENABLE_WEB_ROBOT_CONTROL).value
+      configService.getBooleanSetting(SettingKey.ENABLE_WEB_ROBOT_CONTROL).value,
+      configService.getBooleanSetting(SettingKey.ENABLE_USER_REGISTRATION).value
     )
   }
 }
