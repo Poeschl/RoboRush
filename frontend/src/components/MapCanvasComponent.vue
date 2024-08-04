@@ -24,6 +24,7 @@ const cellSize = 16;
 const cellBorder = 1;
 const specialTileBorderWidth = 4;
 const fullTileSize = cellSize + 2 * cellBorder;
+const smallCanvasThresholdInPixel = 160;
 
 const mapBorderColor = new Color(0, 0, 0);
 const mapColor = new Color(10, 60, 1);
@@ -74,6 +75,7 @@ const heightMap = computed<Tile[]>(() => {
 const currentPath = ref<Path>({ points: [] });
 const mapTileMinHeight = ref<number>(0);
 const mapTileMaxHeight = ref<number>(255);
+const smallCanvas = ref<boolean>(false);
 
 const emits = defineEmits<{
   (e: "pathUpdate", path: Path): void;
@@ -90,11 +92,9 @@ onMounted(() => {
   watch(
     () => props.drawablePath,
     (newValue) => {
-      if (newValue) {
-        currentPath.value.points = [];
-        emits("pathUpdate", currentPath.value);
-        redraw();
-      }
+      currentPath.value.points = [];
+      emits("pathUpdate", currentPath.value);
+      redraw();
     },
   );
   watch(() => props.map, redraw);
@@ -176,6 +176,10 @@ const updateCanvasData = () => {
 
     mapTileMinHeight.value = props.map.minHeight;
     mapTileMaxHeight.value = props.map.maxHeight;
+
+    if (container.value && container.value.offsetWidth < smallCanvasThresholdInPixel) {
+      smallCanvas.value = true;
+    }
   }
 };
 
@@ -235,21 +239,31 @@ const drawRobots = () => {
 };
 
 const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
-  drawContext.fillStyle = mapBorderColor.toHex();
-  drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
-  drawContext.fillStyle = color.toHex();
-  drawContext.fillRect(cellBorder, cellBorder, cellSize, cellSize);
+  if (smallCanvas.value) {
+    drawContext.fillStyle = color.toHex();
+    drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
+  } else {
+    drawContext.fillStyle = mapBorderColor.toHex();
+    drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
+    drawContext.fillStyle = color.toHex();
+    drawContext.fillRect(cellBorder, cellBorder, cellSize, cellSize);
+  }
 };
 
 const drawTileBorder = (drawContext: CanvasRenderingContext2D, color: Color) => {
-  drawContext.lineWidth = specialTileBorderWidth;
-  drawContext.strokeStyle = color.toHex();
-  drawContext.strokeRect(
-    cellBorder + specialTileBorderWidth / 2,
-    cellBorder + specialTileBorderWidth / 2,
-    cellSize - specialTileBorderWidth,
-    cellSize - specialTileBorderWidth,
-  );
+  if (smallCanvas.value) {
+    drawContext.fillStyle = color.toHex();
+    drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
+  } else {
+    drawContext.lineWidth = specialTileBorderWidth;
+    drawContext.strokeStyle = color.toHex();
+    drawContext.strokeRect(
+      cellBorder + specialTileBorderWidth / 2,
+      cellBorder + specialTileBorderWidth / 2,
+      cellSize - specialTileBorderWidth,
+      cellSize - specialTileBorderWidth,
+    );
+  }
 };
 
 const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
@@ -366,7 +380,6 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
 
 .map-container {
   position: relative;
-  min-width: 200px;
   width: auto;
   height: auto;
 

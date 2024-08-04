@@ -25,7 +25,7 @@ data class PlaygroundMap(
   val maxHeight: Int
 ) {
 
-  constructor(map: Map, minHeight: Int, maxHeight: Int) : this(
+  constructor(map: Map) : this(
     map.id!!,
     map.mapName,
     map.size,
@@ -35,7 +35,7 @@ data class PlaygroundMap(
     map.solarChargeRate,
     map.active,
     map.mapData,
-    minHeight,
-    maxHeight
+    minHeight = map.mapData.minOf { it.height },
+    maxHeight = map.mapData.maxOf { it.height }
   )
 }

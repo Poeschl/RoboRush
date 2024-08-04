@@ -2,7 +2,7 @@
   <div class="columns is-variable is-2">
     <div class="column is-flex is-align-items-center is-justify-content-start">
       <button
-        class="button is-text mr-1"
+        class="button is-text mr-2"
         title="Toggle active for map"
         @click="toggleMapActive(map)"
         :class="{ 'is-loading': processing.active }"
@@ -13,11 +13,7 @@
           <FontAwesomeIcon icon="fa-regular fa-square" class="fa-xl" v-else />
         </div>
       </button>
-      <button class="button is-text" title="Preview map" @click="openPreview">
-        <div class="icon">
-          <FontAwesomeIcon icon="fa-solid fa-map-location-dot" />
-        </div>
-      </button>
+      <MapCanvasComponent class="preview-map" :map="map" />
     </div>
     <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
       <div>Name</div>
@@ -41,11 +37,11 @@
     </div>
 
     <div class="column is-flex is-align-items-center is-justify-content-end">
-      <button class="button is-text mr-1" title="Edit map attributes" @click="openEdit">
+      <router-link class="button is-text mr-1" title="Edit map attributes" :to="`/config/maps/${map.id}`">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-edit" />
         </div>
-      </button>
+      </router-link>
       <button class="button is-text remove" title="Remove map" v-if="removable" :class="{ 'is-loading': processing.delete }" @click="removeMap(map)">
         <div class="icon">
           <FontAwesomeIcon icon="fa-solid fa-trash" />
@@ -53,22 +49,17 @@
       </button>
     </div>
   </div>
-  <MapPreviewModal :map="map" v-if="previewOpen" @close="previewOpen = false" />
-  <MapEditModal :map="map" v-if="editOpen" @close="editOpen = false" />
 </template>
 
 <script setup lang="ts">
 import { useConfigStore } from "@/stores/ConfigStore";
 import { ref } from "vue";
 import type { PlaygroundMap } from "@/models/Map";
-import MapPreviewModal from "@/components/MapPreviewModal.vue";
-import MapEditModal from "@/components/MapEditModal.vue";
+import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
 
 const configStore = useConfigStore();
 
 const processing = ref<{ active: boolean; delete: boolean }>({ active: false, delete: false });
-const previewOpen = ref<boolean>(false);
-const editOpen = ref<boolean>(false);
 
 defineProps<{
   map: PlaygroundMap;
@@ -89,14 +80,6 @@ const toggleMapActive = (map: PlaygroundMap) => {
     processing.value.active = false;
   });
 };
-
-const openPreview = () => {
-  previewOpen.value = true;
-};
-
-const openEdit = () => {
-  editOpen.value = true;
-};
 </script>
 
 <style scoped lang="scss">
@@ -111,5 +94,15 @@ const openEdit = () => {
 .column > div {
   text-align: center;
   margin-bottom: 0.2rem;
+}
+
+.column > .preview-map {
+  text-align: unset;
+  width: 60px;
+  max-height: 60px;
+}
+
+.columns {
+  cursor: default;
 }
 </style>

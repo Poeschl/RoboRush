@@ -8,6 +8,8 @@ const HowToView = () => import("@/views/HowToView.vue");
 const NotConnectedView = () => import("@/views/NotConnectedView.vue");
 const GameConfigView = () => import("@/views/GameConfigView.vue");
 const FullScreenView = () => import("@/views/FullScreenView.vue");
+const MapConfigView = () => import("@/views/MapConfigView.vue");
+const MapEditorView = () => import("@/views/MapEditorView.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -44,6 +46,16 @@ export const router = createRouter({
       path: "/fullscreen/white",
       component: FullScreenView,
       meta: { hideFooter: true, hideNavBar: true, noContainer: true, lightMode: true },
+    },
+    {
+      path: "/config/maps",
+      component: MapConfigView,
+      meta: { requiresAdmin: true },
+    },
+    {
+      path: "/config/maps/:mapId",
+      component: MapEditorView,
+      meta: { requiresAdmin: true, noContainer: true },
     },
   ],
 });

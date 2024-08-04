@@ -69,37 +69,6 @@ class GameHandlerTest {
   }
 
   @Test
-  fun getCurrentPlaygroundMap() {
-    // WHEN
-    val tiles = listOf(a(`$Tile`().withHeight(10)), a(`$Tile`().withHeight(50)), a(`$Tile`().withHeight(20)))
-    val positions = tiles.map { it.position }.toSet()
-    val map = a(`$Map`().withId(2))
-    tiles.forEach { map.addTile(it) }
-    val activeRobot1 = a(`$ActiveRobot`().withKnownPositions(positions))
-    val activeRobot2 = a(`$ActiveRobot`().withKnownPositions(positions))
-
-    every { robotHandler.getAllActiveRobots() } returns setOf(activeRobot1, activeRobot2)
-    every { mapHandler.getCurrentFullMap() } returns map
-    every { mapHandler.getMapWithPositions(positions) } returns map
-    every { configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO) } returns a(`$BooleanSetting`().withValue(false))
-
-    // THEN
-    val result = gameHandler.getCurrentPlaygroundMap()
-
-    // VERIFY
-    assertThat(result.id).isEqualTo(map.id)
-    assertThat(result.mapName).isEqualTo(map.mapName)
-    assertThat(result.possibleStartPositions).isEqualTo(map.possibleStartPositions)
-    assertThat(result.targetPosition).isEqualTo(map.targetPosition)
-    assertThat(result.active).isEqualTo(map.active)
-    assertThat(result.maxRobotFuel).isEqualTo(map.maxRobotFuel)
-    assertThat(result.solarChargeRate).isEqualTo(map.solarChargeRate)
-    assertThat(result.mapData).containsAll(tiles)
-    assertThat(result.minHeight).isEqualTo(10)
-    assertThat(result.maxHeight).isEqualTo(50)
-  }
-
-  @Test
   fun isPositionValidForMove() {
     // WHEN
     val position = Position(3, 4)

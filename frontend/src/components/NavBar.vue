@@ -40,11 +40,17 @@
             </div>
             API docs
           </a>
+          <router-link v-if="userIsAdmin" class="navbar-item" to="/config/maps">
+            <div class="icon mr-1">
+              <FontAwesomeIcon icon="fa-solid fa-map" />
+            </div>
+            Maps
+          </router-link>
           <router-link v-if="userIsAdmin" class="navbar-item" to="/config">
             <div class="icon mr-1">
               <FontAwesomeIcon icon="fa-solid fa-user-tie" />
             </div>
-            Game Configuration
+            Administration
           </router-link>
         </div>
         <div class="navbar-end">
