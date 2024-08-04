@@ -137,6 +137,6 @@ const resetMapMeasureDrawing = () => {
 
 <style scoped lang="scss">
 .editor-root {
-  margin: 0 4rem 1rem;
+  margin: 0 10rem 1rem;
 }
 </style>

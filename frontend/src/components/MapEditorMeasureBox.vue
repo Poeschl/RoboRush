@@ -1,9 +1,9 @@
 <template>
   <InfoBoxTemplate title="Measure">
-    <div class="columns is-align-items-center">
+    <div class="columns">
       <div class="column">
         <button
-          class="button"
+          class="button is-fullwidth"
           :class="{ 'is-primary': pathDrawEnabled }"
           @click="$emit('update:pathDrawEnabled', !pathDrawEnabled)"
           title="If active click on the map to draw a path from clicked tile to clicked tile."
@@ -15,8 +15,10 @@
           Draw Move Path
         </button>
       </div>
+    </div>
+    <div class="columns">
       <div class="column">
-        <div class="field has-addons">
+        <div class="field has-addons is-justify-content-center">
           <div class="control">
             <button
               class="button"
