@@ -39,8 +39,17 @@
         </ul>
       </div>
       <MapEditorAttributesBox :map="map" v-if="map != undefined && activeTab == EditorTab.ATTRIBUTES" @modifiedMap="updateMapFromStore" />
-      <div class="box" v-if="map != undefined && activeTab == EditorTab.LOCATIONS">LOCATIONS</div>
-      <div class="box" v-if="map != undefined && activeTab == EditorTab.EXPORT">EXPORT</div>
+      <div v-if="map != undefined && activeTab == EditorTab.LOCATIONS">
+        <div class="box">LOCATIONS</div>
+        <MapEditorMeasureBox
+          :map="map"
+          :drawnPath="drawnPath"
+          :pathDrawEnabled="pathDrawEnabled"
+          @update:displayPath="(value) => (displayPath = value)"
+          @update:pathDrawEnabled="(value) => (pathDrawEnabled = value)"
+        />
+      </div>
+      <div class="box" v-if="activeTab == EditorTab.EXPORT">EXPORT</div>
     </div>
   </div>
 </template>
@@ -52,8 +61,8 @@ import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
 import type { Path, PlaygroundMap } from "@/models/Map";
 import log from "loglevel";
 import { useConfigStore } from "@/stores/ConfigStore";
-import type { PathFindingWorkerInput } from "@/workers/PathFindingWorker";
 import MapEditorAttributesBox from "@/components/MapEditorAttributesBox.vue";
+import MapEditorMeasureBox from "@/components/MapEditorMeasureBox.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -72,12 +81,6 @@ const activeTab = ref<EditorTab>(EditorTab.ATTRIBUTES);
 const pathDrawEnabled = ref<boolean>(false);
 const drawnPath = ref<Path>({ points: [] });
 const displayPath = ref<Path>({ points: [] });
-const routingActionEnabled = computed<boolean>(() => drawnPath.value.points.length > 1);
-const routingActive = ref<boolean>(false);
-const minimalTurns = computed<number>(() => displayPath.value.points.length);
-const requiredFuel = computed<number>(() => determineCostOfPath(displayPath.value));
-
-const routingWorker = new Worker(new URL("../workers/PathFindingWorker.ts", import.meta.url), { type: "module" });
 
 onMounted(() => {
   const inputId = route.params.mapId;
@@ -94,16 +97,6 @@ onMounted(() => {
   } else {
     router.push({ path: "/config/maps" });
   }
-
-  routingWorker.onmessage = (message) => {
-    log.info("Retrieved path from worker");
-    displayPath.value = JSON.parse(message.data);
-    routingActive.value = false;
-  };
-});
-
-onUnmounted(() => {
-  routingWorker.terminate();
 });
 
 const updateMapFromStore = (): Promise<void> => {
@@ -132,43 +125,13 @@ const mapWidth = computed(() => {
 
 const switchToTab = (tab: EditorTab) => {
   activeTab.value = tab;
+  resetMapMeasureDrawing();
 };
 
-const calculatePath = (ignoreHeights: boolean = false) => {
-  if (map.value != undefined) {
-    routingActive.value = true;
-    // Convert data to json, since couldn't get the object ot work
-    routingWorker.postMessage(
-      JSON.stringify({
-        mapSize: map.value.size,
-        heightMap: map.value.mapData,
-        inputPath: drawnPath.value,
-        ignoreHeights: ignoreHeights,
-      } as PathFindingWorkerInput),
-    );
-  }
-};
-
-const determineCostOfPath = (path: Path) => {
-  let costSum = 0;
-  if (map.value != undefined) {
-    for (let index = 0; index < path.points.length - 1; index++) {
-      const first = path.points[index];
-      const second = path.points[index + 1];
-
-      const firstHeight = map.value.mapData.find((it) => it.position.x === first.x && it.position.y === first.y)!.height;
-      const secondHeight = map.value.mapData.find((it) => it.position.x === second.x && it.position.y === second.y)!.height;
-
-      const heightDiff = secondHeight - firstHeight;
-      if (heightDiff < 0) {
-        // If the difference is negative aka "down the hill" there is only static cost. (1 is used for static cost)
-        costSum += 1;
-      } else {
-        costSum += 1 + heightDiff;
-      }
-    }
-  }
-  return costSum;
+const resetMapMeasureDrawing = () => {
+  displayPath.value.points = [];
+  drawnPath.value.points = [];
+  pathDrawEnabled.value = false;
 };
 </script>
 

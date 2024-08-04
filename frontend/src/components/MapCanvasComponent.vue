@@ -92,11 +92,9 @@ onMounted(() => {
   watch(
     () => props.drawablePath,
     (newValue) => {
-      if (newValue) {
-        currentPath.value.points = [];
-        emits("pathUpdate", currentPath.value);
-        redraw();
-      }
+      currentPath.value.points = [];
+      emits("pathUpdate", currentPath.value);
+      redraw();
     },
   );
   watch(() => props.map, redraw);
