@@ -19,6 +19,7 @@ import type { PublicRobot } from "@/models/Robot";
 import { computed, onMounted, ref, watch } from "vue";
 import Color from "@/models/Color";
 import log from "loglevel";
+import useMapConstants from "@/config/map";
 
 const cellSize = 16;
 const cellBorder = 1;
@@ -26,14 +27,7 @@ const specialTileBorderWidth = 4;
 const fullTileSize = cellSize + 2 * cellBorder;
 const smallCanvasThresholdInPixel = 160;
 
-const mapBorderColor = new Color(0, 0, 0);
-const mapColor = new Color(10, 60, 1);
-const robotCircleColor = new Color(30, 30, 30);
-const targetTileBorderColor = new Color(0, 130, 255);
-const startTileBorderColor = new Color(210, 110, 0);
-const fuelTileBorderColor = new Color(210, 0, 130);
-const pathMarkerBorderColor = new Color(255, 30, 30);
-const displayPathMarkerBorderColor = new Color(0, 50, 255);
+const mapConstants = useMapConstants();
 
 const props = withDefaults(
   defineProps<{
@@ -205,14 +199,14 @@ const drawMapTiles = () => {
       drawContext.translate(tile.position.x * fullTileSize, tile.position.y * fullTileSize);
 
       const heightInPercentage = (tile.height - mapTileMinHeight.value) / (mapTileMaxHeight.value - mapTileMinHeight.value);
-      drawTile(drawContext, mapColor.enlightenWithPercentage(heightInPercentage));
+      drawTile(drawContext, mapConstants.mapColor.enlightenWithPercentage(heightInPercentage));
 
       if (tile.type == TileType.TARGET_TILE) {
-        drawTileBorder(drawContext, targetTileBorderColor);
+        drawTileBorder(drawContext, mapConstants.targetTileBorderColor);
       } else if (tile.type == TileType.START_TILE) {
-        drawTileBorder(drawContext, startTileBorderColor);
+        drawTileBorder(drawContext, mapConstants.startTileBorderColor);
       } else if (tile.type == TileType.FUEL_TILE) {
-        drawTileBorder(drawContext, fuelTileBorderColor);
+        drawTileBorder(drawContext, mapConstants.fuelTileBorderColor);
       }
 
       drawContext.restore();
@@ -243,7 +237,7 @@ const drawTile = (drawContext: CanvasRenderingContext2D, color: Color) => {
     drawContext.fillStyle = color.toHex();
     drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
   } else {
-    drawContext.fillStyle = mapBorderColor.toHex();
+    drawContext.fillStyle = mapConstants.mapBorderColor.toHex();
     drawContext.fillRect(0, 0, fullTileSize, fullTileSize);
     drawContext.fillStyle = color.toHex();
     drawContext.fillRect(cellBorder, cellBorder, cellSize, cellSize);
@@ -271,7 +265,7 @@ const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
   drawContext.arc(fullTileSize / 2, fullTileSize / 2, cellSize / 2 - cellBorder * 2, 0, 360);
   drawContext.fillStyle = color.toHex();
   drawContext.fill();
-  drawContext.fillStyle = robotCircleColor.toHex();
+  drawContext.fillStyle = mapConstants.robotCircleColor.toHex();
   drawContext.stroke();
   drawContext.closePath();
 };
@@ -281,7 +275,7 @@ const drawDisplayPath = () => {
     const drawContext = displayPathDrawContext.value;
     log.debug("Draw display path markers");
 
-    drawPath(drawContext, props.pathToDisplay, displayPathMarkerBorderColor, false);
+    drawPath(drawContext, props.pathToDisplay, mapConstants.displayPathMarkerBorderColor, false);
   }
 };
 
@@ -290,7 +284,7 @@ const drawPathMarkers = () => {
     const drawContext = pathDrawContext.value;
     log.debug("Draw path markers");
 
-    drawPath(drawContext, currentPath.value, pathMarkerBorderColor, true);
+    drawPath(drawContext, currentPath.value, mapConstants.pathMarkerBorderColor, true);
   }
 };
 
