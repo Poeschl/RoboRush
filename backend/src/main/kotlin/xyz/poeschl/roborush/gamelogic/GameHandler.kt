@@ -45,6 +45,10 @@ class GameHandler(
     return mapHandler.getMapWithPositions(getGlobalKnownPositions())
   }
 
+  fun getCurrentMapHeightMetadata(): Pair<Int, Int> {
+    return mapHandler.getMapHeightMetaData()
+  }
+
   fun getTileAtPosition(position: Position): Tile {
     return mapHandler.getTileAtPosition(position)
   }

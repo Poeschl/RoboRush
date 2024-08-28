@@ -18,7 +18,7 @@ class GameRestController(private val gameHandler: GameHandler) {
 
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getMap(): PlaygroundMap {
-    return PlaygroundMap(gameHandler.getCurrentMap())
+    return PlaygroundMap(gameHandler.getCurrentMap(), gameHandler.getCurrentMapHeightMetadata())
   }
 
   @Operation(
