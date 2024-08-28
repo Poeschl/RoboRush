@@ -68,7 +68,10 @@ class ConfigRestController(private val configService: ConfigService, private val
   @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getMaps(): List<PlaygroundMap> {
-    return mapService.getAllMaps().map { PlaygroundMap(it) }
+    return mapService.getAllMaps().map {
+      val minMax = Pair(it.mapData.minOf { mapTile -> mapTile.height }, it.mapData.maxOf { mapTile -> mapTile.height })
+      return@map PlaygroundMap(it, minMax)
+    }
   }
 
   @SecurityRequirement(name = "Bearer Authentication")
@@ -78,7 +81,8 @@ class ConfigRestController(private val configService: ConfigService, private val
     val map = mapService.getMap(id)
 
     if (map != null) {
-      return PlaygroundMap(mapService.setMapActive(map, activeDto.active))
+      val minMax = Pair(map.mapData.minOf { it.height }, map.mapData.maxOf { it.height })
+      return PlaygroundMap(mapService.setMapActive(map, activeDto.active), minMax)
     } else {
       throw MapNotFound("No matching map found for setting active")
     }
@@ -91,7 +95,8 @@ class ConfigRestController(private val configService: ConfigService, private val
     val map = mapService.getMap(id)
 
     if (map != null) {
-      return PlaygroundMap(mapService.setMapAttributes(map, attributes))
+      val minMax = Pair(map.mapData.minOf { it.height }, map.mapData.maxOf { it.height })
+      return PlaygroundMap(mapService.setMapAttributes(map, attributes), minMax)
     } else {
       throw MapNotFound("No matching map found for given id.")
     }

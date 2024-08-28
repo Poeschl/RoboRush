@@ -42,6 +42,10 @@ class MapHandler {
     return reducedMap
   }
 
+  fun getMapHeightMetaData(): Pair<Int, Int> {
+    return Pair(currentMap.mapData.minOf { it.height }, currentMap.mapData.maxOf { it.height })
+  }
+
   fun getStartPositions(): List<Position> {
     return currentMap.possibleStartPositions
   }
