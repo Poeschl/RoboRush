@@ -7,7 +7,9 @@
       <MapCanvasComponent
         :map="map"
         :drawable-path="pathDrawEnabled"
+        :clickable-tiles="mapClickEnabled"
         @path-update="(path) => (drawnPath = path)"
+        @clicked-tile="(position) => (lastClickedPosition = position)"
         :path-to-display="displayPath"
         :style="{ width: mapWidth }"
       />
@@ -147,9 +149,6 @@ const resetMapMeasureDrawing = () => {
 const enableMapClick = (enabled: boolean) => {
   lastClickedPosition.value = undefined;
   mapClickEnabled.value = enabled;
-
-  // TODO: Remove this debug code
-  setTimeout(() => (lastClickedPosition.value = { x: Math.random() * 10, y: Math.random() * 10 }), 1000);
 };
 </script>
 

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { ClientSettings, MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import useConfigService from "@/services/ConfigService";
-import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
+import type { PlaygroundMap, PlaygroundMapAttributes, Tile } from "@/models/Map";
 import { WebSocketTopic } from "@/services/WebsocketService";
 
 export const useConfigStore = defineStore("configStore", () => {
@@ -71,6 +71,13 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
+  const setMapTile = (mapId: number, tile: Tile): Promise<void> => {
+    return configService.setMapTile(mapId, tile).then((changedMap) => {
+      const index = availableMaps.value.maps.findIndex((map) => map.id == mapId);
+      availableMaps.value.maps[index] = changedMap;
+    });
+  };
+
   const removeMap = (mapId: number): Promise<void> => {
     return configService.removeMap(mapId).then(() => {
       availableMaps.value.maps = availableMaps.value.maps.filter((it) => it.id != mapId);
@@ -87,6 +94,7 @@ export const useConfigStore = defineStore("configStore", () => {
     setMapActive,
     removeMap,
     setMapAttributes,
+    setMapTile,
     clientSettings,
     updateClientConfig,
     initWebsocket,

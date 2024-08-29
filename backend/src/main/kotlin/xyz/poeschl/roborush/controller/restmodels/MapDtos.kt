@@ -1,5 +1,7 @@
 package xyz.poeschl.roborush.controller.restmodels
 
+import net.karneim.pojobuilder.GeneratePojoBuilder
+import xyz.poeschl.roborush.configuration.Builder
 import xyz.poeschl.roborush.models.Position
 import xyz.poeschl.roborush.models.Size
 import xyz.poeschl.roborush.repositories.Map
@@ -9,6 +11,7 @@ data class MapGenerationResult(val warnings: List<String>)
 
 data class MapActiveDto(val active: Boolean)
 
+@GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class MapAttributeSaveDto(val mapName: String, val maxRobotFuel: Int, val solarChargeRate: Double)
 
 data class PlaygroundMap(

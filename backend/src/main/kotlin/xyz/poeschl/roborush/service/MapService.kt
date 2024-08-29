@@ -12,12 +12,13 @@ import xyz.poeschl.roborush.models.*
 import xyz.poeschl.roborush.repositories.Map
 import xyz.poeschl.roborush.repositories.MapRepository
 import xyz.poeschl.roborush.repositories.Tile
+import xyz.poeschl.roborush.repositories.TileRepository
 import java.io.InputStream
 import javax.imageio.ImageIO
 import kotlin.time.measureTime
 
 @Service
-class MapService(private val mapRepository: MapRepository) {
+class MapService(private val mapRepository: MapRepository, private val tileRepository: TileRepository) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapService::class.java)
@@ -65,6 +66,49 @@ class MapService(private val mapRepository: MapRepository) {
         else -> attributes.solarChargeRate
       }
 
+    return mapRepository.save(map)
+  }
+
+  @Transactional
+  fun setMapTile(map: Map, tile: Tile): Map {
+    val stored = map.mapData.find { it.position == tile.position }
+    stored?.let { storedTile ->
+      when {
+        tile.type == TileType.START_TILE && storedTile.type == TileType.DEFAULT_TILE -> {
+          // A start tile is added
+          map.possibleStartPositions.add(storedTile.position)
+          storedTile.type = TileType.START_TILE
+        }
+
+        tile.type == TileType.DEFAULT_TILE && storedTile.type == TileType.START_TILE -> {
+          // A start tile is removed
+          if (map.possibleStartPositions.size > 1) {
+            // Keep at least one start position
+            map.possibleStartPositions.remove(storedTile.position)
+            storedTile.type = TileType.DEFAULT_TILE
+          }
+        }
+
+        tile.type == TileType.TARGET_TILE && storedTile.type == TileType.DEFAULT_TILE -> {
+          // A new target tile is stored
+          val oldTarget = map.mapData.find { it.position == map.targetPosition }
+          oldTarget?.let { old ->
+            old.type = TileType.DEFAULT_TILE
+            tileRepository.save(old)
+          }
+          map.targetPosition = storedTile.position
+          storedTile.type = TileType.TARGET_TILE
+        }
+
+        tile.type == TileType.DEFAULT_TILE && storedTile.type == TileType.TARGET_TILE -> {
+          // The target is removed, which is not possible
+        }
+        else -> {
+          storedTile.type = tile.type
+        }
+      }
+      tileRepository.save(storedTile)
+    }
     return mapRepository.save(map)
   }
 

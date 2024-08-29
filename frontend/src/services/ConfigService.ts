@@ -1,7 +1,7 @@
 import type { ClientSettings, MapGenerationResult, SaveSetting, Setting } from "@/models/Config";
 import axiosWithAuth from "@/config/axiosWithAuth";
 import axios, { type AxiosResponse } from "axios";
-import type { PlaygroundMap, PlaygroundMapAttributes } from "@/models/Map";
+import type { PlaygroundMap, PlaygroundMapAttributes, Tile } from "@/models/Map";
 
 export default function useConfigService() {
   const baseConfigUrl = "/api/config";
@@ -37,6 +37,10 @@ export default function useConfigService() {
     return axiosWithAuth.post(`${baseConfigUrl}/map/${mapId}`, attributes).then((response) => response.data);
   };
 
+  const setMapTile = (mapId: number, tile: Tile): Promise<PlaygroundMap> => {
+    return axiosWithAuth.post(`${baseConfigUrl}/map/${mapId}/tile`, tile).then((response) => response.data);
+  };
+
   const removeMap = (mapId: number): Promise<void> => {
     return axiosWithAuth.delete(`${baseConfigUrl}/map/${mapId}`);
   };
@@ -57,6 +61,7 @@ export default function useConfigService() {
     setMapActive,
     removeMap,
     setMapAttributes,
+    setMapTile,
     setGlobalNotificationText,
     getClientSettings: getGlobalNotificationText,
   };

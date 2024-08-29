@@ -21,8 +21,8 @@ data class Map(
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(insertable = false) val id: Long?,
   @Column var mapName: String,
   @Column val size: Size,
-  @Column val possibleStartPositions: List<Position>,
-  @Column val targetPosition: Position,
+  @Column val possibleStartPositions: MutableList<Position>,
+  @Column var targetPosition: Position,
   @Column var maxRobotFuel: Int = 300,
   @Column var solarChargeRate: Double = 0.0,
   @Column var active: Boolean = false

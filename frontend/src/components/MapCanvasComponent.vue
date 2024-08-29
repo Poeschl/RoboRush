@@ -9,7 +9,8 @@
     <canvas id="worldmap" ref="mapCanvas" />
     <canvas id="robots" ref="robotCanvas" />
     <canvas id="displayPath" ref="displayPathCanvas" />
-    <canvas id="path" ref="pathCanvas" @click="onPathCanvasClick" />
+    <canvas id="path" ref="pathCanvas" />
+    <div class="click-container" @click="onCanvasClick" />
   </div>
 </template>
 
@@ -35,12 +36,14 @@ const props = withDefaults(
     // Strange wrapping is needed since VUE does not recognize the array update correctly
     robots?: { data: PublicRobot[] } | undefined;
     drawablePath?: boolean;
+    clickableTiles?: boolean;
     pathToDisplay?: Path | undefined;
     positionsToDraw?: { data: Position[] } | undefined;
   }>(),
   {
     robots: undefined,
     drawablePath: false,
+    clickableTiles: false,
     pathToDisplay: undefined,
     positionsToDraw: undefined,
   },
@@ -73,6 +76,7 @@ const smallCanvas = ref<boolean>(false);
 
 const emits = defineEmits<{
   (e: "pathUpdate", path: Path): void;
+  (e: "clickedTile", position: Position): void;
 }>();
 
 onMounted(() => {
@@ -95,8 +99,8 @@ onMounted(() => {
   redraw();
 });
 
-const onPathCanvasClick = (event: MouseEvent) => {
-  if (pathCanvas.value && container.value && props.drawablePath) {
+const onCanvasClick = (event: MouseEvent) => {
+  if (pathCanvas.value && container.value && (props.drawablePath || props.clickableTiles)) {
     // Get css scale factor
     const scale = mapWidth.value / container.value.clientWidth;
 
@@ -126,15 +130,21 @@ const onPathCanvasClick = (event: MouseEvent) => {
       scale,
     );
 
-    const knownPath = currentPath.value;
-    if (currentPath.value.points.find((it) => it.x === positionClicked.x && it.y === positionClicked.y)) {
-      knownPath.points = knownPath.points.filter((it) => !(it.x === positionClicked.x && it.y === positionClicked.y));
-    } else {
-      knownPath.points.push(positionClicked);
+    if (props.drawablePath) {
+      const knownPath = currentPath.value;
+      if (currentPath.value.points.find((it) => it.x === positionClicked.x && it.y === positionClicked.y)) {
+        knownPath.points = knownPath.points.filter((it) => !(it.x === positionClicked.x && it.y === positionClicked.y));
+      } else {
+        knownPath.points.push(positionClicked);
+      }
+      currentPath.value = knownPath;
+      drawPathMarkers();
+      emits("pathUpdate", knownPath);
     }
-    currentPath.value = knownPath;
-    drawPathMarkers();
-    emits("pathUpdate", knownPath);
+
+    if (props.clickableTiles) {
+      emits("clickedTile", positionClicked);
+    }
   }
 };
 
@@ -376,6 +386,12 @@ const pixelOriginOfPosition = (position: Position): PixelPosition => {
   position: relative;
   width: auto;
   height: auto;
+
+  .click-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
 
   .fog-container {
     position: absolute;
