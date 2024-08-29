@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <div class="box has-text-centered has-background-info is-color-black p-3 is-size-4 has-text-weight-semibold" v-if="shown">
+    <div class="box has-text-centered has-background-info has-text-black p-3 is-size-4 has-text-weight-semibold" v-if="shown">
       {{ text }}
     </div>
   </Transition>
