@@ -12,6 +12,9 @@ class NativeTypes {
 
     fun `$Long`(): Builder<Long> = Builder { kotlin.random.Random.nextLong() }
 
+    fun `$Double`(): Builder<Double> = Builder { kotlin.random.Random.nextDouble() }
+    fun `$Double`(from: Double, until: Double): Builder<Double> = Builder { kotlin.random.Random.nextDouble(from, until) }
+
     fun `$String`(prefix: String = ""): Builder<String> = Builder { prefix + String(kotlin.random.Random.nextBytes(10)) }
 
     fun `$Boolean`(): Builder<Boolean> = Builder { kotlin.random.Random.nextBoolean() }

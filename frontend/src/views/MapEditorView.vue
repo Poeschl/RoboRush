@@ -7,7 +7,9 @@
       <MapCanvasComponent
         :map="map"
         :drawable-path="pathDrawEnabled"
+        :clickable-tiles="mapClickEnabled"
         @path-update="(path) => (drawnPath = path)"
+        @clicked-tile="(position) => (lastClickedPosition = position)"
         :path-to-display="displayPath"
         :style="{ width: mapWidth }"
       />
@@ -40,7 +42,12 @@
       </div>
       <MapEditorAttributesBox :map="map" v-if="map != undefined && activeTab == EditorTab.ATTRIBUTES" @modifiedMap="updateMapFromStore" />
       <div v-if="map != undefined && activeTab == EditorTab.LOCATIONS">
-        <div class="box">LOCATIONS</div>
+        <MapEditorLocationChangeBox
+          :map="map"
+          :clickedPosition="lastClickedPosition"
+          @mapClickEnabled="(enabled) => enableMapClick(enabled)"
+          @modifiedMap="updateMapFromStore"
+        />
         <MapEditorMeasureBox
           :map="map"
           :drawnPath="drawnPath"
@@ -55,14 +62,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import MapCanvasComponent from "@/components/MapCanvasComponent.vue";
-import type { Path, PlaygroundMap } from "@/models/Map";
+import type { Path, PlaygroundMap, Position } from "@/models/Map";
 import log from "loglevel";
 import { useConfigStore } from "@/stores/ConfigStore";
 import MapEditorAttributesBox from "@/components/MapEditorAttributesBox.vue";
 import MapEditorMeasureBox from "@/components/MapEditorMeasureBox.vue";
+import MapEditorLocationChangeBox from "@/components/MapEditorLocationChangeBox.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -81,6 +89,8 @@ const activeTab = ref<EditorTab>(EditorTab.ATTRIBUTES);
 const pathDrawEnabled = ref<boolean>(false);
 const drawnPath = ref<Path>({ points: [] });
 const displayPath = ref<Path>({ points: [] });
+const mapClickEnabled = ref<boolean>(false);
+const lastClickedPosition = ref<Position | undefined>();
 
 onMounted(() => {
   const inputId = route.params.mapId;
@@ -124,14 +134,21 @@ const mapWidth = computed(() => {
 });
 
 const switchToTab = (tab: EditorTab) => {
-  activeTab.value = tab;
-  resetMapMeasureDrawing();
+  if (activeTab.value != tab) {
+    activeTab.value = tab;
+    resetMapMeasureDrawing();
+  }
 };
 
 const resetMapMeasureDrawing = () => {
   displayPath.value.points = [];
   drawnPath.value.points = [];
   pathDrawEnabled.value = false;
+};
+
+const enableMapClick = (enabled: boolean) => {
+  lastClickedPosition.value = undefined;
+  mapClickEnabled.value = enabled;
 };
 </script>
 

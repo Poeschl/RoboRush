@@ -15,6 +15,7 @@ import xyz.poeschl.roborush.models.settings.ClientSettings
 import xyz.poeschl.roborush.models.settings.SaveSettingDto
 import xyz.poeschl.roborush.models.settings.Setting
 import xyz.poeschl.roborush.models.settings.SettingKey
+import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.security.repository.User
 import xyz.poeschl.roborush.service.ConfigService
 import xyz.poeschl.roborush.service.MapService
@@ -97,6 +98,20 @@ class ConfigRestController(private val configService: ConfigService, private val
     if (map != null) {
       val minMax = Pair(map.mapData.minOf { it.height }, map.mapData.maxOf { it.height })
       return PlaygroundMap(mapService.setMapAttributes(map, attributes), minMax)
+    } else {
+      throw MapNotFound("No matching map found for given id.")
+    }
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
+  @PostMapping("/map/{id}/tile", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun setMapTile(@PathVariable id: Long, @RequestBody tile: Tile): PlaygroundMap {
+    val map = mapService.getMap(id)
+
+    if (map != null) {
+      val minMax = Pair(map.mapData.minOf { it.height }, map.mapData.maxOf { it.height })
+      return PlaygroundMap(mapService.setMapTile(map, tile), minMax)
     } else {
       throw MapNotFound("No matching map found for given id.")
     }

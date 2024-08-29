@@ -5,9 +5,13 @@ import { router } from "./router/main";
 import Plausible from "plausible-tracker";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
+  faArrowLeft,
+  faArrowRight,
   faArrowRightFromBracket,
   faArrowRightToBracket,
   faArrowRotateLeft,
+  faArrowsRotate,
+  faBan,
   faBook,
   faCaretDown,
   faCaretLeft,
@@ -22,6 +26,7 @@ import {
   faEraser,
   faExpand,
   faFileExport,
+  faFlagCheckered,
   faGasPump,
   faGlobe,
   faHourglassHalf,
@@ -94,6 +99,10 @@ library.add(
   faRectangleList,
   faLocationDot,
   faFileExport,
+  faBan,
+  faArrowRight,
+  faFlagCheckered,
+  faArrowsRotate,
 );
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 

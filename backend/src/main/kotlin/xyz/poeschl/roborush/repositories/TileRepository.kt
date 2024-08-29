@@ -21,7 +21,7 @@ data class Tile(
   val id: Long?,
   @Column val position: Position,
   @Column val height: Int = 0,
-  @Column @Enumerated(EnumType.STRING) val type: TileType = TileType.DEFAULT_TILE
+  @Column @Enumerated(EnumType.STRING) var type: TileType = TileType.DEFAULT_TILE
 ) {
 
   @JsonIgnore
