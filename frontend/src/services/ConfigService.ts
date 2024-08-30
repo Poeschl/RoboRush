@@ -45,6 +45,10 @@ export default function useConfigService() {
     return axiosWithAuth.delete(`${baseConfigUrl}/map/${mapId}`);
   };
 
+  const exportMap = (mapId: number): Promise<Blob> => {
+    return axiosWithAuth.get(`${baseConfigUrl}/map/${mapId}/export`, { responseType: "blob" }).then((response) => response.data);
+  };
+
   const setGlobalNotificationText = (notificationText: string): Promise<void> => {
     return axiosWithAuth.post(`${baseConfigUrl}/client/globalNotificationText`, { text: notificationText });
   };
@@ -64,5 +68,6 @@ export default function useConfigService() {
     setMapTile,
     setGlobalNotificationText,
     getClientSettings: getGlobalNotificationText,
+    exportMap,
   };
 }

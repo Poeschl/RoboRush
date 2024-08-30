@@ -3,7 +3,10 @@ package xyz.poeschl.roborush.controller
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang3.EnumUtils
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -125,6 +128,25 @@ class ConfigRestController(private val configService: ConfigService, private val
 
     if (map != null) {
       return mapService.deleteMap(map)
+    } else {
+      throw MapNotFound("No matching map found for deletion")
+    }
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
+  @GetMapping("/map/{id}/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+  fun exportMap(@PathVariable id: Long): ResponseEntity<Resource> {
+    val map = mapService.getMap(id)
+
+    if (map != null) {
+      // TODO: Create image data
+      val resource = ByteArrayResource(ByteArray(4, { i -> i.toByte() }))
+
+      return ResponseEntity.ok()
+        .contentLength(resource.contentLength())
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(resource)
     } else {
       throw MapNotFound("No matching map found for deletion")
     }
