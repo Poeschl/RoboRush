@@ -6,8 +6,8 @@
         <div class="columns is-variable is-1 is-mobile">
           <div class="column">
             <div class="is-dpad-control">
-              <div class="columns is-mobile">
-                <div class="column is-offset-one-third is-one-third">
+              <div class="columns is-justify-content-center is-mobile">
+                <div class="column is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightUp }" @click="move('NORTH')">
                     <div class="icon">
                       <FontAwesomeIcon icon="fa-solid fa-caret-up" class="fa-2x" />
@@ -15,7 +15,7 @@
                   </button>
                 </div>
               </div>
-              <div class="columns is-mobile">
+              <div class="columns is-justify-content-center is-mobile">
                 <div class="column is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightLeft }" @click="move('WEST')">
                     <div class="icon">
@@ -38,8 +38,8 @@
                   </button>
                 </div>
               </div>
-              <div class="columns is-mobile">
-                <div class="column is-offset-one-third is-one-third">
+              <div class="columns is-justify-content-center is-mobile">
+                <div class="column is-one-third">
                   <button class="button" :disabled="!controlsEnabled" :class="{ 'is-selected': highlightDown }" @click="move('SOUTH')">
                     <div class="icon">
                       <FontAwesomeIcon icon="fa-solid fa-caret-down" class="fa-2x" />
@@ -111,19 +111,21 @@
                 </button>
               </div>
             </div>
-            <div class="mb-3">
-              <p class="mb-1">Action in next turn:</p>
-              <p v-if="robot?.nextAction?.type == 'move'">Move {{ (robot?.nextAction as Move).direction }}</p>
-              <p v-if="robot?.nextAction?.type == 'scan'">Scan with distance {{ (robot?.nextAction as Scan).distance }}</p>
-              <p v-if="robot?.nextAction?.type == 'wait'">Wait the next turn</p>
-              <p v-if="robot?.nextAction?.type == 'refuel'">Refuel the robot</p>
-              <p v-if="robot?.nextAction?.type == 'solarCharge'">Solar recharge</p>
-              <p v-if="robot?.nextAction?.type == 'fullScan'">Full map scan</p>
-            </div>
-            <div>
-              <p class="mb-1">Last result:</p>
-              <p>{{ robot?.lastResult }}</p>
-            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <p class="mb-1">Action in next turn:</p>
+          <p v-if="robot?.nextAction?.type == 'move'">Move {{ (robot?.nextAction as Move).direction }}</p>
+          <p v-if="robot?.nextAction?.type == 'scan'">Scan with distance {{ (robot?.nextAction as Scan).distance }}</p>
+          <p v-if="robot?.nextAction?.type == 'wait'">Wait the next turn</p>
+          <p v-if="robot?.nextAction?.type == 'refuel'">Refuel the robot</p>
+          <p v-if="robot?.nextAction?.type == 'solarCharge'">Solar recharge</p>
+          <p v-if="robot?.nextAction?.type == 'fullScan'">Full map scan</p>
+        </div>
+        <div>
+          <p class="mb-1">Last result:</p>
+          <div class="result-scroller">
+            <div>{{ robot?.lastResult }}</div>
           </div>
         </div>
       </div>
@@ -264,5 +266,10 @@ const handleControlInput = (promise: Promise<void>) => {
   .column {
     flex-grow: 0;
   }
+}
+
+.result-scroller {
+  max-height: 10rem;
+  overflow-y: auto;
 }
 </style>
