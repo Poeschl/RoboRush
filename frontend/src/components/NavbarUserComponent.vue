@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 import LoginForm from "@/components/LoginForm.vue";
 import type { LoginRequest, RegisterRequest } from "@/models/User";
 import RegisterForm from "@/components/RegisterForm.vue";
@@ -34,9 +34,11 @@ import { ToastType } from "@/models/ToastType";
 import UserModal from "@/components/UserModal.vue";
 import log from "loglevel";
 import { useConfigStore } from "@/stores/ConfigStore";
+import type { PlausibleInitOptions } from "plausible-tracker/build/main/lib/tracker";
 
 const userStore = useUserStore();
 const configStore = useConfigStore();
+const plausible = inject<{ trackEvent: (key: string, props: {}) => {} }>("plausible");
 
 const loginIsShowing = ref<boolean>(false);
 const loginLoading = ref<boolean>(false);
@@ -60,6 +62,7 @@ const loginUser = (data: LoginRequest) => {
       toast.value.message = "Login successful";
       toast.value.type = ToastType.SUCCESS;
       toast.value.shown = true;
+      plausible?.trackEvent("User logged in", {});
     })
     .catch((reason) => {
       loginLoading.value = false;
@@ -86,6 +89,7 @@ const registerUser = (data: RegisterRequest) => {
       toast.value.message = "Registered successful. Now login";
       toast.value.type = ToastType.SUCCESS;
       toast.value.shown = true;
+      plausible?.trackEvent("User registered", {});
     })
     .catch((reason) => {
       registerLoading.value = false;
