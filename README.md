@@ -63,6 +63,11 @@ To enable this set the environment variable `PLAUSIBLE_DOMAIN`
 and if you are running on a self-hosted instance `PLAUSIBLE_API_HOST`.
 An example is shown in the deployment docker-compose.
 
+Please create the following goals to also get the events:
+
+* `User logged in`
+* `User registered`
+
 ## Note
 
 This software will get no versioning and lives on the bloody main branch.
