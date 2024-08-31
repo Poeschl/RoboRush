@@ -21,11 +21,16 @@ import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.security.repository.User
 import xyz.poeschl.roborush.service.ConfigService
+import xyz.poeschl.roborush.service.MapImportExportService
 import xyz.poeschl.roborush.service.MapService
 
 @RestController
 @RequestMapping("/config")
-class ConfigRestController(private val configService: ConfigService, private val mapService: MapService) {
+class ConfigRestController(
+  private val configService: ConfigService,
+  private val mapService: MapService,
+  private val mapImportExportService: MapImportExportService
+) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(ConfigRestController::class.java)
@@ -62,7 +67,7 @@ class ConfigRestController(private val configService: ConfigService, private val
       throw InvalidHeightMapException("Only png files are supported for heightmaps")
     }
     val name = heightMapFile.originalFilename?.substringBeforeLast("/")?.substringBeforeLast(".") ?: "unknown"
-    val mapGenResult = mapService.createNewMapFromHeightMap(name, heightMapFile.inputStream)
+    val mapGenResult = mapImportExportService.importMap(name, heightMapFile.inputStream)
     mapService.saveMap(mapGenResult.map)
 
     return MapGenerationResult(mapGenResult.errors)
@@ -140,8 +145,7 @@ class ConfigRestController(private val configService: ConfigService, private val
     val map = mapService.getMap(id)
 
     if (map != null) {
-      // TODO: Create image data
-      val resource = ByteArrayResource(ByteArray(4, { i -> i.toByte() }))
+      val resource = ByteArrayResource(mapImportExportService.exportMap(map).toByteArray())
 
       return ResponseEntity.ok()
         .contentLength(resource.contentLength())

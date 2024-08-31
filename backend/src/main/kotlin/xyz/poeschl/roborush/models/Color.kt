@@ -17,6 +17,9 @@ data class Color(val r: Int, val g: Int, val b: Int) {
   // Allow a little pixel color delta
   @JsonIgnore
   fun isGrey() = (r == g || r == g - 1 || r == g + 1) && (g == b || g == b - 1 || g == b + 1) && (b == r || b == r - 1 || b == r + 1)
+
+  @JsonIgnore
+  fun toAwtColor(): java.awt.Color = java.awt.Color(this.r, this.g, this.b)
 }
 
 @Converter(autoApply = true)
