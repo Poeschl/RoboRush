@@ -47,7 +47,7 @@ class MapImportExportServiceTest {
     map.addTile(a(`$Tile`().withPosition(a(`$Position`().withX(1).withY(1))).withHeight(4).withType(TileType.DEFAULT_TILE)))
 
     // THEN
-    val byteResult = importExportService.exportMap(map).toByteArray()
+    val byteResult = importExportService.exportMap(map)
 
     // VERIFY
     val resultImage = ImageIO.read(ByteArrayInputStream(byteResult))
@@ -67,7 +67,7 @@ class MapImportExportServiceTest {
     map.addTile(a(`$Tile`().withPosition(a(`$Position`().withX(0).withY(0))).withHeight(height).withType(tileType)))
 
     // THEN
-    val byteResult = importExportService.exportMap(map).toByteArray()
+    val byteResult = importExportService.exportMap(map)
 
     // VERIFY
     val resultImage = ImageIO.read(ByteArrayInputStream(byteResult))

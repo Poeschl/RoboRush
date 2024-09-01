@@ -70,6 +70,8 @@ class ConfigRestController(
     val mapGenResult = mapImportExportService.importMap(name, heightMapFile.inputStream)
     mapService.saveMap(mapGenResult.map)
 
+    LOGGER.info("Exported map $name")
+
     return MapGenerationResult(mapGenResult.errors)
   }
 
@@ -145,7 +147,7 @@ class ConfigRestController(
     val map = mapService.getMap(id)
 
     if (map != null) {
-      val resource = ByteArrayResource(mapImportExportService.exportMap(map).toByteArray())
+      val resource = ByteArrayResource(mapImportExportService.exportMap(map))
 
       return ResponseEntity.ok()
         .contentLength(resource.contentLength())

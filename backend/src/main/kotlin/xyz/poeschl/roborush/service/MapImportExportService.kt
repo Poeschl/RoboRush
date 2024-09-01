@@ -1,7 +1,16 @@
 package xyz.poeschl.roborush.service
 
+import org.apache.commons.imaging.Imaging
+import org.apache.commons.imaging.formats.png.PngImagingParameters
+import org.apache.commons.imaging.formats.png.PngWriter
+import org.apache.xmlgraphics.util.QName
+import org.apache.xmlgraphics.xmp.Metadata
+import org.apache.xmlgraphics.xmp.XMPParser
+import org.apache.xmlgraphics.xmp.XMPProperty
+import org.apache.xmlgraphics.xmp.XMPSerializer
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.xml.sax.SAXException
 import xyz.poeschl.roborush.exceptions.NoStartingPosition
 import xyz.poeschl.roborush.exceptions.NoTargetPosition
 import xyz.poeschl.roborush.exceptions.UnknownTileType
@@ -12,7 +21,12 @@ import java.awt.Graphics
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.nio.charset.StandardCharsets
+import java.util.*
 import javax.imageio.ImageIO
+import javax.xml.transform.TransformerConfigurationException
+import javax.xml.transform.stream.StreamSource
+import kotlin.jvm.optionals.getOrNull
 import kotlin.time.measureTime
 
 @Service
@@ -20,18 +34,20 @@ class MapImportExportService {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapImportExportService::class.java)
+
+    private const val XMP_URI = "poeschl/roborush"
+    private const val XMP_MAP_SOLAR_CHARGE_RATE_KEY = "solarChargeRate"
   }
 
-  fun exportMap(map: Map): ByteArrayOutputStream {
+  fun exportMap(map: Map): ByteArray {
     val image = BufferedImage(map.size.width, map.size.height, BufferedImage.TYPE_INT_RGB)
     val graphics = image.createGraphics()
 
     map.mapData.forEach { drawTile(graphics, it) }
-
     graphics.dispose()
-    val output = ByteArrayOutputStream()
-    ImageIO.write(image, "png", output)
-    return output
+
+    val imageBytesWithMetadata = setMapMetadata(image, MapMetadata(map.solarChargeRate))
+    return imageBytesWithMetadata
   }
 
   private fun drawTile(graphics: Graphics, tile: Tile) {
@@ -123,8 +139,19 @@ class MapImportExportService {
     // Add all tiles to map for the db relations
     tiles.forEach { map.addTile(it) }
 
+    val mapMetadata = getMapMetadata(heightMapFile)
+    mapMetadata?.let {
+      // use existing metadata, if no metadata exists use defaults
+      // same for single missing values
+      mapMetadata.solarChargeRate?.let {
+        map.solarChargeRate = mapMetadata.solarChargeRate
+      }
+    }
+
     return InternalMapGenResult(map, errors)
   }
+
+  private data class TileData(val height: Int, val type: TileType)
 
   private fun getTileData(color: Color): TileData {
     return when {
@@ -156,5 +183,49 @@ class MapImportExportService {
     }
   }
 
-  private data class TileData(val height: Int, val type: TileType)
+  private fun setMapMetadata(imageInput: BufferedImage, mapMetadata: MapMetadata): ByteArray {
+    val xmpMetadata = Metadata()
+
+    // Set metadata form stored map attributes
+    val solarChargeProp = XMPProperty(QName(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY), mapMetadata.solarChargeRate!!.toString())
+    xmpMetadata.setProperty(solarChargeProp)
+
+    try {
+      val xmpString = ByteArrayOutputStream().use {
+        XMPSerializer.writeXMPPacket(xmpMetadata, it, false)
+        return@use it.toString(StandardCharsets.UTF_8)
+      }
+
+      return ByteArrayOutputStream().use {
+        val pngParams = PngImagingParameters()
+        pngParams.xmpXml = xmpString
+        PngWriter().writeImage(imageInput, it, pngParams, null)
+        return@use it.toByteArray()
+      }
+    } catch (ex: TransformerConfigurationException) {
+      LOGGER.warn("Couldn't write metadata!", ex)
+    } catch (ex: SAXException) {
+      LOGGER.warn("Couldn't write metadata!", ex)
+    }
+    return ByteArrayOutputStream().use {
+      PngWriter().writeImage(imageInput, it, null, null)
+      return@use it.toByteArray()
+    }
+  }
+
+  private fun getMapMetadata(imageInput: InputStream): MapMetadata? {
+    val xmpString = Imaging.getXmpXml(imageInput.readAllBytes())
+    val xmpMetadata = XMPParser.parseXMP(StreamSource(xmpString.byteInputStream()))
+
+    if (!xmpString.contains(XMP_URI)) {
+      // If no roborush metadata is stored
+      return null
+    } else {
+      val solarChargeProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY)).getOrNull()
+
+      return MapMetadata(
+        (solarChargeProp?.value as String).toDoubleOrNull()
+      )
+    }
+  }
 }
