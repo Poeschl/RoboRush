@@ -92,9 +92,10 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
+          containerfiles: frontend/docker/Dockerfile
+          context: frontend
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
-          containerfiles: backend/Dockerfile
           platforms: linux/amd64,linux/arm64
           # Disable layer caching
           layers: false
