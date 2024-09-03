@@ -63,6 +63,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: ↩️ Checkout
         uses: actions/checkout@v4
@@ -76,28 +79,41 @@ jobs:
           path: frontend/dist/
 
       - name: ℹ️ Docker meta
-        id: docker_meta
+        id: docker-meta
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/poeschl/roborush
           tags: frontend
 
-      - name: 🏗️ Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: 🏗️ Install qemu dependency
+        uses: docker/setup-qemu-action@v3
+
+      - name: ⚙️ Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          tags: ${{ steps.docker-meta.outputs.tags }}
+          labels: ${{ steps.docker-meta.outputs.labels }}
+          containerfiles: backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          # Disable layer caching
+          layers: false
 
       - name: 🔑 GHCR Login
-        uses: docker/login-action@v3
+        uses: redhat-actions/podman-login@v1
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🚀 Build and push
-        uses: docker/build-push-action@v6
+      - name: 🚀 Push images
+        id: push-image
+        uses: redhat-actions/push-to-registry@v2
         with:
-          context: frontend
-          file: frontend/docker/Dockerfile
-          push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}
-          labels: ${{ steps.docker_meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+
+      - name: 📢 Print images summary
+        run: |
+          echo "## Build and pushed frontend images" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.push-image.outputs.registry-paths }}' >> $GITHUB_STEP_SUMMARY
