@@ -25,3 +25,15 @@ The height is specified by the remaining colors.
 > Neither __spawn area__ nor the __single target position__ can be placed at height 255!
 
 After creating your heightmap it can be uploaded on the config page, which can be accessed as admin user.
+
+## Modify a map
+
+A simple map editor can be found in the admin section of RoboRush.
+It can change the tile types but not any heights.
+
+## Export / Import
+
+Existing maps can be exported via the map editor as well.
+During that the map-specific settings are also saved in the image (via XMP metadata).
+
+When an exported image is imported on the same or different RoboRush instance, the settings will be imported as well.
