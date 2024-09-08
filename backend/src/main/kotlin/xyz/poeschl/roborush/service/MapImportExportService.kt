@@ -9,6 +9,7 @@ import org.apache.xmlgraphics.xmp.XMPParser
 import org.apache.xmlgraphics.xmp.XMPProperty
 import org.apache.xmlgraphics.xmp.XMPSerializer
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.InputStreamSource
 import org.springframework.stereotype.Service
 import org.xml.sax.SAXException
 import xyz.poeschl.roborush.exceptions.NoStartingPosition
@@ -35,8 +36,9 @@ class MapImportExportService {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(MapImportExportService::class.java)
 
-    private const val XMP_URI = "poeschl/roborush"
-    private const val XMP_MAP_SOLAR_CHARGE_RATE_KEY = "solarChargeRate"
+    private const val XMP_URI = "https://github.com/Poeschl/RoboRush"
+    private const val XMP_MAP_SOLAR_CHARGE_RATE_KEY = "SolarChargeRate"
+    private const val XMP_MAP_MAX_ROBOT_FUEL_KEY = "MaxRobotFuel"
   }
 
   fun exportMap(map: Map): ByteArray {
@@ -46,7 +48,7 @@ class MapImportExportService {
     map.mapData.forEach { drawTile(graphics, it) }
     graphics.dispose()
 
-    val imageBytesWithMetadata = setMapMetadata(image, MapMetadata(map.solarChargeRate))
+    val imageBytesWithMetadata = setMapMetadata(image, MapMetadata(map.solarChargeRate, map.maxRobotFuel))
     return imageBytesWithMetadata
   }
 
@@ -67,7 +69,7 @@ class MapImportExportService {
    *
    * @return A list of detected errors as string list. All of those errors are somehow escaped, but the map might not be ideal.
    */
-  fun importMap(mapName: String, heightMapFile: InputStream): InternalMapGenResult {
+  fun importMap(mapName: String, heightMapFile: InputStreamSource): InternalMapGenResult {
     LOGGER.info("Create new map from height map image")
 
     val result: InternalMapGenResult
@@ -79,8 +81,8 @@ class MapImportExportService {
     return result
   }
 
-  private fun convertHeightImageToMap(mapName: String, heightMapFile: InputStream): InternalMapGenResult {
-    val image = ImageIO.read(heightMapFile.buffered())
+  private fun convertHeightImageToMap(mapName: String, heightMapFile: InputStreamSource): InternalMapGenResult {
+    val image = ImageIO.read(heightMapFile.inputStream.buffered())
 
     val startingPositions = mutableListOf<Position>()
     var targetPosition: Position? = null
@@ -139,12 +141,15 @@ class MapImportExportService {
     // Add all tiles to map for the db relations
     tiles.forEach { map.addTile(it) }
 
-    val mapMetadata = getMapMetadata(heightMapFile)
+    val mapMetadata = getMapMetadata(heightMapFile.inputStream.buffered())
     mapMetadata?.let {
       // use existing metadata, if no metadata exists use defaults
       // same for single missing values
       mapMetadata.solarChargeRate?.let {
         map.solarChargeRate = mapMetadata.solarChargeRate
+      }
+      mapMetadata.maxRobotFuel?.let {
+        map.maxRobotFuel = mapMetadata.maxRobotFuel
       }
     }
 
@@ -187,8 +192,10 @@ class MapImportExportService {
     val xmpMetadata = Metadata()
 
     // Set metadata form stored map attributes
-    val solarChargeProp = XMPProperty(QName(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY), mapMetadata.solarChargeRate!!.toString())
+    val solarChargeProp = XMPProperty(QName(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY), mapMetadata.solarChargeRate!!)
     xmpMetadata.setProperty(solarChargeProp)
+    val maxRobotFuelProp = XMPProperty(QName(XMP_URI, XMP_MAP_MAX_ROBOT_FUEL_KEY), mapMetadata.maxRobotFuel!!)
+    xmpMetadata.setProperty(maxRobotFuelProp)
 
     try {
       val xmpString = ByteArrayOutputStream().use {
@@ -222,9 +229,11 @@ class MapImportExportService {
       return null
     } else {
       val solarChargeProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY)).getOrNull()
+      val maxRobotFuelProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_MAX_ROBOT_FUEL_KEY)).getOrNull()
 
       return MapMetadata(
-        (solarChargeProp?.value as String).toDoubleOrNull()
+        (solarChargeProp?.value as String).toDoubleOrNull(),
+        (maxRobotFuelProp?.value as String).toIntOrNull()
       )
     }
   }

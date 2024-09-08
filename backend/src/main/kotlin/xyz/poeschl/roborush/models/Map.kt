@@ -81,4 +81,4 @@ class SizeConverter : AttributeConverter<Size, String> {
 
 data class InternalMapGenResult(val map: Map, val errors: List<String>)
 
-data class MapMetadata(val solarChargeRate: Double?)
+data class MapMetadata(val solarChargeRate: Double?, val maxRobotFuel: Int?)
