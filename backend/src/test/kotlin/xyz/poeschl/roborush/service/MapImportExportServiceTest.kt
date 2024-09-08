@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.springframework.core.io.ClassPathResource
 import xyz.poeschl.roborush.exceptions.NoStartingPosition
 import xyz.poeschl.roborush.exceptions.NoTargetPosition
 import xyz.poeschl.roborush.models.Color
@@ -77,11 +78,11 @@ class MapImportExportServiceTest {
   @Test
   fun importMap_correct() {
     // WHEN
-    val inputImageStream = this::class.java.getResourceAsStream("/maps/correct.png")!!
+    val inputImage = ClassPathResource("/maps/correct.png")
     val name = a(`$String`("name"))
 
     // THEN
-    val genResult = importExportService.importMap(name, inputImageStream)
+    val genResult = importExportService.importMap(name, inputImage)
 
     // VERIFY
     assertThat(genResult.errors).isEmpty()
@@ -102,11 +103,11 @@ class MapImportExportServiceTest {
   @Test
   fun importMap_invalidGrey() {
     // WHEN
-    val inputImageStream = this::class.java.getResourceAsStream("/maps/invalid-grey.png")!!
+    val inputImage = ClassPathResource("/maps/invalid-grey.png")
     val name = a(`$String`("name"))
 
     // THEN
-    val genResult = importExportService.importMap(name, inputImageStream)
+    val genResult = importExportService.importMap(name, inputImage)
 
     // VERIFY
     assertThat(genResult.errors[0]).contains("(1,0) with color (255, 128, 0)")
@@ -127,12 +128,12 @@ class MapImportExportServiceTest {
   @Test
   fun importMap_noStart() {
     // WHEN
-    val inputImageStream = this::class.java.getResourceAsStream("/maps/no-spawn.png")!!
+    val inputImage = ClassPathResource("/maps/no-spawn.png")
     val name = a(`$String`("name"))
 
     // THEN + VERIFY
     assertThatThrownBy {
-      importExportService.importMap(name, inputImageStream)
+      importExportService.importMap(name, inputImage)
     }
       .isInstanceOf(NoStartingPosition::class.java)
       .hasMessageContaining("one starting position is required")
@@ -141,12 +142,12 @@ class MapImportExportServiceTest {
   @Test
   fun importMap_noTarget() {
     // WHEN
-    val inputImageStream = this::class.java.getResourceAsStream("/maps/no-target.png")!!
+    val inputImage = ClassPathResource("/maps/no-target.png")
     val name = a(`$String`("name"))
 
     // THEN + VERIFY
     assertThatThrownBy {
-      importExportService.importMap(name, inputImageStream)
+      importExportService.importMap(name, inputImage)
     }
       .isInstanceOf(NoTargetPosition::class.java)
       .hasMessageContaining("one target position is required")
@@ -155,11 +156,11 @@ class MapImportExportServiceTest {
   @Test
   fun importMap_multipleTarget() {
     // WHEN
-    val inputImageStream = this::class.java.getResourceAsStream("/maps/multiple-target.png")!!
+    val inputImage = ClassPathResource("/maps/multiple-target.png")
     val name = a(`$String`("name"))
 
     // THEN
-    val genResult = importExportService.importMap(name, inputImageStream)
+    val genResult = importExportService.importMap(name, inputImage)
 
     // VERIFY
     assertThat(genResult.errors).hasSize(1)
@@ -177,11 +178,11 @@ class MapImportExportServiceTest {
   @Test
   fun importMap_fuelTile() {
     // WHEN
-    val inputImageStream = this::class.java.getResourceAsStream("/maps/with-fuel.png")!!
+    val inputImage = ClassPathResource("/maps/with-fuel.png")
     val name = a(`$String`("name"))
 
     // THEN
-    val genResult = importExportService.importMap(name, inputImageStream)
+    val genResult = importExportService.importMap(name, inputImage)
 
     // VERIFY
     assertThat(genResult.errors).isEmpty()

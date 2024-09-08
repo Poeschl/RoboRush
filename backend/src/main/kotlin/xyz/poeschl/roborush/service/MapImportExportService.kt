@@ -222,12 +222,9 @@ class MapImportExportService {
 
   private fun getMapMetadata(imageInput: InputStream): MapMetadata? {
     val xmpString = Imaging.getXmpXml(imageInput.readAllBytes())
-    val xmpMetadata = XMPParser.parseXMP(StreamSource(xmpString.byteInputStream()))
+    if (xmpString != null && xmpString.isNotEmpty() && xmpString.contains(XMP_URI)) {
+      val xmpMetadata = XMPParser.parseXMP(StreamSource(xmpString.byteInputStream()))
 
-    if (!xmpString.contains(XMP_URI)) {
-      // If no roborush metadata is stored
-      return null
-    } else {
       val solarChargeProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY)).getOrNull()
       val maxRobotFuelProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_MAX_ROBOT_FUEL_KEY)).getOrNull()
 
@@ -235,6 +232,8 @@ class MapImportExportService {
         (solarChargeProp?.value as String).toDoubleOrNull(),
         (maxRobotFuelProp?.value as String).toIntOrNull()
       )
+    } else {
+      return null
     }
   }
 }
