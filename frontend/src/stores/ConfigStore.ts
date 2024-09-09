@@ -89,7 +89,7 @@ export const useConfigStore = defineStore("configStore", () => {
       const blob = new Blob([response], { type: "image/png" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `${map.mapName}.png`;
+      link.download = `${map.mapName}.rr.png`;
       setTimeout(() => URL.revokeObjectURL(link.href), 5000);
       return link;
     });

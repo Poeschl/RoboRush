@@ -1,6 +1,6 @@
 <template>
   <InfoBoxTemplate title="Export Map">
-    <div class="control">
+    <div class="field control">
       <button class="button is-primary is-fullwidth" :class="{ 'is-loading': exporting }" @click.prevent="exportMap">
         <div class="icon mr-1">
           <FontAwesomeIcon icon="fa-solid fa-file-export" />
@@ -8,6 +8,7 @@
         Export
       </button>
     </div>
+    <div class="has-text-centered">The exported image will include map attributes.</div>
   </InfoBoxTemplate>
 </template>
 
