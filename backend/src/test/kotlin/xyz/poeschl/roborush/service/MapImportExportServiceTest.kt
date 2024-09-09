@@ -1,11 +1,16 @@
 package xyz.poeschl.roborush.service
 
+import org.apache.commons.imaging.Imaging
+import org.apache.commons.imaging.formats.png.PngImagingParameters
+import org.apache.commons.imaging.formats.png.PngWriter
+import org.apache.xmlgraphics.xmp.XMPParser
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.ClassPathResource
 import xyz.poeschl.roborush.exceptions.NoStartingPosition
 import xyz.poeschl.roborush.exceptions.NoTargetPosition
@@ -19,10 +24,14 @@ import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Map`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Position`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Size`
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$Tile`
+import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Double`
+import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$Int`
 import xyz.poeschl.roborush.test.utils.builder.NativeTypes.Companion.`$String`
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.util.stream.Stream
 import javax.imageio.ImageIO
+import javax.xml.transform.stream.StreamSource
 
 class MapImportExportServiceTest {
 
@@ -34,6 +43,17 @@ class MapImportExportServiceTest {
       Arguments.of(TileType.FUEL_TILE, 1, Color(1, 1, 255)),
       Arguments.of(TileType.DEFAULT_TILE, 100, Color(100, 100, 100))
     )
+
+    private val XMP_META_TEMPLATE = """
+      <?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?><x:xmpmeta xmlns:x="adobe:ns:meta/">
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description xmlns:rr="https://github.com/Poeschl/RoboRush" rdf:about="">
+                  <rr:solarChargeRate>%s</rr:solarChargeRate>
+                  <rr:maxRobotFuel>%s</rr:maxRobotFuel>
+              </rdf:Description>
+          </rdf:RDF>
+      </x:xmpmeta>
+    """.trimIndent()
   }
 
   private val importExportService = MapImportExportService()
@@ -73,6 +93,30 @@ class MapImportExportServiceTest {
     // VERIFY
     val resultImage = ImageIO.read(ByteArrayInputStream(byteResult))
     assertThat(Color.fromColorInt(resultImage.getRGB(0, 0))).isEqualTo(expectedColor)
+  }
+
+  @Test
+  fun exportMap_metadata() {
+    // WHEN
+    val expectedMaxRobotFuel = a(`$Int`(10, 500))
+    val expectedSolarChargeRate = a(`$Double`(.1, 1.0))
+    val map = a(
+      `$Map`()
+        .withMaxRobotFuel(expectedMaxRobotFuel)
+        .withSolarChargeRate(expectedSolarChargeRate)
+    )
+    map.addTile(a(`$Tile`()))
+
+    // THEN
+    val byteResult = importExportService.exportMap(map)
+
+    // VERIFY
+    val xmpMetadataString = Imaging.getXmpXml(byteResult)
+    val xmpMetadata = XMPParser.parseXMP(StreamSource(xmpMetadataString.byteInputStream().buffered()))
+    assertThat(xmpMetadata.getProperty("https://github.com/Poeschl/RoboRush", "rr:solarChargeRate").value)
+      .isEqualTo(expectedSolarChargeRate.toString())
+    assertThat(xmpMetadata.getProperty("https://github.com/Poeschl/RoboRush", "rr:maxRobotFuel").value)
+      .isEqualTo(expectedMaxRobotFuel.toString())
   }
 
   @Test
@@ -195,5 +239,34 @@ class MapImportExportServiceTest {
         Tile(null, Position(1, 1), 128, TileType.TARGET_TILE)
       )
     )
+  }
+
+  @Test
+  fun importMap_readMetadata() {
+    // WHEN
+    val inputImage = ClassPathResource("/maps/with-fuel.png")
+    val expectedMaxRobotFuel = a(`$Int`(10, 500))
+    val expectedSolarChargeRate = a(`$Double`(.1, 1.0))
+    val xmpString = XMP_META_TEMPLATE.format(expectedSolarChargeRate, expectedMaxRobotFuel)
+    val name = a(`$String`("name"))
+
+    // Put metadata in image, since the png optimizer removes it from the file
+    val imageWithMetadata = ByteArrayResource(
+      ByteArrayOutputStream().use {
+        val pngParams = PngImagingParameters()
+        pngParams.isForceTrueColor = true
+        pngParams.xmpXml = xmpString
+        PngWriter().writeImage(ImageIO.read(inputImage.inputStream.buffered()), it, pngParams, null)
+        return@use it.toByteArray()
+      }
+    )
+
+    // THEN
+    val genResult = importExportService.importMap(name, imageWithMetadata)
+
+    // VERIFY
+    assertThat(genResult.errors).isEmpty()
+    assertThat(genResult.map.solarChargeRate).isEqualTo(expectedSolarChargeRate)
+    assertThat(genResult.map.maxRobotFuel).isEqualTo(expectedMaxRobotFuel)
   }
 }

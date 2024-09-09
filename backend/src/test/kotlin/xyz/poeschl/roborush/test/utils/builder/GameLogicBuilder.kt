@@ -55,12 +55,12 @@ class GameLogicBuilder {
     fun `$Tile`() = TileBuilder()
       .withId(null)
       .withPosition(a(`$Position`()))
-      .withHeight(a(`$Int`()))
+      .withHeight(a(`$Int`(1, 254)))
       .withType(TileType.DEFAULT_TILE)
 
     fun `$Size`() = SizeBuilder()
-      .withHeight(a(`$Int`()))
-      .withWidth(a(`$Int`()))
+      .withHeight(a(`$Int`(1, 512)))
+      .withWidth(a(`$Int`(1, 512)))
 
     fun `$Position`() = PositionBuilder()
       .withX(a(`$Int`(0, Int.MAX_VALUE)))

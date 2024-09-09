@@ -37,8 +37,9 @@ class MapImportExportService {
     private val LOGGER = LoggerFactory.getLogger(MapImportExportService::class.java)
 
     private const val XMP_URI = "https://github.com/Poeschl/RoboRush"
-    private const val XMP_MAP_SOLAR_CHARGE_RATE_KEY = "SolarChargeRate"
-    private const val XMP_MAP_MAX_ROBOT_FUEL_KEY = "MaxRobotFuel"
+    private const val XMP_PREFIX = "rr:"
+    private const val XMP_MAP_SOLAR_CHARGE_RATE_KEY = "${XMP_PREFIX}solarChargeRate"
+    private const val XMP_MAP_MAX_ROBOT_FUEL_KEY = "${XMP_PREFIX}maxRobotFuel"
   }
 
   fun exportMap(map: Map): ByteArray {
@@ -205,6 +206,7 @@ class MapImportExportService {
 
       return ByteArrayOutputStream().use {
         val pngParams = PngImagingParameters()
+        pngParams.isForceTrueColor = true
         pngParams.xmpXml = xmpString
         PngWriter().writeImage(imageInput, it, pngParams, null)
         return@use it.toByteArray()
@@ -214,8 +216,12 @@ class MapImportExportService {
     } catch (ex: SAXException) {
       LOGGER.warn("Couldn't write metadata!", ex)
     }
+
+    // In case of error write image without metadata
     return ByteArrayOutputStream().use {
-      PngWriter().writeImage(imageInput, it, null, null)
+      val pngParams = PngImagingParameters()
+      pngParams.isForceTrueColor = true
+      PngWriter().writeImage(imageInput, it, pngParams, null)
       return@use it.toByteArray()
     }
   }
@@ -223,7 +229,7 @@ class MapImportExportService {
   private fun getMapMetadata(imageInput: InputStream): MapMetadata? {
     val xmpString = Imaging.getXmpXml(imageInput.readAllBytes())
     if (xmpString != null && xmpString.isNotEmpty() && xmpString.contains(XMP_URI)) {
-      val xmpMetadata = XMPParser.parseXMP(StreamSource(xmpString.byteInputStream()))
+      val xmpMetadata = XMPParser.parseXMP(StreamSource(xmpString.byteInputStream().buffered()))
 
       val solarChargeProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_SOLAR_CHARGE_RATE_KEY)).getOrNull()
       val maxRobotFuelProp = Optional.ofNullable(xmpMetadata.getProperty(XMP_URI, XMP_MAP_MAX_ROBOT_FUEL_KEY)).getOrNull()
