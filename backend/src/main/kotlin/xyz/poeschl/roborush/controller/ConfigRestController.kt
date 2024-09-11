@@ -3,7 +3,10 @@ package xyz.poeschl.roborush.controller
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang3.EnumUtils
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -18,11 +21,16 @@ import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Tile
 import xyz.poeschl.roborush.security.repository.User
 import xyz.poeschl.roborush.service.ConfigService
+import xyz.poeschl.roborush.service.MapImportExportService
 import xyz.poeschl.roborush.service.MapService
 
 @RestController
 @RequestMapping("/config")
-class ConfigRestController(private val configService: ConfigService, private val mapService: MapService) {
+class ConfigRestController(
+  private val configService: ConfigService,
+  private val mapService: MapService,
+  private val mapImportExportService: MapImportExportService
+) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(ConfigRestController::class.java)
@@ -59,8 +67,10 @@ class ConfigRestController(private val configService: ConfigService, private val
       throw InvalidHeightMapException("Only png files are supported for heightmaps")
     }
     val name = heightMapFile.originalFilename?.substringBeforeLast("/")?.substringBeforeLast(".") ?: "unknown"
-    val mapGenResult = mapService.createNewMapFromHeightMap(name, heightMapFile.inputStream)
+    val mapGenResult = mapImportExportService.importMap(name, heightMapFile)
     mapService.saveMap(mapGenResult.map)
+
+    LOGGER.info("Imported map $name")
 
     return MapGenerationResult(mapGenResult.errors)
   }
@@ -125,6 +135,24 @@ class ConfigRestController(private val configService: ConfigService, private val
 
     if (map != null) {
       return mapService.deleteMap(map)
+    } else {
+      throw MapNotFound("No matching map found for deletion")
+    }
+  }
+
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
+  @GetMapping("/map/{id}/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+  fun exportMap(@PathVariable id: Long): ResponseEntity<Resource> {
+    val map = mapService.getMap(id)
+
+    if (map != null) {
+      val resource = ByteArrayResource(mapImportExportService.exportMap(map))
+
+      return ResponseEntity.ok()
+        .contentLength(resource.contentLength())
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(resource)
     } else {
       throw MapNotFound("No matching map found for deletion")
     }

@@ -84,6 +84,17 @@ export const useConfigStore = defineStore("configStore", () => {
     });
   };
 
+  const exportMap = (map: PlaygroundMap): Promise<HTMLAnchorElement> => {
+    return configService.exportMap(map.id).then((response) => {
+      const blob = new Blob([response], { type: "image/png" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${map.mapName}.rr.png`;
+      setTimeout(() => URL.revokeObjectURL(link.href), 5000);
+      return link;
+    });
+  };
+
   return {
     currentConfig,
     availableMaps,
@@ -95,6 +106,7 @@ export const useConfigStore = defineStore("configStore", () => {
     removeMap,
     setMapAttributes,
     setMapTile,
+    exportMap,
     clientSettings,
     updateClientConfig,
     initWebsocket,

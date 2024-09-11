@@ -35,6 +35,8 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
   implementation 'org.postgresql:postgresql'
   implementation 'net.karneim:pojobuilder:4.3.0:annotations'
+  implementation 'org.apache.commons:commons-imaging:1.0.0-alpha5'
+  implementation 'org.apache.xmlgraphics:xmlgraphics-commons:2.9'
 
   kapt 'net.karneim:pojobuilder:4.3.0'
 

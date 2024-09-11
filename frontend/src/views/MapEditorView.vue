@@ -56,7 +56,9 @@
           @update:pathDrawEnabled="(value) => (pathDrawEnabled = value)"
         />
       </div>
-      <div class="box" v-if="activeTab == EditorTab.EXPORT">EXPORT</div>
+      <div v-if="map != undefined && activeTab == EditorTab.EXPORT">
+        <MapEditorExportBox :map="map" />
+      </div>
     </div>
   </div>
 </template>
@@ -71,6 +73,7 @@ import { useConfigStore } from "@/stores/ConfigStore";
 import MapEditorAttributesBox from "@/components/MapEditorAttributesBox.vue";
 import MapEditorMeasureBox from "@/components/MapEditorMeasureBox.vue";
 import MapEditorLocationChangeBox from "@/components/MapEditorLocationChangeBox.vue";
+import MapEditorExportBox from "@/components/MapEditorExportBox.vue";
 
 const route = useRoute();
 const router = useRouter();
