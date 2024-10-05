@@ -34,6 +34,7 @@
           :class="{ 'is-danger': internalAttributes.solarChargeRate < 0 || internalAttributes.solarChargeRate > 1 }"
         />
       </div>
+      <span class="help is-dark is-size-6">~ {{ solarChargeInFuel }} fuel</span>
     </div>
 
     <div class="field has-addons is-justify-content-flex-end">
@@ -99,6 +100,7 @@ watch(
 );
 
 const saving = ref<boolean>(false);
+const solarChargeInFuel = computed(() => Math.ceil(internalAttributes.value.maxRobotFuel * internalAttributes.value.solarChargeRate));
 
 const save = () => {
   saving.value = true;
