@@ -8,6 +8,7 @@ import org.junit.jupiter.api.assertThrows
 import xyz.poeschl.roborush.exceptions.ActionDeniedByConfig
 import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.gamelogic.GameHandler
+import xyz.poeschl.roborush.gamelogic.actions.RefuelAction.RefuelActionResult
 import xyz.poeschl.roborush.test.utils.builder.Builders.Companion.a
 import xyz.poeschl.roborush.test.utils.builder.GameLogicBuilder.Companion.`$ActiveRobot`
 
@@ -82,7 +83,7 @@ class SolarChargeActionTest {
     // VERIFY
     val expectedFuel = (10 + chargeRate * maxRobotFuel).toInt()
     assertThat(actionResult.updatedRobot.fuel).isEqualTo(expectedFuel)
-    assertThat(actionResult.result).isEqualTo(expectedFuel)
+    assertThat(actionResult.result).isEqualTo(RefuelActionResult(60))
   }
 
   @Test
@@ -103,6 +104,6 @@ class SolarChargeActionTest {
 
     // VERIFY
     assertThat(actionResult.updatedRobot.fuel).isEqualTo(maxRobotFuel)
-    assertThat(actionResult.result).isEqualTo(maxRobotFuel)
+    assertThat(actionResult.result).isEqualTo(RefuelActionResult(100))
   }
 }

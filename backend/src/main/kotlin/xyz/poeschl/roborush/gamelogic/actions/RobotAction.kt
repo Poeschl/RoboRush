@@ -22,7 +22,7 @@ import xyz.poeschl.roborush.models.ActiveRobot
   Type(value = SolarChargeAction::class, name = "solarCharge"),
   Type(value = FullMapScanAction::class, name = "fullScan")
 )
-interface RobotAction<T> {
+interface RobotAction<T : Result> {
 
   /***
    * This method will check if the current action is allowed to execute.
@@ -41,3 +41,5 @@ interface RobotAction<T> {
 }
 
 data class RobotActionResult<T>(val updatedRobot: ActiveRobot, val result: T)
+
+interface Result

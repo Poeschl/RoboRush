@@ -47,5 +47,5 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanA
     return distance
   }
 
-  data class ScanResult(val tiles: List<Tile>)
+  data class ScanResult(val tiles: List<Tile>) : Result
 }

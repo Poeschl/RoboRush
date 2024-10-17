@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory
 import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.exceptions.WrongTileTypeException
 import xyz.poeschl.roborush.gamelogic.GameHandler
+import xyz.poeschl.roborush.gamelogic.actions.RefuelAction.RefuelActionResult
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.TileType
 
-class RefuelAction @JsonCreator constructor() : RobotAction<Int> {
+class RefuelAction @JsonCreator constructor() : RobotAction<RefuelActionResult> {
 
   companion object {
     val LOGGER = LoggerFactory.getLogger(RefuelAction::class.java)
@@ -25,10 +26,10 @@ class RefuelAction @JsonCreator constructor() : RobotAction<Int> {
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Int> {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<RefuelActionResult> {
     robot.addFuel(gameHandler.getRobotMaxFuel())
     LOGGER.debug("Refuel robot {} to {}", robot.id, robot.fuel)
-    return RobotActionResult(robot, robot.fuel)
+    return RobotActionResult(robot, RefuelActionResult(robot.fuel))
   }
 
   override fun toString(): String {
@@ -44,4 +45,6 @@ class RefuelAction @JsonCreator constructor() : RobotAction<Int> {
   override fun hashCode(): Int {
     return javaClass.hashCode()
   }
+
+  data class RefuelActionResult(val robotFuel: Int) : Result
 }

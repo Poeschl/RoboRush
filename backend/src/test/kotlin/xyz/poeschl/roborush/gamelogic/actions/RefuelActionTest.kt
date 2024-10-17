@@ -82,6 +82,6 @@ class RefuelActionTest {
 
     // VERIFY
     assertThat(actionResult.updatedRobot.fuel).isEqualTo(maxRobotFuel)
-    assertThat(actionResult.result).isEqualTo(maxRobotFuel)
+    assertThat(actionResult.result).isEqualTo(RefuelAction.RefuelActionResult(300))
   }
 }

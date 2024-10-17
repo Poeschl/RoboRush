@@ -8,6 +8,7 @@ import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
+import xyz.poeschl.roborush.gamelogic.actions.ScanAction
 import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
 import xyz.poeschl.roborush.models.ActiveRobot
@@ -138,7 +139,7 @@ class GameHandler(
       activeRobot?.let { registeredRobot ->
         val knownTiles = getTilesForMovementOnPosition(startPosition)
         registeredRobot.knownPositions.addAll(knownTiles.map(Tile::position))
-        registeredRobot.lastResult = knownTiles
+        registeredRobot.lastResult = ScanAction.ScanResult(knownTiles)
         websocketController.sendRobotUpdate(registeredRobot)
         websocketController.sendUserRobotData(registeredRobot)
         websocketController.sendKnownPositionsUpdate(registeredRobot)

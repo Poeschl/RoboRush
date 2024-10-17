@@ -25,7 +25,7 @@ data class ActiveRobot(
       Int::class, ScanAction.ScanResult::class
     ]
   )
-  var lastResult: Any? = null,
+  var lastResult: Result? = null,
   @JsonIgnore
   val knownPositions: MutableSet<Position> = mutableSetOf()
 ) {

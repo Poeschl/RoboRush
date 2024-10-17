@@ -10,6 +10,7 @@ import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
+import xyz.poeschl.roborush.gamelogic.actions.ScanAction
 import xyz.poeschl.roborush.gamelogic.internal.MapHandler
 import xyz.poeschl.roborush.gamelogic.internal.RobotHandler
 import xyz.poeschl.roborush.models.Position
@@ -276,7 +277,7 @@ class GameHandlerTest {
 
     // VERIFY
     assertThat(registeredRobot.knownPositions).containsAll(neighborTiles.map(Tile::position))
-    assertThat(registeredRobot.lastResult as List<*>).containsAll(neighborTiles)
+    assertThat((registeredRobot.lastResult as ScanAction.ScanResult).tiles).containsAll(neighborTiles)
     verify { robotHandler.registerRobotForGame(1, startPosition) }
     verify { websocketController.sendRobotUpdate(registeredRobot) }
     verify { websocketController.sendKnownPositionsUpdate(registeredRobot) }
