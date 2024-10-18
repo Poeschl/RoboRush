@@ -12,7 +12,7 @@ data class Game(
   val solarChargePossible: Boolean,
   val gameTimeoutsInMillis: GameTimeouts,
   val nameOfWinningRobot: String?,
-  val mapSize: Any,
+  val mapSize: Size,
   val fullMapScanPossible: Boolean
 )
 

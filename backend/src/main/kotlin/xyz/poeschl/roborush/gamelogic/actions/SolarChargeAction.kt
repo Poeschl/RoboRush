@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory
 import xyz.poeschl.roborush.exceptions.ActionDeniedByConfig
 import xyz.poeschl.roborush.exceptions.TankFullException
 import xyz.poeschl.roborush.gamelogic.GameHandler
+import xyz.poeschl.roborush.gamelogic.actions.RefuelAction.RefuelActionResult
 import xyz.poeschl.roborush.models.ActiveRobot
 import kotlin.math.ceil
 
-class SolarChargeAction @JsonCreator constructor() : RobotAction<Int> {
+class SolarChargeAction @JsonCreator constructor() : RobotAction<RefuelActionResult> {
 
   companion object {
     val LOGGER = LoggerFactory.getLogger(SolarChargeAction::class.java)
@@ -24,12 +25,12 @@ class SolarChargeAction @JsonCreator constructor() : RobotAction<Int> {
     }
   }
 
-  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<Int> {
+  override fun action(robot: ActiveRobot, gameHandler: GameHandler): RobotActionResult<RefuelActionResult> {
     val addedFuel = ceil(gameHandler.getRobotMaxFuel() * gameHandler.getSolarChargeRate()).toInt()
     robot.addFuel(addedFuel)
     LOGGER.debug("Solar charge robot {} to {}", robot.id, robot.fuel)
 
-    return RobotActionResult(robot, robot.fuel)
+    return RobotActionResult(robot, RefuelActionResult(robot.fuel))
   }
 
   override fun toString(): String {
