@@ -13,24 +13,24 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "6.5.2",
-    "@fortawesome/free-brands-svg-icons": "6.5.2",
-    "@fortawesome/free-regular-svg-icons": "6.5.2",
-    "@fortawesome/free-solid-svg-icons": "6.5.2",
+    "@fortawesome/fontawesome-svg-core": "6.7.1",
+    "@fortawesome/free-brands-svg-icons": "6.7.1",
+    "@fortawesome/free-regular-svg-icons": "6.7.1",
+    "@fortawesome/free-solid-svg-icons": "6.7.1",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@neoconfetti/vue": "^2.2.1",
     "@stomp/stompjs": "^7.0.0",
-    "axios": "^1.7.7",
+    "axios": "^1.7.8",
     "bulma": "^1.0.2",
     "chalk": "^5.3.0",
     "jwt-decode": "^4.0.0",
     "loglevel": "^1.9.2",
     "loglevel-plugin-prefix": "^0.8.4",
-    "pinia": "^2.2.4",
-    "pinia-plugin-persistedstate": "^4.0.2",
+    "pinia": "^2.2.8",
+    "pinia-plugin-persistedstate": "^4.1.3",
     "plausible-tracker": "^0.3.9",
     "vue": "^3.5.10",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@babel/helper-module-imports": "^7.24.7",
