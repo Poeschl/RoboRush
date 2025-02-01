@@ -1,10 +1,10 @@
 plugins {
-  id 'org.springframework.boot' version '3.4.0'
-  id 'io.spring.dependency-management' version '1.1.6'
-  id 'org.jetbrains.kotlin.jvm' version '2.1.0'
-  id 'org.jetbrains.kotlin.plugin.spring' version '2.1.0'
-  id 'org.jetbrains.kotlin.plugin.noarg' version "2.1.0"
-  id 'org.jetbrains.kotlin.kapt' version "2.1.0"
+  id 'org.springframework.boot' version '3.4.2'
+  id 'io.spring.dependency-management' version '1.1.7'
+  id 'org.jetbrains.kotlin.jvm' version '2.1.10'
+  id 'org.jetbrains.kotlin.plugin.spring' version '2.1.10'
+  id 'org.jetbrains.kotlin.plugin.noarg' version "2.1.10"
+  id 'org.jetbrains.kotlin.kapt' version "2.1.10"
 }
 
 group = 'xyz.poeschl.roborush'
@@ -27,7 +27,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-websocket'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.security:spring-security-messaging'
   implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -45,7 +45,7 @@ dependencies {
   }
   testImplementation 'org.testcontainers:junit-jupiter'
   testImplementation 'org.testcontainers:postgresql'
-  testImplementation 'io.mockk:mockk:1.13.13'
+  testImplementation 'io.mockk:mockk:1.13.16'
   testImplementation 'de.pixel.mcc:MigrationChange-Checker:1.2.1'
 }
 
