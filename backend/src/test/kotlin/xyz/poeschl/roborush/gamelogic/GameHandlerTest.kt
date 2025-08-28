@@ -331,16 +331,18 @@ class GameHandlerTest {
   }
 
   @Test
-  fun endingRound_noWinner() {
+  fun endingRound_ignoredWinner() {
     // WHEN
-    val winningRobot = null
+    val winningRobot = a(`$ActiveRobot`())
+
+    gameHandler.addRobotToIgnoredWinningList(winningRobot.id)
 
     // THEN
     gameHandler.endingRound(winningRobot)
 
     // VERIFY
-    verify(exactly = 0) { robotHandler.setRoundWinner(any()) }
-    verify { playedGamesService.insertPlayedGame(winningRobot, any()) }
+    verify { robotHandler.setRoundWinner(winningRobot) }
+    verify(exactly = 0) { playedGamesService.insertPlayedGame(winningRobot, any()) }
   }
 
   @Test

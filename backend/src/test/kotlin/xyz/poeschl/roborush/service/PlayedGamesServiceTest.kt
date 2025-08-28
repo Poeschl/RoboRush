@@ -25,7 +25,7 @@ class PlayedGamesServiceTest {
   private val robotRepository = mockk<RobotRepository>()
   private val dummyBots = mockk<DummyBots>()
 
-  private val playedGamesService = PlayedGamesService(playedGamesRepository, robotRepository, dummyBots)
+  private val playedGamesService = PlayedGamesService(playedGamesRepository, robotRepository)
 
   @Test
   fun getGameScoreBoard() {
@@ -69,42 +69,6 @@ class PlayedGamesServiceTest {
 
     assertThat(saveSlot.captured.winnerRobot).isEqualTo(robot)
     assertThat(saveSlot.captured.turnsTaken).isEqualTo(currentTurn)
-  }
-
-  @Test
-  fun insertPlayedGame_noWinner() {
-    // WHEN
-    val winningRobot = null
-    val currentTurn = a(`$Int`())
-
-    every { playedGamesRepository.save(any()) } returnsArgument 0
-
-    // THEN
-    playedGamesService.insertPlayedGame(winningRobot, currentTurn)
-
-    // VERIFY
-    val saveSlot = slot<PlayedGame>()
-    verify { playedGamesRepository.save(capture(saveSlot)) }
-
-    assertThat(saveSlot.captured.winnerRobot).isNull()
-    assertThat(saveSlot.captured.turnsTaken).isEqualTo(currentTurn)
-  }
-
-  @Test
-  fun insertPlayedGame_dummyRobot() {
-    // WHEN
-    val winningRobot = a(`$ActiveRobot`().withId(a(`$Id`())))
-    val currentTurn = a(`$Int`())
-    val robot = a(`$Robot`().withId(a(`$Id`())))
-
-    every { robotRepository.findById(winningRobot.id) } returns Optional.of(robot)
-    every { dummyBots.isDummyRobot(robot) } returns true
-
-    // THEN
-    playedGamesService.insertPlayedGame(winningRobot, currentTurn)
-
-    // VERIFY - nothing saved when robot is a dummy
-    verify(exactly = 0) { playedGamesRepository.save(any()) }
   }
 
   @Test

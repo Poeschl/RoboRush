@@ -3,7 +3,6 @@ package xyz.poeschl.roborush.gamelogic.dummybots
 import org.springframework.scheduling.annotation.Scheduled
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.gamelogic.GameHandler
-import xyz.poeschl.roborush.gamelogic.GameStateMachine
 import xyz.poeschl.roborush.models.Color
 import xyz.poeschl.roborush.models.settings.SettingKey
 import xyz.poeschl.roborush.repositories.Robot
@@ -15,10 +14,9 @@ import java.util.concurrent.TimeUnit
 
 @GameLogic
 class DummyBots(
-  gameHandler: GameHandler,
+  private val gameHandler: GameHandler,
   private val robotRepository: RobotRepository,
   private val userRepository: UserRepository,
-  private val gameStateService: GameStateMachine,
   private val configService: ConfigService
 ) {
 
@@ -35,10 +33,14 @@ class DummyBots(
   private val bots =
     listOf(WallHuggerBot(gameHandler, robot1), Bot(gameHandler, robot2), ChillerBot(gameHandler, robot3), TargetBot(gameHandler, robot4))
 
+  init {
+    bots.forEach { gameHandler.addRobotToIgnoredWinningList(it.getId()!!) }
+  }
+
   @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
   fun dummyRobots() {
     if (configService.getBooleanSetting(SettingKey.ENABLE_DUMMY_ROBOTS).value) {
-      bots.forEach { it.doSomething(gameStateService.getCurrentState()) }
+      bots.forEach { it.doSomething(gameHandler.getPublicGameInfo().currentState) }
     }
   }
 
