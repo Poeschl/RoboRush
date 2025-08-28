@@ -1,5 +1,6 @@
 package xyz.poeschl.roborush.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.scheduling.annotation.Scheduled
@@ -20,6 +21,8 @@ class PlayedGamesService(
 ) {
 
   companion object {
+    private val LOGGER = LoggerFactory.getLogger(PlayedGamesService::class.java)
+
     private val MATCH_STORE_RETENTION = Duration.ofDays(365)
   }
 
@@ -44,5 +47,8 @@ class PlayedGamesService(
     val cutoff = ZonedDateTime.now().minus(MATCH_STORE_RETENTION)
     val oldGames = playedGamesRepository.getPlayedGamesBefore(cutoff)
     playedGamesRepository.deleteAll(oldGames)
+    if (oldGames.isNotEmpty()) {
+      LOGGER.info("Deleted ${oldGames.size} played games older than $cutoff")
+    }
   }
 }
