@@ -133,8 +133,8 @@ const determineCostOfPath = (path: Path) => {
     const first = path.points[index];
     const second = path.points[index + 1];
 
-    const firstHeight = props.map.mapData.find((it) => it.position.x === first.x && it.position.y === first.y)!.height;
-    const secondHeight = props.map.mapData.find((it) => it.position.x === second.x && it.position.y === second.y)!.height;
+    const firstHeight = props.map.mapData.find((it) => it.position.x === first!.x && it.position.y === first!.y)!.height;
+    const secondHeight = props.map.mapData.find((it) => it.position.x === second!.x && it.position.y === second!.y)!.height;
 
     const heightDiff = secondHeight - firstHeight;
     if (heightDiff < 0) {

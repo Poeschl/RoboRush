@@ -98,7 +98,7 @@ const lastClickedPosition = ref<Position | undefined>();
 onMounted(() => {
   const inputId = route.params.mapId;
 
-  if (inputId.length > 0) {
+  if (inputId != undefined && inputId.length > 0) {
     log.info(`Load map with id ${inputId}`);
     mapId.value = parseInt(inputId as string);
     updateMapFromStore().then(() => {

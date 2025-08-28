@@ -20,7 +20,7 @@ export const useLogging = () => {
     prefix.reg(log);
     prefix.apply(log, {
       format(level, name, timestamp) {
-        return `${chalk.gray(`[${timestamp}]`)} ${LEVEL_COLORS[level](level)}`;
+        return `${chalk.gray(`[${timestamp}]`)} ${LEVEL_COLORS[level]!(level)}`;
       },
       levelFormatter(level) {
         return level.toUpperCase();

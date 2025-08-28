@@ -19,7 +19,7 @@ export function useAStar(mapSize: Size, heightMap: Tile[], start: Position, targ
     for (let y = 0; y < mapSize.height; y++) {
       matrix[y] = [];
       for (let x = 0; x < mapSize.width; x++) {
-        matrix[y][x] = heightMap.find((it) => it.position.x == x && it.position.y == y)!;
+        matrix[y]![x] = heightMap.find((it) => it.position.x == x && it.position.y == y)!;
       }
     }
     return matrix;
@@ -40,8 +40,8 @@ export function useAStar(mapSize: Size, heightMap: Tile[], start: Position, targ
       // use 1 as cost if the tile heights should be ignored (shortest way for example)
       return 1;
     } else {
-      const fromTile = heightMapMatrix[from.y][from.x];
-      const toTile = heightMapMatrix[to.y][to.x];
+      const fromTile = heightMapMatrix[from.y]![from.x]!;
+      const toTile = heightMapMatrix[to.y]![to.x]!;
 
       const heightDiff = toTile.height - fromTile.height;
       if (heightDiff < 0) {

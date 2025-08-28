@@ -15,8 +15,8 @@ function executeAstarOnPath(input: PathFindingWorkerInput): Path {
 
   // Calculate the paths between all path points
   for (let index = 1; index < input.inputPath.points.length; index++) {
-    const start = input.inputPath.points[index - 1];
-    const target = input.inputPath.points[index];
+    const start = input.inputPath.points[index - 1]!;
+    const target = input.inputPath.points[index]!;
     const astar = useAStar(input.mapSize, input.heightMap, start, target, input.ignoreHeights);
     const partlyPath = astar.findPath();
 
