@@ -73,7 +73,7 @@ class RobotHandler(
       nextAction.check(robot, gameHandler)
       robot.nextAction = nextAction
       updateActiveRobot(robot)
-      LOGGER.info("Robot {} will do {} next", robot.id, nextAction)
+      LOGGER.debug("Robot {} will do {} next", robot.id, nextAction)
       return robot
     }
     return null

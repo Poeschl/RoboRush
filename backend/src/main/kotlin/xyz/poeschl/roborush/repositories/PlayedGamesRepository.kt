@@ -15,6 +15,9 @@ interface PlayedGamesRepository : CrudRepository<PlayedGame, Long> {
 
   @Query("Select pg from PlayedGame pg where pg.endedAt > :until")
   fun getPlayedGamesUntil(@Param("until") until: ZonedDateTime): List<PlayedGame>
+
+  @Query("Select pg from PlayedGame pg where pg.endedAt < :before")
+  fun getPlayedGamesBefore(@Param("before") before: ZonedDateTime): List<PlayedGame>
 }
 
 @Entity

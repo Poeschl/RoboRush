@@ -40,6 +40,7 @@ class GameHandler(
 
   private var currentTurn = 0
   private var detectedIdleTurns = 0
+  private val ignoredWinningRobotIds = mutableSetOf<Long>()
 
   @Cacheable("knownMap")
   fun getCurrentMap(): Map {
@@ -100,12 +101,18 @@ class GameHandler(
     return robotHandler.getActiveRobot(robotId)
   }
 
+  fun addRobotToIgnoredWinningList(robotId: Long) {
+    ignoredWinningRobotIds.add(robotId)
+  }
+
   @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
   fun endingRound(winningRobot: ActiveRobot?) {
     if (winningRobot != null) {
       robotHandler.setRoundWinner(winningRobot)
     }
-    playedGamesService.insertPlayedGame(winningRobot, currentTurn)
+    if (winningRobot != null && !ignoredWinningRobotIds.contains(winningRobot.id)) {
+      playedGamesService.insertPlayedGame(winningRobot, currentTurn)
+    }
   }
 
   fun nextActionForRobot(robotId: Long, action: RobotAction<*>) {
