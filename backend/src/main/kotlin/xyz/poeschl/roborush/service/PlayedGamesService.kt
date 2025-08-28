@@ -2,16 +2,27 @@ package xyz.poeschl.roborush.service
 
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import xyz.poeschl.roborush.gamelogic.dummybots.DummyBots
 import xyz.poeschl.roborush.models.ActiveRobot
 import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.repositories.PlayedGame
 import xyz.poeschl.roborush.repositories.PlayedGamesRepository
 import xyz.poeschl.roborush.repositories.RobotRepository
+import java.time.Duration
 import java.time.ZonedDateTime
 
 @Service
-class PlayedGamesService(private val playedGamesRepository: PlayedGamesRepository, private val robotRepository: RobotRepository) {
+class PlayedGamesService(
+  private val playedGamesRepository: PlayedGamesRepository,
+  private val robotRepository: RobotRepository,
+  private val dummyBots: DummyBots
+) {
+
+  companion object {
+    private val MATCH_STORE_RETENTION = Duration.ofDays(365)
+  }
 
   @Cacheable("scoreBoard")
   fun getGameScoreBoard(): List<ScoreboardEntry> {
@@ -30,6 +41,17 @@ class PlayedGamesService(private val playedGamesRepository: PlayedGamesRepositor
     } else {
       null
     }
+    // Do not save if winner is a dummy
+    if (robot != null && dummyBots.isDummyRobot(robot)) {
+      return
+    }
     playedGamesRepository.save(PlayedGame(null, robot, currentTurn))
+  }
+
+  @Scheduled(cron = "0 0 0 * * *")
+  fun deleteOldPlayedGames() {
+    val cutoff = ZonedDateTime.now().minus(MATCH_STORE_RETENTION)
+    val oldGames = playedGamesRepository.getPlayedGamesBefore(cutoff)
+    playedGamesRepository.deleteAll(oldGames)
   }
 }

@@ -6,6 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import xyz.poeschl.roborush.gamelogic.dummybots.DummyBots
 import xyz.poeschl.roborush.models.ScoreboardEntry
 import xyz.poeschl.roborush.repositories.PlayedGame
 import xyz.poeschl.roborush.repositories.PlayedGamesRepository
@@ -22,8 +23,9 @@ class PlayedGamesServiceTest {
 
   private val playedGamesRepository = mockk<PlayedGamesRepository>()
   private val robotRepository = mockk<RobotRepository>()
+  private val dummyBots = mockk<DummyBots>()
 
-  private val playedGamesService = PlayedGamesService(playedGamesRepository, robotRepository)
+  private val playedGamesService = PlayedGamesService(playedGamesRepository, robotRepository, dummyBots)
 
   @Test
   fun getGameScoreBoard() {
@@ -34,8 +36,8 @@ class PlayedGamesServiceTest {
     val game2 = a(`$PlayedGame`().withWinnerRobot(robot2))
     val game3 = a(`$PlayedGame`().withWinnerRobot(robot2))
     val game4 = a(`$PlayedGame`().withWinnerRobot(null))
-
     every { playedGamesRepository.getPlayedGamesUntil(any()) } returns listOf(game1, game2, game3)
+    every { playedGamesRepository.getPlayedGamesUntil(any()) } returns listOf(game1, game2, game3, game4)
 
     // THEN
     val result = playedGamesService.getGameScoreBoard()
@@ -55,6 +57,7 @@ class PlayedGamesServiceTest {
     val robot = a(`$Robot`().withId(a(`$Id`())))
 
     every { robotRepository.findById(winningRobot.id) } returns Optional.of(robot)
+    every { dummyBots.isDummyRobot(robot) } returns false
     every { playedGamesRepository.save(any()) } returnsArgument 0
 
     // THEN
@@ -85,5 +88,41 @@ class PlayedGamesServiceTest {
 
     assertThat(saveSlot.captured.winnerRobot).isNull()
     assertThat(saveSlot.captured.turnsTaken).isEqualTo(currentTurn)
+  }
+
+  @Test
+  fun insertPlayedGame_dummyRobot() {
+    // WHEN
+    val winningRobot = a(`$ActiveRobot`().withId(a(`$Id`())))
+    val currentTurn = a(`$Int`())
+    val robot = a(`$Robot`().withId(a(`$Id`())))
+
+    every { robotRepository.findById(winningRobot.id) } returns Optional.of(robot)
+    every { dummyBots.isDummyRobot(robot) } returns true
+
+    // THEN
+    playedGamesService.insertPlayedGame(winningRobot, currentTurn)
+
+    // VERIFY - nothing saved when robot is a dummy
+    verify(exactly = 0) { playedGamesRepository.save(any()) }
+  }
+
+  @Test
+  fun deleteOldPlayedGames() {
+    // WHEN
+    val oldGames = listOf(
+      a(`$PlayedGame`()),
+      a(`$PlayedGame`())
+    )
+
+    every { playedGamesRepository.getPlayedGamesBefore(any()) } returns oldGames
+    every { playedGamesRepository.deleteAll(any()) } returns Unit
+
+    // THEN
+    playedGamesService.deleteOldPlayedGames()
+
+    // VERIFY
+    verify { playedGamesRepository.getPlayedGamesBefore(any()) }
+    verify { playedGamesRepository.deleteAll(oldGames) }
   }
 }

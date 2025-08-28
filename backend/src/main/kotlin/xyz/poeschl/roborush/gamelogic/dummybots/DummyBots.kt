@@ -42,6 +42,10 @@ class DummyBots(
     }
   }
 
+  fun isDummyRobot(robot: Robot?): Boolean {
+    return bots.any { it.getId() == robot?.id }
+  }
+
   private fun createOrGetRobot(username: String): Robot {
     val user: User = userRepository.findByUsername(username) ?: userRepository.save(User(null, username, DUMMY_PASSWORD))
     return robotRepository.findRobotByUser(user) ?: robotRepository.save(Robot(null, Color.randomColor(), user))
