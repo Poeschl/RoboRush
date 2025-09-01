@@ -1,8 +1,9 @@
+@use "sass:color";
 @use "custom-variables";
 
 @use "bulma/sass/utilities" with (
   $primary: custom-variables.$primary,
-  $link: lighten(custom-variables.$primary, 20),
+  $link: color.adjust(custom-variables.$primary, $lightness: 20%),
   $black: custom-variables.$black,
   $black-bis: custom-variables.$black-bis,
   $black-ter: custom-variables.$black-ter,
@@ -22,13 +23,13 @@
 );
 
 @use "bulma/sass/elements/box" with (
-  $box-background-color: lighten(utilities.$black-ter, 5),
+  $box-background-color: color.adjust(utilities.$black-ter, $lightness: 5%),
   $box-shadow: none,
   $box-color: utilities.$grey-lightest
 );
 
 @use "bulma/sass/base" with (
-  $body-background-color: lighten(utilities.$black, 5),
+  $body-background-color: color.adjust(utilities.$black, $lightness: 5%),
   $body-overflow-x: auto,
   $body-overflow-y: auto
 );

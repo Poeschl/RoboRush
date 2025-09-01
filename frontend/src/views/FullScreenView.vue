@@ -32,12 +32,10 @@ import RobotActiveList from "@/components/RobotActiveList.vue";
 import RobotScoreBoard from "@/components/RobotScoreBoard.vue";
 import FullScreenInfoBox from "@/components/FullScreenInfoBox.vue";
 import WinnerBanner from "@/components/WinnerBanner.vue";
-import { computed, onMounted, ref } from "vue";
-import type { Position } from "@/models/Map";
+import { onMounted, ref } from "vue";
 import { useConfigStore } from "@/stores/ConfigStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useRoute } from "vue-router";
-import { light } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 const configStore = useConfigStore();
 const gameStore = useGameStore();
