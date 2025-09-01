@@ -22,6 +22,15 @@ jobs:
       - name: 🔍️ Execute pre-commit on all files
         uses: pre-commit/action@v3.0.1
 
+  check-semi-linear-history:
+    name: Check for semi-linear history
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍️ Check for rebased branches
+        uses: motlin/forbid-merge-commits-action@v1.0.6
+        with:
+          fail-on-merge-commits: "true"
+
   test-backend:
     name: Test Backend
     runs-on: ubuntu-latest
