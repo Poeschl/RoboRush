@@ -14,6 +14,9 @@ export default defineConfig({
   preview: {
     port: 5173,
   },
+  server: {
+    allowedHosts: [".local"],
+  },
   build: {
     rollupOptions: {
       output: {
