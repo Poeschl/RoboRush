@@ -21,7 +21,7 @@ class RefuelActionTest {
   @Test
   fun refuelCheck() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withPosition(Position(1, 1)).withFuel(100))
+    val robot = a(`$ActiveRobot`().withPosition(Position(1, 1)).withFuel(100).withMaxFuel(100))
     // Simulate tank depletion
     robot.fuel = 10
     val action = RefuelAction()
@@ -69,7 +69,7 @@ class RefuelActionTest {
   @Test
   fun refuelAction() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withFuel(300))
+    val robot = a(`$ActiveRobot`().withFuel(300).withMaxFuel(300))
     // Simulate tank depletion
     robot.fuel = 10
     val maxRobotFuel = 300

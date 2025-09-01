@@ -30,6 +30,7 @@ class GameLogicBuilder {
       .withUser(a(`$User`()))
       .withColor(a(`$Color`()))
       .withFuel(Int.MAX_VALUE)
+      .withMaxFuel(Int.MAX_VALUE)
       .withPosition(a(`$Position`()))
       .withKnownPositions(mutableSetOf())
 
