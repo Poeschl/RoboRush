@@ -30,9 +30,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanA
     return RobotActionResult(robot, ScanResult(tileList))
   }
 
-  override fun toString(): String {
-    return "Scan(distance=$distance)"
-  }
+  override fun toString(): String = "Scan(distance=$distance)"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -43,9 +41,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanA
     return distance == other.distance
   }
 
-  override fun hashCode(): Int {
-    return distance
-  }
+  override fun hashCode(): Int = distance
 
   data class ScanResult(val tiles: List<Tile>) : Result
 }

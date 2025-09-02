@@ -26,9 +26,7 @@ class FullMapScanAction @JsonCreator constructor() : RobotAction<ScanResult> {
     return RobotActionResult(robot, ScanResult(tileList))
   }
 
-  override fun toString(): String {
-    return "FullScan()"
-  }
+  override fun toString(): String = "FullScan()"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -36,7 +34,5 @@ class FullMapScanAction @JsonCreator constructor() : RobotAction<ScanResult> {
     return true
   }
 
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
+  override fun hashCode(): Int = javaClass.hashCode()
 }

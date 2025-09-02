@@ -24,10 +24,7 @@ import xyz.poeschl.roborush.security.filter.JwtTokenFilter
   bearerFormat = "JWT",
   scheme = "bearer"
 )
-class HttpSecurityConfig(
-  private val jwtTokenFilter: JwtTokenFilter,
-  private val authenticationConfiguration: AuthenticationConfiguration
-) {
+class HttpSecurityConfig(private val jwtTokenFilter: JwtTokenFilter, private val authenticationConfiguration: AuthenticationConfiguration) {
   @Bean
   fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
     http.invoke {

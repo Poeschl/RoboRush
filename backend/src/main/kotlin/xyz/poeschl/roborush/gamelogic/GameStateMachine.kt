@@ -29,13 +29,9 @@ class GameStateMachine(private val websocketController: WebsocketController) {
     }
   }
 
-  fun isInState(state: GameState): Boolean {
-    return currentGameState == state
-  }
+  fun isInState(state: GameState): Boolean = currentGameState == state
 
-  fun getCurrentState(): GameState {
-    return currentGameState
-  }
+  fun getCurrentState(): GameState = currentGameState
 }
 
 enum class GameState {

@@ -12,36 +12,28 @@ class Builders {
      * @param builder A builder (prefixed with '$'
      * @return A created instance
      */
-    fun <T> a(builder: Builder<T>): T {
-      return builder.build()
-    }
+    fun <T> a(builder: Builder<T>): T = builder.build()
 
     /***
      * This builds a single list with one element in it, the created instance.
      * @param builder A builder (prefixed with '$'
      * @return A list with one element and the built instance in it.
      */
-    fun <T> listWithOne(builder: Builder<T>): List<T> {
-      return listOf(builder.build())
-    }
+    fun <T> listWithOne(builder: Builder<T>): List<T> = listOf(builder.build())
 
     /***
      * This builds a single set with one element in it, the created instance.
      * @param builder A builder (prefixed with '$'
      * @return A set with one element and the built instance in it.
      */
-    fun <T> setWithOne(builder: Builder<T>): Set<T> {
-      return setOf(builder.build())
-    }
+    fun <T> setWithOne(builder: Builder<T>): Set<T> = setOf(builder.build())
 
     /**
      * This returns a time-related instance.
      * @param builder The builder which determine the time.
      * @return A instance of this time
      */
-    fun <T> time(builder: TimeBuilder<T>): T {
-      return builder.build()
-    }
+    fun <T> time(builder: TimeBuilder<T>): T = builder.build()
   }
 }
 

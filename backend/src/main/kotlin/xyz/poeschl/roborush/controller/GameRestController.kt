@@ -17,9 +17,7 @@ import xyz.poeschl.roborush.models.Game
 class GameRestController(private val gameHandler: GameHandler) {
 
   @GetMapping("/map", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getMap(): PlaygroundMap {
-    return PlaygroundMap(gameHandler.getCurrentMap(), gameHandler.getCurrentMapHeightMetadata())
-  }
+  fun getMap(): PlaygroundMap = PlaygroundMap(gameHandler.getCurrentMap(), gameHandler.getCurrentMapHeightMetadata())
 
   @Operation(
     summary = "Retrieves information about the current game. For more information look at the help page.",
@@ -31,7 +29,5 @@ class GameRestController(private val gameHandler: GameHandler) {
     ]
   )
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getPublicGameInfo(): Game {
-    return gameHandler.getPublicGameInfo()
-  }
+  fun getPublicGameInfo(): Game = gameHandler.getPublicGameInfo()
 }

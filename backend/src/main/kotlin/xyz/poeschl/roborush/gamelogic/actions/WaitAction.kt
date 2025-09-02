@@ -27,13 +27,9 @@ class WaitAction @JsonCreator constructor() : RobotAction<EmptyResult> {
     return true
   }
 
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
+  override fun hashCode(): Int = javaClass.hashCode()
 
-  override fun toString(): String {
-    return "Wait()"
-  }
+  override fun toString(): String = "Wait()"
 
   data class EmptyResult(val state: String = "(╯°□°)╯︵ ┻━┻") : Result
 }

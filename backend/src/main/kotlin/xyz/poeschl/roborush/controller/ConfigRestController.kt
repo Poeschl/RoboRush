@@ -55,9 +55,7 @@ class ConfigRestController(
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
   @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun saveSingle(@RequestBody setting: SaveSettingDto): Setting<*> {
-    return configService.saveSetting(setting)
-  }
+  fun saveSingle(@RequestBody setting: SaveSettingDto): Setting<*> = configService.saveSetting(setting)
 
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('${User.ROLE_ADMIN}')")
@@ -166,11 +164,9 @@ class ConfigRestController(
   }
 
   @GetMapping("/client", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getClientSettings(): ClientSettings {
-    return ClientSettings(
-      configService.getGlobalNotificationText(),
-      configService.getBooleanSetting(SettingKey.ENABLE_WEB_ROBOT_CONTROL).value,
-      configService.getBooleanSetting(SettingKey.ENABLE_USER_REGISTRATION).value
-    )
-  }
+  fun getClientSettings(): ClientSettings = ClientSettings(
+    configService.getGlobalNotificationText(),
+    configService.getBooleanSetting(SettingKey.ENABLE_WEB_ROBOT_CONTROL).value,
+    configService.getBooleanSetting(SettingKey.ENABLE_USER_REGISTRATION).value
+  )
 }

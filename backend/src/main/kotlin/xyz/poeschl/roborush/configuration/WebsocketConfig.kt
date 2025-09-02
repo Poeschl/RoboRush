@@ -31,7 +31,5 @@ class WebsocketConfig(private val websocketConnectAuthInterceptor: WebsocketConn
   }
 
   @Bean
-  fun heartBeatScheduler(): TaskScheduler {
-    return ThreadPoolTaskScheduler()
-  }
+  fun heartBeatScheduler(): TaskScheduler = ThreadPoolTaskScheduler()
 }

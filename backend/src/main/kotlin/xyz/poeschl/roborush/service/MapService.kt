@@ -29,13 +29,9 @@ class MapService(private val mapRepository: MapRepository, private val tileRepos
     return saved
   }
 
-  fun getAllMaps(): List<Map> {
-    return mapRepository.findAllByOrderById()
-  }
+  fun getAllMaps(): List<Map> = mapRepository.findAllByOrderById()
 
-  fun getMap(id: Long): Map? {
-    return mapRepository.findById(id).orElse(null)
-  }
+  fun getMap(id: Long): Map? = mapRepository.findById(id).orElse(null)
 
   @Transactional
   fun getNextChallengeMap(): Map {

@@ -9,7 +9,5 @@ constructor(key: SettingKey, value: Int) : Setting<Int>(key, value) {
   override val type: SettingType
     get() = SettingType.INT
 
-  override fun toString(): String {
-    return "IntSetting(key=$key, value=$value)"
-  }
+  override fun toString(): String = "IntSetting(key=$key, value=$value)"
 }

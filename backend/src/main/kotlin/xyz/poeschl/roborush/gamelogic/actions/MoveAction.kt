@@ -54,9 +54,7 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
     Direction.SOUTH -> currentPosition.southPosition()
   }
 
-  override fun toString(): String {
-    return "Move(direction=$direction)"
-  }
+  override fun toString(): String = "Move(direction=$direction)"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -67,7 +65,5 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
     return direction == other.direction
   }
 
-  override fun hashCode(): Int {
-    return direction.hashCode()
-  }
+  override fun hashCode(): Int = direction.hashCode()
 }

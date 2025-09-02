@@ -32,9 +32,7 @@ class RefuelAction @JsonCreator constructor() : RobotAction<RefuelActionResult> 
     return RobotActionResult(robot, RefuelActionResult(robot.fuel))
   }
 
-  override fun toString(): String {
-    return "RefuelAction()"
-  }
+  override fun toString(): String = "RefuelAction()"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -42,9 +40,7 @@ class RefuelAction @JsonCreator constructor() : RobotAction<RefuelActionResult> 
     return true
   }
 
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
+  override fun hashCode(): Int = javaClass.hashCode()
 
   data class RefuelActionResult(val robotFuel: Int) : Result
 }

@@ -33,9 +33,7 @@ class SolarChargeAction @JsonCreator constructor() : RobotAction<RefuelActionRes
     return RobotActionResult(robot, RefuelActionResult(robot.fuel))
   }
 
-  override fun toString(): String {
-    return "SolarChargeAction()"
-  }
+  override fun toString(): String = "SolarChargeAction()"
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -43,7 +41,5 @@ class SolarChargeAction @JsonCreator constructor() : RobotAction<RefuelActionRes
     return true
   }
 
-  override fun hashCode(): Int {
-    return javaClass.hashCode()
-  }
+  override fun hashCode(): Int = javaClass.hashCode()
 }

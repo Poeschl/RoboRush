@@ -16,9 +16,7 @@ import xyz.poeschl.roborush.security.repository.User
 @Service
 class RobotService(private val robotRepository: RobotRepository, private val gameHandler: GameHandler) {
 
-  fun getRobotByUser(user: User): Robot? {
-    return robotRepository.findRobotByUser(user)
-  }
+  fun getRobotByUser(user: User): Robot? = robotRepository.findRobotByUser(user)
 
   @Cacheable("userRobotCache", key = "#user.username")
   fun getActiveRobotByUser(user: User): ActiveRobot? {
@@ -37,11 +35,9 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
     }
   }
 
-  fun getActiveRobots(): List<PublicRobot> {
-    return gameHandler.getActiveRobots()
-      .map { PublicRobot(it.id, it.name, it.color, it.position) }
-      .sortedBy(PublicRobot::id)
-  }
+  fun getActiveRobots(): List<PublicRobot> = gameHandler.getActiveRobots()
+    .map { PublicRobot(it.id, it.name, it.color, it.position) }
+    .sortedBy(PublicRobot::id)
 
   fun registerRobotForGame(robotId: Long) {
     gameHandler.registerRobotForNextGame(robotId)
@@ -71,11 +67,8 @@ class RobotService(private val robotRepository: RobotRepository, private val gam
     gameHandler.nextActionForRobot(robotId, SolarChargeAction())
   }
 
-  fun getKnownPositionsForRobot(robotId: Long): Set<Position> {
-    return gameHandler.getKnownPositionsForRobot(robotId) ?: throw RobotNotActiveException("No active Robot found")
-  }
+  fun getKnownPositionsForRobot(robotId: Long): Set<Position> =
+    gameHandler.getKnownPositionsForRobot(robotId) ?: throw RobotNotActiveException("No active Robot found")
 
-  fun getKnownPositionsForAllRobots(): Set<Position> {
-    return gameHandler.getGlobalKnownPositions()
-  }
+  fun getKnownPositionsForAllRobots(): Set<Position> = gameHandler.getGlobalKnownPositions()
 }

@@ -33,9 +33,8 @@ class UserDetailsService(
   @Value("\${INITIAL_ROOT_PASSWORD:}")
   private val initialRootPassword: String = ""
 
-  override fun loadUserByUsername(username: String): UserDetails {
-    return userRepository.findByUsername(username) ?: throw UsernameNotFoundException("User '$username' not found!")
-  }
+  override fun loadUserByUsername(username: String): UserDetails =
+    userRepository.findByUsername(username) ?: throw UsernameNotFoundException("User '$username' not found!")
 
   fun registerNewUser(username: String, password: String) {
     val encodedPassword = passwordEncoder.encode(password)
@@ -43,12 +42,10 @@ class UserDetailsService(
     robotRepository.save(Robot(null, Color.randomColor(), user))
   }
 
-  fun loadUserByToken(token: String): UserDetails? {
-    return if (token.isNotBlank() && jwtTokenProvider.validateToken(token)) {
-      loadUserByUsername(jwtTokenProvider.getUsername(token))
-    } else {
-      null
-    }
+  fun loadUserByToken(token: String): UserDetails? = if (token.isNotBlank() && jwtTokenProvider.validateToken(token)) {
+    loadUserByUsername(jwtTokenProvider.getUsername(token))
+  } else {
+    null
   }
 
   @EventListener(ApplicationReadyEvent::class)

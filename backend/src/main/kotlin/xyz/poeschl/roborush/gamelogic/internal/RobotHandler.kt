@@ -95,18 +95,14 @@ class RobotHandler(
     }
   }
 
-  fun isEveryRobotIdle(): Boolean {
-    return activeRobots.none { it.nextAction != null && it.nextAction !is WaitAction }
-  }
+  fun isEveryRobotIdle(): Boolean = activeRobots.none { it.nextAction != null && it.nextAction !is WaitAction }
 
   fun getActiveRobot(robotId: Long): ActiveRobot? {
     // Return a copy of the real robot to avoid reference side effects
     return activeRobots.firstOrNull { it.id == robotId }?.copy()
   }
 
-  fun getAllActiveRobots(): Set<ActiveRobot> {
-    return activeRobots.toSet()
-  }
+  fun getAllActiveRobots(): Set<ActiveRobot> = activeRobots.toSet()
 
   private fun updateActiveRobot(activeRobot: ActiveRobot) {
     // Replace the existing active robot
@@ -119,9 +115,7 @@ class RobotHandler(
     return positions.filter { !occupiedPositions.contains(it) }.randomOrNull()
   }
 
-  fun isPositionCurrentFree(position: Position): Boolean {
-    return activeRobots.none { robot -> robot.position == position }
-  }
+  fun isPositionCurrentFree(position: Position): Boolean = activeRobots.none { robot -> robot.position == position }
 
   fun isPositionFreeAfterActions(position: Position): Boolean {
     val movingRobots = activeRobots.filter { it.nextAction is MoveAction }
