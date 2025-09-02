@@ -14,11 +14,7 @@ data class MapActiveDto(val active: Boolean)
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)
 data class MapAttributeSaveDto(val mapName: String, val maxRobotFuel: Int, val solarChargeRate: Double)
 
-data class TileDTO(
-  val position: Position,
-  val height: Int = 0,
-  val type: TileType = TileType.DEFAULT_TILE
-)
+data class TileDTO(val position: Position, val height: Int = 0, val type: TileType = TileType.DEFAULT_TILE)
 
 data class PlaygroundMap(
   val id: Long,

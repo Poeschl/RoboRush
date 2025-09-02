@@ -7,7 +7,5 @@ class DurationSetting(key: SettingKey, value: Duration) : Setting<Duration>(key,
     get() = SettingType.DURATION
 
   fun inWholeMilliseconds() = value.inWholeMilliseconds
-  override fun toString(): String {
-    return "DurationSetting(key=$key, value=$value)"
-  }
+  override fun toString(): String = "DurationSetting(key=$key, value=$value)"
 }

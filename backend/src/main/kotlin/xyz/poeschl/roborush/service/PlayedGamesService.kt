@@ -15,10 +15,7 @@ import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
 @Service
-class PlayedGamesService(
-  private val playedGamesRepository: PlayedGamesRepository,
-  private val robotRepository: RobotRepository
-) {
+class PlayedGamesService(private val playedGamesRepository: PlayedGamesRepository, private val robotRepository: RobotRepository) {
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(PlayedGamesService::class.java)

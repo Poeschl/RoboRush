@@ -30,21 +30,13 @@ class ConfigService(
     return saved
   }
 
-  fun getAllSettings(): List<Setting<*>> {
-    return configRepository.findAll().map { settingsEntityMapper.fromEntity(it) }.sortedByDescending { it.key }
-  }
+  fun getAllSettings(): List<Setting<*>> = configRepository.findAll().map { settingsEntityMapper.fromEntity(it) }.sortedByDescending { it.key }
 
-  fun getIntSetting(key: SettingKey): IntSetting {
-    return getSetting(key) as IntSetting
-  }
+  fun getIntSetting(key: SettingKey): IntSetting = getSetting(key) as IntSetting
 
-  fun getDurationSetting(key: SettingKey): DurationSetting {
-    return getSetting(key) as DurationSetting
-  }
+  fun getDurationSetting(key: SettingKey): DurationSetting = getSetting(key) as DurationSetting
 
-  fun getBooleanSetting(key: SettingKey): BooleanSetting {
-    return getSetting(key) as BooleanSetting
-  }
+  fun getBooleanSetting(key: SettingKey): BooleanSetting = getSetting(key) as BooleanSetting
 
   fun getSetting(key: SettingKey): Setting<*> {
     val entity: SettingEntity = configRepository.findByKey(key)

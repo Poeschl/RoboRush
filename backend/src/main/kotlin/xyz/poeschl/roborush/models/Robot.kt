@@ -15,12 +15,12 @@ data class ActiveRobot(
   val color: Color,
   var fuel: Int,
   var position: Position,
-  @Schema(
+  @field:Schema(
     anyOf = [
       MoveAction::class, ScanAction::class, WaitAction::class, RefuelAction::class, SolarChargeAction::class
     ]
   ) var nextAction: RobotAction<*>? = null,
-  @Schema(
+  @field:Schema(
     anyOf = [
       Int::class, ScanAction.ScanResult::class
     ]
@@ -53,9 +53,7 @@ data class ActiveRobot(
     return id == other.id
   }
 
-  override fun hashCode(): Int {
-    return id.hashCode()
-  }
+  override fun hashCode(): Int = id.hashCode()
 }
 
 @GeneratePojoBuilder(withBuilderInterface = Builder::class)

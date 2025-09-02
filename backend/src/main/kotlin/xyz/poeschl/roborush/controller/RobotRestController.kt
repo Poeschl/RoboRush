@@ -38,14 +38,10 @@ class RobotRestController(private val robotService: RobotService, private val pl
   }
 
   @GetMapping("/all/scores", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getScoreboard(): List<ScoreboardEntry> {
-    return playedGamesService.getGameScoreBoard()
-  }
+  fun getScoreboard(): List<ScoreboardEntry> = playedGamesService.getGameScoreBoard()
 
   @GetMapping("/all/knownPositions", produces = [MediaType.APPLICATION_JSON_VALUE])
-  fun getKnownPositionsOfAll(): Set<Position> {
-    return robotService.getKnownPositionsForAllRobots()
-  }
+  fun getKnownPositionsOfAll(): Set<Position> = robotService.getKnownPositionsForAllRobots()
 
   @GetMapping("/knownPositions", produces = [MediaType.APPLICATION_JSON_VALUE])
   @PreAuthorize("hasRole('${User.ROLE_USER}')")
@@ -64,9 +60,8 @@ class RobotRestController(private val robotService: RobotService, private val pl
   @SecurityRequirement(name = "Bearer Authentication")
   @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
   @PreAuthorize("hasRole('${User.ROLE_USER}')")
-  fun getActiveUserRobot(auth: Authentication): ActiveRobot {
-    return robotService.getActiveRobotByUser(auth.principal as User) ?: throw RobotNotActiveException("Your robot is not active right now")
-  }
+  fun getActiveUserRobot(auth: Authentication): ActiveRobot =
+    robotService.getActiveRobotByUser(auth.principal as User) ?: throw RobotNotActiveException("Your robot is not active right now")
 
   @Operation(
     summary = "Call this to register your robot for the next game. Can only be called during the game preparation phase.",

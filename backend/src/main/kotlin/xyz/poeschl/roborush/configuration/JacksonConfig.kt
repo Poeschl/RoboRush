@@ -12,15 +12,13 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 class JacksonConfig {
 
   @Bean
-  fun jsonCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
-    return Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
+  fun jsonCustomizer(): Jackson2ObjectMapperBuilderCustomizer = Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
 
-      // Setup proper duration serialization in ISO-8601
-      builder.modulesToInstall(JavaTimeModule())
-      val kotlinModule = KotlinModule.Builder()
-        .enable(KotlinFeature.UseJavaDurationConversion)
-        .build()
-      builder.modulesToInstall(kotlinModule)
-    }
+    // Setup proper duration serialization in ISO-8601
+    builder.modulesToInstall(JavaTimeModule())
+    val kotlinModule = KotlinModule.Builder()
+      .enable(KotlinFeature.UseJavaDurationConversion)
+      .build()
+    builder.modulesToInstall(kotlinModule)
   }
 }

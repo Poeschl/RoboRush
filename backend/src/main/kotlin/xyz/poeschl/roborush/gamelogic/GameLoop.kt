@@ -9,11 +9,7 @@ import xyz.poeschl.roborush.service.ConfigService
 import kotlin.concurrent.thread
 
 @GameLogic
-class GameLoop(
-  private val gameHandler: GameHandler,
-  private val gameStateService: GameStateMachine,
-  private val configService: ConfigService
-) {
+class GameLoop(private val gameHandler: GameHandler, private val gameStateService: GameStateMachine, private val configService: ConfigService) {
   companion object {
     private val LOGGER = LoggerFactory.getLogger(GameLoop::class.java)
   }

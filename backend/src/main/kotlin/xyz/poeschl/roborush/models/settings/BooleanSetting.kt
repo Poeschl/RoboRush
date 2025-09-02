@@ -9,9 +9,7 @@ constructor(key: SettingKey, value: Boolean) : Setting<Boolean>(key, value) {
   override val type: SettingType
     get() = SettingType.BOOLEAN
 
-  override fun toString(): String {
-    return "BooleanSetting(key=$key, value=$value)"
-  }
+  override fun toString(): String = "BooleanSetting(key=$key, value=$value)"
 
   fun invertedValue() = !value
 }

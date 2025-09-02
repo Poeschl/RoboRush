@@ -24,9 +24,7 @@ data class Color(val r: Int, val g: Int, val b: Int) {
 
 @Converter(autoApply = true)
 class ColorConverter : AttributeConverter<Color, String> {
-  override fun convertToDatabaseColumn(attribute: Color): String {
-    return "${attribute.r}|${attribute.g}|${attribute.b}"
-  }
+  override fun convertToDatabaseColumn(attribute: Color): String = "${attribute.r}|${attribute.g}|${attribute.b}"
 
   override fun convertToEntityAttribute(dbData: String): Color {
     val split = dbData.split("|").map { it.toInt() }

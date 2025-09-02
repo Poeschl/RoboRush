@@ -22,9 +22,7 @@ class MapHandler {
     private const val TILE_SCAN_COST = 0.1
   }
 
-  fun getCurrentFullMap(): Map {
-    return currentMap
-  }
+  fun getCurrentFullMap(): Map = currentMap
 
   fun getMapWithPositions(positions: Set<Position>): Map {
     val reducedMap = Map(
@@ -42,21 +40,13 @@ class MapHandler {
     return reducedMap
   }
 
-  fun getMapHeightMetaData(): Pair<Int, Int> {
-    return Pair(currentMap.mapData.minOf { it.height }, currentMap.mapData.maxOf { it.height })
-  }
+  fun getMapHeightMetaData(): Pair<Int, Int> = Pair(currentMap.mapData.minOf { it.height }, currentMap.mapData.maxOf { it.height })
 
-  fun getStartPositions(): List<Position> {
-    return currentMap.possibleStartPositions
-  }
+  fun getStartPositions(): List<Position> = currentMap.possibleStartPositions
 
-  fun getTargetPosition(): Position {
-    return currentMap.targetPosition
-  }
+  fun getTargetPosition(): Position = currentMap.targetPosition
 
-  fun getRobotMaxFuel(): Int {
-    return currentMap.maxRobotFuel
-  }
+  fun getRobotMaxFuel(): Int = currentMap.maxRobotFuel
 
   @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
   fun loadNewMap(map: Map) {
@@ -69,13 +59,10 @@ class MapHandler {
     }
   }
 
-  fun isPositionValid(position: Position): Boolean {
-    return (0 <= position.x) && (position.x < currentMap.size.width) && (0 <= position.y) && (position.y < currentMap.size.height)
-  }
+  fun isPositionValid(position: Position): Boolean =
+    (0 <= position.x) && (position.x < currentMap.size.width) && (0 <= position.y) && (position.y < currentMap.size.height)
 
-  fun getTileAtPosition(position: Position): Tile {
-    return currentMapTiles[position.y][position.x]
-  }
+  fun getTileAtPosition(position: Position): Tile = currentMapTiles[position.y][position.x]
 
   fun getFuelCost(oldPosition: Position, newPosition: Position): Int {
     // Rolling down a hill cost no extra fuel
@@ -102,11 +89,7 @@ class MapHandler {
     return Pair(list, ceil(usedFuel).toInt())
   }
 
-  fun isSolarChargePossible(): Boolean {
-    return currentMap.solarChargeRate > 0
-  }
+  fun isSolarChargePossible(): Boolean = currentMap.solarChargeRate > 0
 
-  fun getSolarChargeRate(): Double {
-    return currentMap.solarChargeRate
-  }
+  fun getSolarChargeRate(): Double = currentMap.solarChargeRate
 }

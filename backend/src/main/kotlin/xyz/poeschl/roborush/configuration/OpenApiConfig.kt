@@ -38,12 +38,11 @@ class OpenApiConfig {
       }
   }
 
-  private fun visibleForPublic(operation: Operation): Boolean {
-    return if (!operation.extensions.isNullOrEmpty() && operation.extensions.containsKey("x-$VISIBILITY_KEY")) {
+  private fun visibleForPublic(operation: Operation): Boolean =
+    if (!operation.extensions.isNullOrEmpty() && operation.extensions.containsKey("x-$VISIBILITY_KEY")) {
       val visibility = operation.extensions["x-$VISIBILITY_KEY"] as HashMap<*, *>
       visibility[VISIBILITY_KEY] == VISIBILITY_PUBLIC
     } else {
       false
     }
-  }
 }

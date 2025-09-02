@@ -20,9 +20,7 @@ open class Bot(private val gameHandler: GameHandler, private val robot: Robot) {
   private var participating = false
   private var lastThreePositions: MutableList<Position> = mutableListOf()
 
-  fun getId(): Long? {
-    return robot.id
-  }
+  fun getId(): Long? = robot.id
 
   fun doSomething(gameState: GameState) {
     when (gameState) {

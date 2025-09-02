@@ -43,21 +43,13 @@ class GameHandler(
   private val ignoredWinningRobotIds = mutableSetOf<Long>()
 
   @Cacheable("knownMap")
-  fun getCurrentMap(): Map {
-    return mapHandler.getMapWithPositions(getGlobalKnownPositions())
-  }
+  fun getCurrentMap(): Map = mapHandler.getMapWithPositions(getGlobalKnownPositions())
 
-  fun getCurrentMapHeightMetadata(): Pair<Int, Int> {
-    return mapHandler.getMapHeightMetaData()
-  }
+  fun getCurrentMapHeightMetadata(): Pair<Int, Int> = mapHandler.getMapHeightMetaData()
 
-  fun getTileAtPosition(position: Position): Tile {
-    return mapHandler.getTileAtPosition(position)
-  }
+  fun getTileAtPosition(position: Position): Tile = mapHandler.getTileAtPosition(position)
 
-  fun getTargetPosition(): Position {
-    return mapHandler.getTargetPosition()
-  }
+  fun getTargetPosition(): Position = mapHandler.getTargetPosition()
 
   /**
    * Will check the position for a valid movement.
@@ -75,13 +67,10 @@ class GameHandler(
     }
   }
 
-  fun getTilesForMovementOnPosition(position: Position): List<Tile> {
-    return mapHandler.getTilesInDistance(position, configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE).value).first
-  }
+  fun getTilesForMovementOnPosition(position: Position): List<Tile> =
+    mapHandler.getTilesInDistance(position, configService.getIntSetting(SettingKey.DISTANCE_ROBOT_SIGHT_ON_MOVE).value).first
 
-  fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> {
-    return mapHandler.getTilesInDistance(position, distance)
-  }
+  fun getTilesInDistance(position: Position, distance: Int): Pair<List<Tile>, Int> = mapHandler.getTilesInDistance(position, distance)
 
   fun sendRobotUpdate(activeRobot: ActiveRobot) {
     websocketController.sendRobotUpdate(activeRobot)
@@ -89,17 +78,11 @@ class GameHandler(
     websocketController.sendKnownPositionsUpdate(activeRobot)
   }
 
-  fun getFuelCostForMove(current: Position, next: Position): Int {
-    return mapHandler.getFuelCost(current, next)
-  }
+  fun getFuelCostForMove(current: Position, next: Position): Int = mapHandler.getFuelCost(current, next)
 
-  fun getActiveRobots(): Set<ActiveRobot> {
-    return robotHandler.getAllActiveRobots()
-  }
+  fun getActiveRobots(): Set<ActiveRobot> = robotHandler.getAllActiveRobots()
 
-  fun getActiveRobot(robotId: Long): ActiveRobot? {
-    return robotHandler.getActiveRobot(robotId)
-  }
+  fun getActiveRobot(robotId: Long): ActiveRobot? = robotHandler.getActiveRobot(robotId)
 
   fun addRobotToIgnoredWinningList(robotId: Long) {
     ignoredWinningRobotIds.add(robotId)
@@ -173,34 +156,26 @@ class GameHandler(
   }
 
   @Cacheable("gameInfoCache")
-  fun getPublicGameInfo(): Game {
-    return Game(
-      currentState = gameStateMachine.getCurrentState(),
-      currentTurn = currentTurn,
-      targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
-      solarChargePossible = mapHandler.isSolarChargePossible(),
-      gameTimeoutsInMillis = GameTimeouts(
-        waitForPlayers = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS).value.inWholeMilliseconds,
-        waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value.inWholeMilliseconds,
-        gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
-      ),
-      nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username,
-      mapSize = mapHandler.getCurrentFullMap().size,
-      fullMapScanPossible = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
-    )
-  }
+  fun getPublicGameInfo(): Game = Game(
+    currentState = gameStateMachine.getCurrentState(),
+    currentTurn = currentTurn,
+    targetPosition = if (configService.getBooleanSetting(SettingKey.TARGET_POSITION_IN_GAMEINFO).value) mapHandler.getTargetPosition() else null,
+    solarChargePossible = mapHandler.isSolarChargePossible(),
+    gameTimeoutsInMillis = GameTimeouts(
+      waitForPlayers = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS).value.inWholeMilliseconds,
+      waitForAction = configService.getDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION).value.inWholeMilliseconds,
+      gameEnd = configService.getDurationSetting(SettingKey.TIMEOUT_GAME_END).value.inWholeMilliseconds
+    ),
+    nameOfWinningRobot = robotHandler.getWinningRobot()?.user?.username,
+    mapSize = mapHandler.getCurrentFullMap().size,
+    fullMapScanPossible = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
+  )
 
-  fun getRobotMaxFuel(): Int {
-    return mapHandler.getRobotMaxFuel()
-  }
+  fun getRobotMaxFuel(): Int = mapHandler.getRobotMaxFuel()
 
-  fun isSolarChargePossible(): Boolean {
-    return mapHandler.isSolarChargePossible()
-  }
+  fun isSolarChargePossible(): Boolean = mapHandler.isSolarChargePossible()
 
-  fun getSolarChargeRate(): Double {
-    return mapHandler.getSolarChargeRate()
-  }
+  fun getSolarChargeRate(): Double = mapHandler.getSolarChargeRate()
 
   private fun setGameTurn(turn: Int) {
     currentTurn = turn
@@ -209,9 +184,7 @@ class GameHandler(
 
   fun isFullMapScanPossible() = configService.getBooleanSetting(SettingKey.ENABLE_FULL_MAP_SCAN).value
 
-  fun getKnownPositionsForRobot(robotId: Long): Set<Position>? {
-    return robotHandler.getActiveRobot(robotId)?.knownPositions
-  }
+  fun getKnownPositionsForRobot(robotId: Long): Set<Position>? = robotHandler.getActiveRobot(robotId)?.knownPositions
 
   fun getGlobalKnownPositions(): Set<Position> {
     val positions = robotHandler.getAllActiveRobots().map { it.knownPositions }.flatten().toMutableSet()

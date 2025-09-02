@@ -159,33 +159,31 @@ class MapImportExportService {
 
   private data class TileData(val height: Int, val type: TileType)
 
-  private fun getTileData(color: Color): TileData {
-    return when {
-      color.isGrey() -> {
-        val height = color.r
-        TileData(height, TileType.DEFAULT_TILE)
-      }
+  private fun getTileData(color: Color): TileData = when {
+    color.isGrey() -> {
+      val height = color.r
+      TileData(height, TileType.DEFAULT_TILE)
+    }
 
-      color.g > color.r && color.r == color.b -> {
-        // starting points
-        val height = color.r
-        TileData(height, TileType.START_TILE)
-      }
+    color.g > color.r && color.r == color.b -> {
+      // starting points
+      val height = color.r
+      TileData(height, TileType.START_TILE)
+    }
 
-      color.r > color.g && color.g == color.b -> {
-        // target points
-        val height = color.g
-        TileData(height, TileType.TARGET_TILE)
-      }
+    color.r > color.g && color.g == color.b -> {
+      // target points
+      val height = color.g
+      TileData(height, TileType.TARGET_TILE)
+    }
 
-      color.b > color.r && color.g == color.r -> {
-        val height = color.r
-        TileData(height, TileType.FUEL_TILE)
-      }
+    color.b > color.r && color.g == color.r -> {
+      val height = color.r
+      TileData(height, TileType.FUEL_TILE)
+    }
 
-      else -> {
-        throw UnknownTileType("Unknown tile type detected")
-      }
+    else -> {
+      throw UnknownTileType("Unknown tile type detected")
     }
   }
 
