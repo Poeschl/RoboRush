@@ -14,6 +14,7 @@ data class ActiveRobot(
   @JsonIgnore val user: User,
   val color: Color,
   var fuel: Int,
+  val maxFuel: Int,
   var position: Position,
   @field:Schema(
     anyOf = [
@@ -29,8 +30,6 @@ data class ActiveRobot(
   @JsonIgnore
   val knownPositions: MutableSet<Position> = mutableSetOf()
 ) {
-
-  val maxFuel = fuel
 
   fun canRetrieveFuel() = fuel < maxFuel
 

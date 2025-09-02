@@ -19,7 +19,7 @@ class SolarChargeActionTest {
   @Test
   fun chargeCheck() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withFuel(100))
+    val robot = a(`$ActiveRobot`().withFuel(100).withMaxFuel(100))
     // Simulate tank depletion
     robot.fuel = 10
     val action = SolarChargeAction()
@@ -35,7 +35,7 @@ class SolarChargeActionTest {
   @Test
   fun chargeCheck_mapDenial() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withFuel(10))
+    val robot = a(`$ActiveRobot`().withFuel(10).withMaxFuel(100))
     val action = SolarChargeAction()
 
     every { gameHandler.isSolarChargePossible() } returns false
@@ -51,7 +51,7 @@ class SolarChargeActionTest {
   @Test
   fun chargeCheck_tankFull() {
     // WHEN
-    val robot = a(`$ActiveRobot`().withFuel(10))
+    val robot = a(`$ActiveRobot`().withFuel(10).withMaxFuel(10))
     val action = SolarChargeAction()
 
     every { gameHandler.isSolarChargePossible() } returns true
@@ -69,7 +69,7 @@ class SolarChargeActionTest {
     // WHEN
     val maxRobotFuel = 100
     val chargeRate = .5
-    val robot = a(`$ActiveRobot`().withFuel(maxRobotFuel))
+    val robot = a(`$ActiveRobot`().withFuel(maxRobotFuel).withMaxFuel(maxRobotFuel))
     // After robot workout, less energy is left
     robot.fuel = 10
     val action = SolarChargeAction()
@@ -91,7 +91,7 @@ class SolarChargeActionTest {
     // WHEN
     val maxRobotFuel = 100
     val chargeRate = .5
-    val robot = a(`$ActiveRobot`().withFuel(maxRobotFuel))
+    val robot = a(`$ActiveRobot`().withFuel(maxRobotFuel).withMaxFuel(maxRobotFuel))
     // After a light robot workout, only a little is missing
     robot.fuel = 99
     val action = SolarChargeAction()
