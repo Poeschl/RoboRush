@@ -29,9 +29,16 @@ class DummyBots(
   private val robot2 = createOrGetRobot("dummy-random")
   private val robot3 = createOrGetRobot("dummy-chill")
   private val robot4 = createOrGetRobot("dummy-target")
+  private val robot5 = createOrGetRobot("dummy-smart-pathfinding")
 
   private val bots =
-    listOf(WallHuggerBot(gameHandler, robot1), Bot(gameHandler, robot2), ChillerBot(gameHandler, robot3), TargetBot(gameHandler, robot4))
+    listOf(
+      WallHuggerBot(gameHandler, robot1), 
+      Bot(gameHandler, robot2), 
+      ChillerBot(gameHandler, robot3), 
+      TargetBot(gameHandler, robot4),
+      SmartPathfindingBot(gameHandler, robot5)
+    )
 
   init {
     bots.forEach { gameHandler.addRobotToIgnoredWinningList(it.getId()!!) }
