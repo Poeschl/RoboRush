@@ -3,6 +3,30 @@
 This folder contains the default maps which are available on the first start.
 They are generated with a height map generator called [wgen](https://github.com/jice-nospam/wgen) and modified with Photoshop (or any other picture editor) to place spawn area pixels and the single target position pixel (described below).
 
+## Strategic Map Design
+
+To encourage better pathfinding strategies and discourage simple "left/down" approaches, consider these map design principles:
+
+### 1. Height Variation
+- **Create significant elevation changes** that make uphill movement expensive
+- **Add valleys and ridges** that reward strategic route planning
+- **Use height differences of 10+ levels** to make fuel costs meaningful
+
+### 2. Strategic Obstacles
+- **Place high terrain barriers** between spawn points and targets
+- **Create multiple viable paths** with different cost trade-offs
+- **Add chokepoints** that require careful fuel management
+
+### 3. Fuel Station Placement
+- **Position fuel stations strategically** to reward good route planning
+- **Avoid placing them on the direct path** to encourage exploration
+- **Use them to enable high-risk/high-reward routes**
+
+### Map Design Examples:
+- **Mountain Pass**: High central ridge forces players to choose between going around (longer) or over (expensive)
+- **Valley Network**: Multiple valleys with different elevation profiles reward pathfinding algorithms
+- **Spiral Mountain**: Target at the top of a spiral path makes straight-line approaches impossible
+
 ## Generate your own map
 
 RoboRush recognizes grayscale images as height maps.
