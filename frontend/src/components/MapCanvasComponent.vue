@@ -231,14 +231,14 @@ const drawRobots = () => {
 
     drawContext.clearRect(0, 0, mapWidth.value, mapHeight.value);
 
-    for (const robot of props.robots.data) {
+    props.robots.data.forEach((robot, index) => {
       // log.debug(`Draw robot ${JSON.stringify(robot)}`);
       drawContext.save();
       const origin = pixelOriginOfPosition(robot.position);
       drawContext.translate(origin.x, origin.y);
-      drawRobot(drawContext, robot.color);
+      drawRobot(drawContext, robot.color, index + 1);
       drawContext.restore();
-    }
+    });
   }
 };
 
@@ -270,14 +270,28 @@ const drawTileBorder = (drawContext: CanvasRenderingContext2D, color: Color) => 
   }
 };
 
-const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color) => {
+const drawRobot = (drawContext: CanvasRenderingContext2D, color: Color, robotIndex?: number) => {
   drawContext.beginPath();
-  drawContext.arc(fullTileSize / 2, fullTileSize / 2, cellSize / 2 - cellBorder * 2, 0, 360);
+  drawContext.arc(fullTileSize / 2, fullTileSize / 2, cellSize / 2 - cellBorder, 0, 360);
   drawContext.fillStyle = color.toHex();
   drawContext.fill();
   drawContext.fillStyle = mapConstants.robotCircleColor.toHex();
   drawContext.stroke();
   drawContext.closePath();
+
+  // Add the robot index number if provided
+  if (robotIndex !== undefined) {
+    drawContext.fillStyle = mapConstants.robotIdColor.toHex();
+    drawContext.textAlign = "center";
+    drawContext.textBaseline = "middle";
+
+    // Adjust font size based on canvas size
+    const fontSize = smallCanvas.value ? 16 : 11;
+    drawContext.font = `bold ${fontSize}px Arial`;
+
+    // Draw the index number in the center of the circle
+    drawContext.fillText(robotIndex.toString(), fullTileSize / 2, fullTileSize / 2 + 1);
+  }
 };
 
 const drawDisplayPath = () => {
