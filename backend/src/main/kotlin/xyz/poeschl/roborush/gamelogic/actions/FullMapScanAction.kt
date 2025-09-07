@@ -1,6 +1,7 @@
 package xyz.poeschl.roborush.gamelogic.actions
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.ActionDeniedByConfig
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.actions.ScanAction.ScanResult
@@ -23,7 +24,7 @@ class FullMapScanAction @JsonCreator constructor() : RobotAction<ScanResult> {
     robot.knownPositions.addAll(tileList.map { it.position })
     LOGGER.debug("Robot {} did a full scan", robot.id)
     gameHandler.sendRobotUpdate(robot)
-    return RobotActionResult(robot, ScanResult(tileList))
+    return RobotActionResult(robot, ScanResult(tileList.map { TileDTO(it.position, it.height, it.type) }))
   }
 
   override fun toString(): String = "FullScan()"

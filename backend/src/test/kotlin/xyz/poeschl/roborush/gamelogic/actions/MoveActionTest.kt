@@ -10,6 +10,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
@@ -117,7 +118,7 @@ class MoveActionTest {
     val moveResult = action.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(moveResult.result).isEqualTo(ScanAction.ScanResult(listOf(expectedTile)))
+    assertThat(moveResult.result).isEqualTo(ScanAction.ScanResult(listOf(TileDTO(expectedTile.position, expectedTile.height, expectedTile.type))))
     assertThat(moveResult.updatedRobot.fuel).isEqualTo(90)
     assertThat(moveResult.updatedRobot.position).isEqualTo(expectedTile.position)
     assertThat(moveResult.updatedRobot.knownPositions).containsAll(listOf(expectedTile.position))
