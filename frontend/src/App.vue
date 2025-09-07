@@ -69,7 +69,7 @@ if (userStore.loggedIn && !userStore.isAdmin) {
 }
 watch(
   () => userStore.loggedIn,
-  (current, previous, onCleanup) => {
+  (current) => {
     if (current) {
       gameStore.retrieveUserRobotState();
       gameStore.updateUserRobotKnownPositions();
@@ -81,7 +81,7 @@ watch(
 
 watch(
   () => systemStore.backendAvailable,
-  (value, oldValue, onCleanup) => {
+  (value) => {
     if (!value) {
       router.push({ path: "/not-connected" });
     }

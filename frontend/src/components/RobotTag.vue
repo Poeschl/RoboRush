@@ -15,10 +15,16 @@ import { computed } from "vue";
 
 const props = defineProps<{
   robot: PublicRobot | ActiveRobot | ScoreboardEntry | undefined;
+  index?: number;
 }>();
 
 const tagColor = computed<string | undefined>(() => props.robot?.color.toHex());
-const text = computed<string | undefined>(() => props.robot?.name);
+const text = computed<string | undefined>(() => {
+  if (props.index !== undefined) {
+    return `${props.index} ${props.robot?.name}`;
+  }
+  return props.robot?.name;
+});
 const inverseColor = computed<boolean>(() => {
   const lightLevel = props.robot?.color.getLightLevel();
   if (lightLevel !== undefined) {

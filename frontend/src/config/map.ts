@@ -4,6 +4,7 @@ export default function useMapConstants() {
   const mapBorderColor = new Color(0, 0, 0);
   const mapColor = new Color(10, 60, 1);
   const robotCircleColor = new Color(30, 30, 30);
+  const robotIdColor = robotCircleColor;
   const targetTileBorderColor = new Color(0, 130, 255);
   const startTileBorderColor = new Color(210, 110, 0);
   const fuelTileBorderColor = new Color(210, 0, 130);
@@ -14,6 +15,7 @@ export default function useMapConstants() {
     mapBorderColor,
     mapColor,
     robotCircleColor,
+    robotIdColor,
     targetTileBorderColor,
     startTileBorderColor,
     fuelTileBorderColor,

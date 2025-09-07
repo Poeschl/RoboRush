@@ -2,7 +2,7 @@
   <InfoBoxTemplate title="Active robots">
     <Transition>
       <div class="tags">
-        <RobotTag :robot="robot" v-for="robot in robots" />
+        <RobotTag :robot="robot" :index="index + 1" v-for="(robot, index) in robots" />
       </div>
     </Transition>
   </InfoBoxTemplate>

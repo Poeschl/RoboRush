@@ -5,7 +5,6 @@ import { router } from "./router/main";
 import Plausible from "plausible-tracker";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
-  faArrowLeft,
   faArrowRight,
   faArrowRightFromBracket,
   faArrowRightToBracket,
