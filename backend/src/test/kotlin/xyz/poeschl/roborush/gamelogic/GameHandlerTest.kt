@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import xyz.poeschl.roborush.controller.WebsocketController
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.MoveAction
@@ -277,7 +278,7 @@ class GameHandlerTest {
 
     // VERIFY
     assertThat(registeredRobot.knownPositions).containsAll(neighborTiles.map(Tile::position))
-    assertThat((registeredRobot.lastResult as ScanAction.ScanResult).tiles).containsAll(neighborTiles)
+    assertThat((registeredRobot.lastResult as ScanAction.ScanResult).tiles).containsAll(neighborTiles.map { TileDTO(it.position, it.height, it.type) })
     verify { robotHandler.registerRobotForGame(1, startPosition) }
     verify { websocketController.sendRobotUpdate(registeredRobot) }
     verify { websocketController.sendKnownPositionsUpdate(registeredRobot) }

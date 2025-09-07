@@ -7,6 +7,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.GameStateException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.GameState
@@ -220,7 +221,7 @@ class RobotHandlerTest {
     // WHEN
     val robot = createSingleActiveRobot()
     val action = mockk<MoveAction>()
-    val returnValue = ScanAction.ScanResult(listWithOne(`$Tile`()))
+    val returnValue = ScanAction.ScanResult(listWithOne(`$Tile`()).map { TileDTO(it.position, it.height, it.type) })
 
     every { gameStateMachine.isInState(GameState.ACTION) } returns true
     every { action.action(robot, gameHandler) } returns RobotActionResult(robot, returnValue)

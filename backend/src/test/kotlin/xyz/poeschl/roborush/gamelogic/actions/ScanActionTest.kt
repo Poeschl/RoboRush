@@ -7,6 +7,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.models.Position
@@ -67,7 +68,7 @@ class ScanActionTest {
     val actionResult = action.action(robot, gameHandler)
 
     // VERIFY
-    assertThat(actionResult.result.tiles).containsAll(scannedTiles)
+    assertThat(actionResult.result.tiles).containsAll(scannedTiles.map { TileDTO(it.position, it.height, it.type) })
     assertThat(actionResult.updatedRobot.fuel).isEqualTo(90)
     assertThat(actionResult.updatedRobot.knownPositions).containsAll(scannedTiles.map { it.position })
     verify { gameHandler.sendRobotUpdate(robot) }

@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import xyz.poeschl.roborush.configuration.GameLogic
 import xyz.poeschl.roborush.controller.WebsocketController
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
 import xyz.poeschl.roborush.gamelogic.actions.RobotAction
@@ -127,8 +128,8 @@ class GameHandler(
     if (startPosition != null) {
       val activeRobot = robotHandler.registerRobotForGame(robotId, startPosition)
       activeRobot?.let { registeredRobot ->
-        val knownTiles = getTilesForMovementOnPosition(startPosition)
-        registeredRobot.knownPositions.addAll(knownTiles.map(Tile::position))
+        val knownTiles = getTilesForMovementOnPosition(startPosition).map { TileDTO(it.position, it.height, it.type) }
+        registeredRobot.knownPositions.addAll(knownTiles.map(TileDTO::position))
         registeredRobot.lastResult = ScanAction.ScanResult(knownTiles)
         websocketController.sendRobotUpdate(registeredRobot)
         websocketController.sendUserRobotData(registeredRobot)

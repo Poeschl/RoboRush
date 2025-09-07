@@ -2,6 +2,7 @@ package xyz.poeschl.roborush.gamelogic.actions
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import org.slf4j.LoggerFactory
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.actions.ScanAction.ScanResult
@@ -44,7 +45,7 @@ class MoveAction @JsonCreator constructor(val direction: Direction) : RobotActio
     LOGGER.debug("Moved robot {} {} -> {}", robot.id, currentPosition, newPosition)
     gameHandler.sendRobotUpdate(robot)
 
-    return RobotActionResult(robot, ScanResult(seenTiles))
+    return RobotActionResult(robot, ScanResult(seenTiles.map { TileDTO(it.position, it.height, it.type) }))
   }
 
   fun getResultPosition(currentPosition: Position) = when (direction) {

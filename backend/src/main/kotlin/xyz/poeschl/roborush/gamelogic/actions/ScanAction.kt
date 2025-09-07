@@ -1,11 +1,11 @@
 package xyz.poeschl.roborush.gamelogic.actions
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import xyz.poeschl.roborush.controller.restmodels.TileDTO
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.gamelogic.GameHandler
 import xyz.poeschl.roborush.gamelogic.actions.SolarChargeAction.Companion.LOGGER
 import xyz.poeschl.roborush.models.ActiveRobot
-import xyz.poeschl.roborush.repositories.Tile
 
 class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanAction.ScanResult> {
 
@@ -27,7 +27,7 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanA
     robot.knownPositions.addAll(tileList.map { it.position })
     LOGGER.debug("Robot {} scanned for distance {}", robot.id, distance)
     gameHandler.sendRobotUpdate(robot)
-    return RobotActionResult(robot, ScanResult(tileList))
+    return RobotActionResult(robot, ScanResult(tileList.map { TileDTO(it.position, it.height, it.type) }))
   }
 
   override fun toString(): String = "Scan(distance=$distance)"
@@ -43,5 +43,5 @@ class ScanAction @JsonCreator constructor(val distance: Int) : RobotAction<ScanA
 
   override fun hashCode(): Int = distance
 
-  data class ScanResult(val tiles: List<Tile>) : Result
+  data class ScanResult(val tiles: List<TileDTO>) : Result
 }
