@@ -3,8 +3,6 @@
 A game about multiple robots trying to get from A to B on a map with quadratic tiles.
 The first robot which reaches the target tile wins!
 
-<!-- CodeQL security scanning has been added to ensure code quality and security -->
-
 Get in the game by controlling your robot via REST calls and try to find the fastest way.
 Or block the others.
 

@@ -50,7 +50,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          queries: security-extended,security-and-quality
+          queries: security-and-quality
 
       - name: 🏗️ Build Backend (for Kotlin/Java analysis)
         if: matrix.language == 'java-kotlin'
