@@ -33,7 +33,7 @@ class JwtTokenProvider {
 
   init {
     val decodedKey = Sha512DigestUtils.sha(jwtSecretSource)
-    key = SecretKeySpec(decodedKey, 0, decodedKey.size, "HMACSHA512")
+    key = SecretKeySpec(decodedKey, 0, decodedKey.size, "HmacSHA512")
   }
 
   // Without expire right now!
