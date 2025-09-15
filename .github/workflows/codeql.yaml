@@ -9,7 +9,7 @@ on:
       - main
   schedule:
     # Run CodeQL analysis weekly on Sunday at 2 AM UTC
-    - cron: '0 2 * * 0'
+    - cron: "0 2 * * 0"
 
 jobs:
   codeql:
@@ -19,25 +19,25 @@ jobs:
       actions: read
       contents: read
       security-events: write
-    
+
     strategy:
       fail-fast: false
       matrix:
-        language: ['java-kotlin', 'javascript-typescript']
-        
+        language: ["java-kotlin", "javascript-typescript"]
+
     steps:
       - name: ↩️ Checkout
         uses: actions/checkout@v5
         with:
           lfs: true
-      
+
       - name: 🏗️ Set up JDK (for Kotlin/Java analysis)
         if: matrix.language == 'java-kotlin'
         uses: actions/setup-java@v5
         with:
           java-version: 21
           distribution: temurin
-          
+
       - name: 🏗️ Set up Node.js (for JavaScript/TypeScript analysis)
         if: matrix.language == 'javascript-typescript'
         uses: actions/setup-node@v4
@@ -45,7 +45,7 @@ jobs:
           node-version: 22.x
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      
+
       - name: 🔍 Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
@@ -54,13 +54,13 @@ jobs:
 
       - name: 🏗️ Build Backend (for Kotlin/Java analysis)
         if: matrix.language == 'java-kotlin'
-        run: ./gradlew --stacktrace build -x test
-        
+        run: ./gradlew --stacktrace classes
+
       - name: 🏗️ Install Frontend Dependencies (for JavaScript/TypeScript analysis)
         if: matrix.language == 'javascript-typescript'
         run: cd frontend && npm ci
-        
-      - name: 🏗️ Build Frontend (for JavaScript/TypeScript analysis)  
+
+      - name: 🏗️ Build Frontend (for JavaScript/TypeScript analysis)
         if: matrix.language == 'javascript-typescript'
         run: cd frontend && npm run build
 
