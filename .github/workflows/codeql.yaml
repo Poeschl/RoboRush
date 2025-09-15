@@ -54,15 +54,11 @@ jobs:
 
       - name: 🏗️ Build Backend (for Kotlin/Java analysis)
         if: matrix.language == 'java-kotlin'
-        run: ./gradlew --stacktrace classes
+        run: ./gradlew --stacktrace backend:classes
 
       - name: 🏗️ Install Frontend Dependencies (for JavaScript/TypeScript analysis)
         if: matrix.language == 'javascript-typescript'
         run: cd frontend && npm ci
-
-      - name: 🏗️ Build Frontend (for JavaScript/TypeScript analysis)
-        if: matrix.language == 'javascript-typescript'
-        run: cd frontend && npm run build
 
       - name: 🔍 Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
