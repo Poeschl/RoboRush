@@ -47,6 +47,9 @@ Depending on the environment a certificate for TLS is recommended.
   This can be useful for parallel instances and should be set in production-like envs.
 * `AUTH_KEY`(optional): Set the input for the JWT signing key.
   This should be a random string with the length of 64. If changed every user needs to re-login to make auth work correctly again.
+* `TIMEOUT_WAIT_FOR_PLAYERS`: (optional): The time in milliseconds the game waits for players before starting.
+* `TIMEOUT_WAIT_FOR_ACTION`: (optional): The time in milliseconds the game waits for players to schedule their action.
+* `TIMEOUT_GAME_END`: (optional): The time in milliseconds the game shows the game end screen before starting a new game.
 
 ### Admin authentication
 

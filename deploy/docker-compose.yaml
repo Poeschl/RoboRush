@@ -1,7 +1,7 @@
 version: "3"
 services:
   traefik:
-    image: traefik:v2.11.3
+    image: traefik:v3.5
     restart: unless-stopped
     command:
       - --api
@@ -39,7 +39,7 @@ services:
     labels:
       - traefik.enable=true
       # since Traefik don't allow to change the api path the referer is used as rule (https://github.com/traefik/traefik/issues/5853)
-      - traefik.http.routers.dashboard.rule=Host(`${domain}`) && (PathPrefix(`/traefik/dashboard`) || HeadersRegexp(`Referer`, `.*\/traefik\/dashboard\/.*`))
+      - traefik.http.routers.dashboard.rule=Host(`${domain}`) && (PathPrefix(`/traefik/dashboard`) || HeaderRegexp(`Referer`, `.*\/traefik\/dashboard\/.*`))
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.middlewares=strip-prefix-traefik
