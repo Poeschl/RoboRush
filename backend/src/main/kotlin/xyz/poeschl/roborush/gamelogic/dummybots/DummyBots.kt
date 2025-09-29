@@ -37,7 +37,7 @@ class DummyBots(
     bots.forEach { gameHandler.addRobotToIgnoredWinningList(it.getId()!!) }
   }
 
-  @Scheduled(fixedRate = 1000, timeUnit = TimeUnit.MILLISECONDS)
+  @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MILLISECONDS)
   fun dummyRobots() {
     if (configService.getBooleanSetting(SettingKey.ENABLE_DUMMY_ROBOTS).value) {
       bots.forEach { it.doSomething(gameHandler.getPublicGameInfo().currentState) }
