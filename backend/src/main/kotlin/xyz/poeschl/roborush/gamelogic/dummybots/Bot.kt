@@ -1,5 +1,7 @@
 package xyz.poeschl.roborush.gamelogic.dummybots
 
+import org.slf4j.LoggerFactory
+import xyz.poeschl.roborush.exceptions.GameStateException
 import xyz.poeschl.roborush.exceptions.InsufficientFuelException
 import xyz.poeschl.roborush.exceptions.PositionNotAllowedException
 import xyz.poeschl.roborush.exceptions.PositionOutOfMapException
@@ -15,6 +17,7 @@ open class Bot(private val gameHandler: GameHandler, private val robot: Robot) {
 
   companion object {
     const val PARTICIPATE_IF_LESS_THEN_ACTIVE = 5
+    private val LOGGER = LoggerFactory.getLogger(Bot::class.java)
   }
 
   private var participating = false
@@ -23,16 +26,21 @@ open class Bot(private val gameHandler: GameHandler, private val robot: Robot) {
   fun getId(): Long? = robot.id
 
   fun doSomething(gameState: GameState) {
-    when (gameState) {
-      GameState.WAIT_FOR_PLAYERS -> participateInGameIfNeeded()
-      GameState.WAIT_FOR_ACTION -> {
-        val activeRobot = gameHandler.getActiveRobot(robot.id!!)
-        if (activeRobot != null) {
-          makeMove(activeRobot)
+    try {
+      when (gameState) {
+        GameState.WAIT_FOR_PLAYERS -> participateInGameIfNeeded()
+        GameState.WAIT_FOR_ACTION -> {
+          val activeRobot = gameHandler.getActiveRobot(robot.id!!)
+          if (activeRobot != null) {
+            makeMove(activeRobot)
+          }
         }
+
+        GameState.ENDED -> reset()
+        else -> {}
       }
-      GameState.ENDED -> reset()
-      else -> {}
+    } catch (e: GameStateException) {
+      LOGGER.warn("Tried to make a move in an invalid game state. Try again next time. Exception: {}", e.message, e)
     }
   }
 
