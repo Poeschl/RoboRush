@@ -1,11 +1,15 @@
 package xyz.poeschl.roborush.service
 
+import jakarta.annotation.PostConstruct
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import xyz.poeschl.roborush.controller.WebsocketController
 import xyz.poeschl.roborush.models.settings.*
 import xyz.poeschl.roborush.repositories.ConfigRepository
 import xyz.poeschl.roborush.repositories.SettingEntity
+import kotlin.time.Duration.Companion.milliseconds
 
 @Service
 class ConfigService(
@@ -14,7 +18,24 @@ class ConfigService(
   private val websocketController: WebsocketController
 ) {
 
+  private val logger = LoggerFactory.getLogger(ConfigService::class.java)
   private var globalNotificationText = ""
+
+  @Value("\${timeout.wait-for-players:#{null}}")
+  private val waitForPlayersTimeout: Long? = null
+
+  @Value("\${timeout.wait-for-action:#{null}}")
+  private val waitForActionTimeout: Long? = null
+
+  @Value("\${timeout.game-end:#{null}}")
+  private val gameEndTimeout: Long? = null
+
+  @PostConstruct
+  fun initializeConfigFromEnvironment() {
+    loadDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_PLAYERS, waitForPlayersTimeout)
+    loadDurationSetting(SettingKey.TIMEOUT_WAIT_FOR_ACTION, waitForActionTimeout)
+    loadDurationSetting(SettingKey.TIMEOUT_GAME_END, gameEndTimeout)
+  }
 
   @CacheEvict(cacheNames = ["gameInfoCache"], allEntries = true)
   fun saveSetting(settingDto: SaveSettingDto): Setting<*> {
@@ -58,5 +79,19 @@ class ConfigService(
         getBooleanSetting(SettingKey.ENABLE_USER_REGISTRATION).value
       )
     )
+  }
+
+  private fun loadDurationSetting(key: SettingKey, timeoutValue: Long?) {
+    if (timeoutValue != null) {
+      try {
+        val durationValue = timeoutValue.milliseconds
+        val existingEntity = configRepository.findByKey(key)
+        val updatedEntity = settingsEntityMapper.toEntity(existingEntity, SaveSettingDto(key, durationValue.toString()))
+        val saved = configRepository.save(updatedEntity)
+        logger.info("Updated setting $key with value $durationValue")
+      } catch (e: Exception) {
+        logger.error("Failed to update setting $key", e)
+      }
+    }
   }
 }
