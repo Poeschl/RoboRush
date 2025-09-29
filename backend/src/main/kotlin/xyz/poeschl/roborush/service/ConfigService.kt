@@ -86,7 +86,7 @@ class ConfigService(
       try {
         val durationValue = timeoutValue.milliseconds
         val existingEntity = configRepository.findByKey(key)
-        val updatedEntity = settingsEntityMapper.toEntity(existingEntity, SaveSettingDto(key, durationValue.toString()))
+        val updatedEntity = settingsEntityMapper.toEntity(existingEntity, SaveSettingDto(key, durationValue.toIsoString()))
         val saved = configRepository.save(updatedEntity)
         logger.info("Updated setting $key with value $durationValue")
       } catch (e: Exception) {
