@@ -13,8 +13,8 @@ Your experience with MacOS may vary.
 ## Get the local instance running
 
 1. Depending on your OS, you need to (un)comment two lines in `config/traefik.yaml`
-   - (Windows and WSL) Uncomment lines 25 and 36, and comment lines 24 and 35
-   - (Native Linux) Uncomment lines 24 and 35, and comment lines 25 and 36
+   - (Windows) Uncomment lines 25 and 36, and comment lines 24 and 35
+   - (WSL and Native Linux) Uncomment lines 24 and 35, and comment lines 25 and 36
 2. Navigate to `local-testing`
 3. Start the local instance
    - (Windows) Run `start_local_env.bat`
