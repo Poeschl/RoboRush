@@ -4,7 +4,7 @@
 
 The local testing environment has been run on Windows / WSL and native Linux.
 
-Your experience with MacOS may vary.
+Your experience with macOS may vary.
 
 ## Prerequisites
 
@@ -48,7 +48,7 @@ With these credentials, you can use the GUI to modify the game to your liking.
 
 ### Using environment variables
 
-The following values are of use to spped up things in `local-testing/docker-compose.yaml`:
+The following values are of use to speed up things in `local-testing/docker-compose.yaml`:
 
 | Variable                 | Influence                                                                        | What you need to do here                                                                 |
 |--------------------------|----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -60,7 +60,7 @@ Set these values according to your hearts' desire. The faster you set them, the 
 
 ### Caveat
 
-Keep in mind that you control your robot via a REST interface. Nyquists' theorem applies.
+Keep in mind that you control your robot via a REST interface. Nyquist's theorem applies.
 
 ## API commands
 
@@ -70,11 +70,17 @@ Check out the [API](http://localhost:8888/api/swagger-ui/index.html)
 
 1. First, you need a user. You can't play as root, because then everyone would be rooting for you, and that's unfair.
    1. Create an account by clicking the `Create a account` button (1).
+
       ![](resources/01-create_user-01.png)
+
    2. Pick a creative name and a password
+
       ![](resources/01-create_user-02.png)
+
    3. Once you clicked on `Register`, you can continue.
+
 2. Now to login
+
    1. Press the `Login` button (1).
 
       ![](resources/01-enter_user-01.png)
@@ -87,41 +93,58 @@ Check out the [API](http://localhost:8888/api/swagger-ui/index.html)
 
       ![](resources/01-enter_user-03.png)
 
-   4. When the time is right (inbetween games), press the `Participate in current game` button to register your robot for the current round.
+   4. When the time is right (in between games), press the `Participate in current game` button to register your robot for the current round.
 
       ![](resources/01-enter_user-04.png)
+
 3. Let's now check out how your robot works.
 
-The API page provides you with an overview of available commands.
+   The API page provides you with an overview of available commands.
 
-You need, however, to authorize before you can send commands to your robot.
+   You need, however, to authorize before you can send commands to your robot.
 
-  1. Press the `Authorize` button.
+   1. Press the `Authorize` button.
 
-     ![](resources/02-api-01.png)
+      ![](resources/02-api-01.png)
 
-  2. In the popup, enter your Bearer Authentication (1).
+   2. In the popup, enter your Bearer Authentication (1).
 
-     ![](resources/02-api-02.png)
+      ![](resources/02-api-02.png)
 
-     You can check out (and copy!) your Bearer Token as follows.
+      You can check out (and copy!) your Bearer Token as follows.
 
-     1. In the main view, press your name (1).
-        ![](resources/01-enter_user-03.png)
-     2. Press the `Copy` icon next to your API access token to grab it .
-        ![](resources/02-api-03.png)
-     3. Enter the Bearer Token in the API view and press the `Authorize` button.
-        ![](resources/02-api-04.png)
-     4. Close the dialog.
-        ![](resources/02-api-05.png)
-  3. Uncollapse one of the commands (1) and press the `Try it out` button.
-     ![](resources/02-api-06.png)
-  4. Press the `Execute` button.
-     ![](resources/02-api-07.png)
-     The command is immediately sent, but let's look at what we receive in return.
-  5. At (1), we can see the cURL command that was executed. In the area below (2), you can see the servers' response. Press (3) to resend the command.
-     ![](resources/02-api-08.png)
-  6. At (1), you can see what response body and headers were received. You can use these to investigate and troubleshoot your work.
-     ![](resources/02-api-09.png)
+      1. In the main view, press your name (1).
+
+         ![](resources/01-enter_user-03.png)
+
+      2. Press the `Copy` icon next to your API access token to grab it.
+
+         ![](resources/02-api-03.png)
+
+      3. Enter the Bearer Token in the API view and press the `Authorize` button.
+
+         ![](resources/02-api-04.png)
+
+      4. Close the dialog.
+
+         ![](resources/02-api-05.png)
+
+   3. Uncollapse one of the commands (1) and press the `Try it out` button.
+
+      ![](resources/02-api-06.png)
+
+   4. Press the `Execute` button.
+
+      ![](resources/02-api-07.png)
+
+      The command is immediately sent, but let's look at what we receive in return.
+
+   5. At (1), we can see the cURL command that was executed. In the area below (2), you can see the servers' response. Press (3) to resend the command.
+
+      ![](resources/02-api-08.png)
+
+   6. At (1), you can see what response body and headers were received. You can use these to investigate and troubleshoot your work.
+
+      ![](resources/02-api-09.png)
 
 Now, go forth and playeth!
