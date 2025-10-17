@@ -1,0 +1,52 @@
+version: "3"
+services:
+  traefik:
+    image: traefik:v3.5
+    command:
+      - --ping.entrypoint=web
+      - --providers.file.directory=/config
+      - --entrypoints.web.address=:8888
+      - --entrypoints.websecure.address=:8889
+      - --entrypoints.websecure.http.tls=true
+
+      - --log.level=DEBUG
+      #- --accesslog=true
+    network_mode: host
+    volumes:
+      - ../config:/config
+    environment:
+      - HOSTNAME
+
+  frontend:
+    image: ghcr.io/poeschl/roborush:frontend
+    restart: on-failure
+    ports:
+      - "5173:80"
+
+  backend:
+    image: ghcr.io/poeschl/roborush:backend
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: superSecret
+      # Use this password to login as root locally. Needs to be >= 8 characters
+      INITIAL_ROOT_PASSWORD: root1234
+      # Fast duration for local testing
+      TIMEOUT_WAIT_FOR_PLAYERS: 200
+      TIMEOUT_WAIT_FOR_ACTION: 100
+      TIMEOUT_GAME_END: 100
+    ports:
+      - "8080:8080"
+
+  database:
+    image: postgres:16-alpine
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: superSecret
+
+volumes:
+  db-data:

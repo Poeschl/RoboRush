@@ -16,11 +16,11 @@ repos:
     hooks:
       - id: pretty-format-kotlin
         args: [--autofix]
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
-    hooks:
-      - id: prettier
-        types_or: [css, scss, javascript, vue, ts, yaml, html, json]
+  # - repo: https://github.com/pre-commit/mirrors-prettier
+  #   rev: v3.1.0
+  #   hooks:
+  #     - id: prettier
+  #       types_or: [css, scss, javascript, vue, ts, yaml, html, json]
   - repo: https://github.com/oxipng/oxipng
     rev: v9.1.5
     hooks:
