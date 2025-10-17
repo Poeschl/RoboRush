@@ -121,7 +121,7 @@ You need, however, to authorize before you can send commands to your robot.
      The command is immediately sent, but let's look at what we receive in return.
   5. At (1), we can see the cURL command that was executed. In the area below (2), you can see the servers' response. Press (3) to resend the command.
      ![](resources/02-api-08.png)
-  6. At (1), you can see what response body and headers were received. You can use these to investigate and troubleshoot your work.  
+  6. At (1), you can see what response body and headers were received. You can use these to investigate and troubleshoot your work.
      ![](resources/02-api-09.png)
 
 Now, go forth and playeth!
