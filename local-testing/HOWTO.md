@@ -76,19 +76,19 @@ Check out the [API](http://localhost:8888/api/swagger-ui/index.html)
    3. Once you clicked on `Register`, you can continue.
 2. Now to login
    1. Press the `Login` button (1).
-      
+
       ![](resources/01-enter_user-01.png)
-      
+
    2. Enter your credentials and press the `Login` button.
-      
+
       ![](resources/01-enter_user-02.png)
-      
+
    3. You can now see your name at (1). Press (2) to switch to your robot view.
 
       ![](resources/01-enter_user-03.png)
-   
+
    4. When the time is right (inbetween games), press the `Participate in current game` button to register your robot for the current round.
-      
+
       ![](resources/01-enter_user-04.png)
 3. Let's now check out how your robot works.
 
