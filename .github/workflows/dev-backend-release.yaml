@@ -44,7 +44,7 @@ jobs:
         run: ./gradlew --stacktrace backend:jar backend:bootJar
 
       - name: 🗄️ Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: backend
           path: backend/build/libs/*.jar
@@ -65,7 +65,7 @@ jobs:
           lfs: true
 
       - name: 🗄️ Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: backend
           path: backend/build/libs/

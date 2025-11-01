@@ -15,7 +15,7 @@ jobs:
           lfs: true
 
       - name: 🏗️ Install Node.js 22.x
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: npm
@@ -39,7 +39,7 @@ jobs:
           lfs: true
 
       - name: 🏗️ Install Node.js 22.x
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: npm
@@ -52,7 +52,7 @@ jobs:
         run: cd frontend && npm run build
 
       - name: 🗄️ Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: frontend
           path: frontend/dist/*
@@ -73,7 +73,7 @@ jobs:
           lfs: true
 
       - name: 🗄️ Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: frontend
           path: frontend/dist/
