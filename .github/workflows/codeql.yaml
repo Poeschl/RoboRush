@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: ↩️ Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           lfs: true
 
@@ -40,14 +40,14 @@ jobs:
 
       - name: 🏗️ Set up Node.js (for JavaScript/TypeScript analysis)
         if: matrix.language == 'javascript-typescript'
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
       - name: 🔍 Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
@@ -61,6 +61,6 @@ jobs:
         run: cd frontend && npm ci
 
       - name: 🔍 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
